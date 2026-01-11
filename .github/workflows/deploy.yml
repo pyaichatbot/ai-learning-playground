@@ -53,4 +53,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        # Continue even if Pages is not enabled yet
+        continue-on-error: true
 
