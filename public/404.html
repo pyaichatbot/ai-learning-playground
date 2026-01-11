@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Learning Playground</title>
+    <script>
+      // GitHub Pages SPA redirect
+      // Redirects 404s to index.html for client-side routing
+      var path = window.location.pathname;
+      var base = '/ai-learning-playground';
+      
+      // Remove base path if present
+      if (path.startsWith(base)) {
+        path = path.slice(base.length);
+      }
+      
+      // Redirect to index.html with the path as hash
+      window.location.replace(base + '/index.html' + (path !== '/' ? '#' + path : ''));
+    </script>
+  </head>
+  <body>
+    <p>Redirecting...</p>
+  </body>
+</html>
+

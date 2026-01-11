@@ -1,0 +1,401 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   AI Learning Playground - Global Styles
+   Design System: Cyber/Tech Aesthetic
+   ============================================ */
+
+@layer base {
+  :root {
+    /* Color tokens */
+    --color-surface: 15 23 42; /* slate-900 */
+    --color-surface-elevated: 30 41 59; /* slate-800 */
+    --color-brand: 6 182 212; /* cyan-500 */
+    --color-accent-violet: 139 92 246;
+    --color-accent-emerald: 16 185 129;
+    
+    /* Spacing */
+    --section-padding: 2rem;
+    --card-padding: 1.5rem;
+    
+    /* Borders */
+    --border-radius-sm: 0.375rem;
+    --border-radius-md: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-xl: 1rem;
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 300ms ease;
+    --transition-slow: 500ms ease;
+    
+    /* Z-index scale */
+    --z-dropdown: 50;
+    --z-sticky: 100;
+    --z-modal: 200;
+    --z-popover: 300;
+    --z-tooltip: 400;
+  }
+
+  html {
+    @apply bg-surface text-content antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-body min-h-screen;
+    background-image: 
+      radial-gradient(ellipse at top, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* Custom selection colors */
+  ::selection {
+    @apply bg-brand-500/30 text-content;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-elevated rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-muted rounded-full hover:bg-surface-bright transition-colors;
+  }
+
+  /* Focus styles */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-surface;
+  }
+}
+
+@layer components {
+  /* ============================================
+     Card Components
+     ============================================ */
+  .card {
+    @apply bg-surface-elevated/80 backdrop-blur-sm 
+           border border-surface-muted/50 rounded-xl
+           shadow-lg transition-all duration-300;
+  }
+
+  .card-hover {
+    @apply card hover:border-brand-500/50 hover:shadow-glow-sm;
+  }
+
+  .card-gradient {
+    @apply card bg-gradient-to-br from-surface-elevated to-surface;
+  }
+
+  /* ============================================
+     Button Components
+     ============================================ */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2
+           px-4 py-2 rounded-lg font-medium
+           transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-500 text-white
+           hover:bg-brand-600 active:bg-brand-700
+           shadow-md hover:shadow-glow-sm;
+  }
+
+  .btn-secondary {
+    @apply btn bg-surface-muted text-content
+           hover:bg-surface-bright active:bg-surface-muted
+           border border-surface-bright;
+  }
+
+  .btn-ghost {
+    @apply btn text-content-muted
+           hover:text-content hover:bg-surface-muted/50;
+  }
+
+  .btn-icon {
+    @apply p-2 rounded-lg text-content-muted
+           hover:text-content hover:bg-surface-muted/50
+           transition-all duration-200;
+  }
+
+  /* ============================================
+     Input Components
+     ============================================ */
+  .input {
+    @apply w-full px-4 py-2.5 rounded-lg
+           bg-surface/50 border border-surface-muted
+           text-content placeholder:text-content-subtle
+           focus:border-brand-500 focus:ring-1 focus:ring-brand-500
+           transition-all duration-200;
+  }
+
+  .input-label {
+    @apply block text-sm font-medium text-content-muted mb-1.5;
+  }
+
+  /* ============================================
+     Badge Components
+     ============================================ */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5
+           text-xs font-medium rounded-full;
+  }
+
+  .badge-cyan {
+    @apply badge bg-accent-cyan/20 text-accent-cyan border border-accent-cyan/30;
+  }
+
+  .badge-violet {
+    @apply badge bg-accent-violet/20 text-accent-violet border border-accent-violet/30;
+  }
+
+  .badge-emerald {
+    @apply badge bg-accent-emerald/20 text-accent-emerald border border-accent-emerald/30;
+  }
+
+  .badge-amber {
+    @apply badge bg-accent-amber/20 text-accent-amber border border-accent-amber/30;
+  }
+
+  /* ============================================
+     Module Cards (RAG, Agents, Multi-Agent)
+     ============================================ */
+  .module-card {
+    @apply card-hover p-6 cursor-pointer group;
+  }
+
+  .module-card-rag {
+    @apply module-card hover:border-rag-primary/50 hover:shadow-glow-sm;
+  }
+
+  .module-card-agent {
+    @apply module-card hover:border-agent-primary/50;
+  }
+
+  .module-card-agent:hover {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+
+  .module-card-multiagent {
+    @apply module-card hover:border-multiagent-primary/50;
+  }
+
+  .module-card-multiagent:hover {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  }
+
+  /* ============================================
+     Visualization Components
+     ============================================ */
+  .viz-container {
+    @apply card p-4 min-h-[400px] relative overflow-hidden;
+  }
+
+  .viz-node {
+    @apply rounded-lg p-3 text-sm font-medium
+           border-2 transition-all duration-300
+           cursor-pointer select-none;
+  }
+
+  .viz-node-rag {
+    @apply viz-node bg-rag-primary/10 border-rag-primary/50
+           hover:bg-rag-primary/20 hover:border-rag-primary;
+  }
+
+  .viz-node-agent {
+    @apply viz-node bg-agent-primary/10 border-agent-primary/50
+           hover:bg-agent-primary/20 hover:border-agent-primary;
+  }
+
+  .viz-node-multiagent {
+    @apply viz-node bg-multiagent-primary/10 border-multiagent-primary/50
+           hover:bg-multiagent-primary/20 hover:border-multiagent-primary;
+  }
+
+  .viz-edge {
+    @apply stroke-2 fill-none transition-all duration-300;
+  }
+
+  .viz-edge-active {
+    @apply stroke-brand-400;
+    stroke-dasharray: 8;
+    animation: dash 1s linear infinite;
+  }
+
+  /* ============================================
+     Code Block Styling
+     ============================================ */
+  .code-block {
+    @apply font-mono text-sm bg-surface rounded-lg
+           border border-surface-muted overflow-x-auto;
+  }
+
+  .code-block pre {
+    @apply p-4 m-0;
+  }
+
+  .code-inline {
+    @apply font-mono text-sm px-1.5 py-0.5 rounded
+           bg-surface-muted text-accent-cyan;
+  }
+
+  /* ============================================
+     Tab Components
+     ============================================ */
+  .tab-list {
+    @apply flex gap-1 p-1 rounded-lg bg-surface-elevated/50;
+  }
+
+  .tab-trigger {
+    @apply px-4 py-2 rounded-md text-sm font-medium
+           text-content-muted transition-all duration-200
+           hover:text-content hover:bg-surface-muted/50
+           data-[state=active]:bg-brand-500/20 
+           data-[state=active]:text-brand-400;
+  }
+
+  /* ============================================
+     Tooltip Styling
+     ============================================ */
+  .tooltip {
+    @apply px-3 py-1.5 rounded-md text-sm
+           bg-surface-elevated border border-surface-muted
+           shadow-lg z-50;
+  }
+
+  /* ============================================
+     Progress Indicators
+     ============================================ */
+  .progress-bar {
+    @apply h-2 rounded-full bg-surface-muted overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-500 ease-out;
+  }
+
+  .progress-fill-rag {
+    @apply progress-fill bg-gradient-to-r from-rag-primary to-rag-accent;
+  }
+
+  .progress-fill-agent {
+    @apply progress-fill bg-gradient-to-r from-agent-primary to-agent-accent;
+  }
+
+  .progress-fill-multiagent {
+    @apply progress-fill bg-gradient-to-r from-multiagent-primary to-multiagent-accent;
+  }
+
+  /* ============================================
+     Grid Pattern Background
+     ============================================ */
+  .bg-grid {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+  }
+
+  /* ============================================
+     Glow Effects
+     ============================================ */
+  .glow-text-cyan {
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+  }
+
+  .glow-text-violet {
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+  }
+
+  .glow-text-emerald {
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  }
+}
+
+@layer utilities {
+  /* Animation utilities */
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-400 { animation-delay: 400ms; }
+  .animation-delay-500 { animation-delay: 500ms; }
+
+  /* Text gradient */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+  }
+
+  .text-gradient-cyan {
+    @apply text-gradient bg-gradient-to-r from-rag-primary via-accent-cyan to-rag-accent;
+  }
+
+  .text-gradient-violet {
+    @apply text-gradient bg-gradient-to-r from-agent-primary via-accent-violet to-agent-accent;
+  }
+
+  .text-gradient-emerald {
+    @apply text-gradient bg-gradient-to-r from-multiagent-primary via-accent-emerald to-multiagent-accent;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ============================================
+   Keyframe Animations
+   ============================================ */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Shimmer loading effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}

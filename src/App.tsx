@@ -1,0 +1,30 @@
+/**
+ * AI Learning Playground - Main App Component
+ */
+
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Layout } from '@/components/layout';
+import { HomePage, RAGStudioPage, AgentLabPage, MultiAgentArenaPage } from '@/components/pages';
+
+export const App: React.FC = () => {
+  // Get base path from Vite config (for GitHub Pages subdirectory)
+  // BASE_URL is set by Vite based on the 'base' config option
+  const base = (import.meta as any).env?.BASE_URL || '/';
+  
+  return (
+    <BrowserRouter basename={base}>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/rag" element={<RAGStudioPage />} />
+          <Route path="/agents" element={<AgentLabPage />} />
+          <Route path="/multi-agent" element={<MultiAgentArenaPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
+  );
+};
+
+export default App;
