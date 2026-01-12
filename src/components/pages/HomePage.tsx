@@ -237,7 +237,7 @@ export const HomePage: React.FC = () => {
           </p>
           <div className="flex items-center justify-center gap-4">
             <a
-              href="https://github.com/pyaichatbot/ai-learning-playground"
+              href="https://github.com/pyaichatbot"
               target="_blank"
               rel="noopener noreferrer"
             >

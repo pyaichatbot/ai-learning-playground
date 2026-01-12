@@ -59,7 +59,7 @@ export const Header: React.FC = () => {
             Blog
           </a>
           <a
-            href="https://github.com/pyaichatbot/ai-learning-playground"
+            href="https://github.com/pyaichatbot"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-icon"
