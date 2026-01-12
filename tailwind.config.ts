@@ -57,6 +57,11 @@ const config: Config = {
           secondary: '#059669',
           accent: '#34d399',
         },
+        reasoning: {
+          primary: '#a855f7',
+          secondary: '#9333ea',
+          accent: '#c084fc',
+        },
       },
       fontFamily: {
         // Display font for headings - bold, techy

@@ -18,6 +18,10 @@ import type {
   AgentPattern,
   OrchestrationPattern,
   Chunk,
+  ReasoningPattern,
+  ReasoningState,
+  ReasoningStep,
+  ReasoningPatternCategory,
 } from '@/types';
 import { generateId } from '@/lib/utils';
 
@@ -1142,5 +1146,677 @@ function generateDemoMessages(
       // Default to supervisor pattern
       return generateDemoMessages(task, agents, 'supervisor');
     }
+  }
+}
+
+// ============================================
+// Reasoning Techniques Module Store
+// ============================================
+
+interface ReasoningStore {
+  // State
+  reasoningState: ReasoningState | null;
+  selectedPattern: ReasoningPattern;
+  isRunning: boolean;
+  currentStepIndex: number;
+  
+  // Actions
+  setPattern: (pattern: ReasoningPattern) => void;
+  setReasoningState: (state: Partial<ReasoningState>) => void;
+  setRunning: (running: boolean) => void;
+  setCurrentStep: (index: number) => void;
+  resetReasoningState: () => void;
+  
+  // Demo actions
+  runDemoReasoning: (problem: string, pattern: ReasoningPattern) => Promise<void>;
+}
+
+const REASONING_PATTERN_INFO: Record<ReasoningPattern, { category: ReasoningPatternCategory; name: string }> = {
+  cot: { category: 'linear-sequential', name: 'Chain-of-Thought' },
+  cod: { category: 'linear-sequential', name: 'Chain-of-Draft' },
+  system2: { category: 'linear-sequential', name: 'System 2 / Hidden CoT' },
+  aot: { category: 'modular-parallel', name: 'Atom of Thought' },
+  sot: { category: 'modular-parallel', name: 'Skeleton-of-Thought' },
+  tot: { category: 'modular-parallel', name: 'Tree-of-Thought' },
+  react: { category: 'iterative-self-correcting', name: 'ReAct' },
+  reflection: { category: 'iterative-self-correcting', name: 'Reflection / Self-Critique' },
+  cove: { category: 'iterative-self-correcting', name: 'Chain-of-Verification' },
+  got: { category: 'advanced-graph-memory', name: 'Graph-of-Thought' },
+  bot: { category: 'advanced-graph-memory', name: 'Buffer-of-Thought' },
+};
+
+export const useReasoningStore = create<ReasoningStore>()(
+  devtools(
+    (set, get) => ({
+      // Initial state
+      reasoningState: null,
+      selectedPattern: 'cot',
+      isRunning: false,
+      currentStepIndex: 0,
+
+      // Actions
+      setPattern: (pattern) => set({ selectedPattern: pattern }),
+
+      setReasoningState: (newState) =>
+        set((state) => ({
+          reasoningState: state.reasoningState
+            ? { ...state.reasoningState, ...newState }
+            : (newState as ReasoningState),
+        })),
+
+      setRunning: (running) => set({ isRunning: running }),
+
+      setCurrentStep: (index) => set({ currentStepIndex: index }),
+
+      resetReasoningState: () =>
+        set({
+          reasoningState: null,
+          isRunning: false,
+          currentStepIndex: 0,
+        }),
+
+      // Demo reasoning execution
+      runDemoReasoning: async (problem: string, pattern: ReasoningPattern) => {
+        const startTime = Date.now();
+        set({ isRunning: true, currentStepIndex: 0 });
+
+        const patternInfo = REASONING_PATTERN_INFO[pattern];
+        const steps = generateDemoReasoningSteps(problem, pattern);
+
+        set({
+          reasoningState: {
+            pattern,
+            category: patternInfo.category,
+            problem,
+            steps: [],
+            nodes: [],
+            currentStep: 0,
+            status: 'thinking',
+            metrics: {
+              totalSteps: 0,
+              totalTokens: 0,
+              executionTime: 0,
+            },
+          },
+        });
+
+        // Simulate step-by-step execution
+        for (let i = 0; i < steps.length; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          
+          const { reasoningState } = get();
+          if (!reasoningState) break;
+
+          const currentStep = steps[i];
+          const updatedSteps = [...reasoningState.steps, currentStep];
+          const isLastStep = i === steps.length - 1;
+          
+          // Update nodes based on pattern
+          const updatedNodes = updateReasoningNodes(reasoningState.nodes, currentStep);
+          
+          set({
+            reasoningState: {
+              ...reasoningState,
+              steps: updatedSteps,
+              nodes: updatedNodes,
+              currentStep: i,
+              status: isLastStep ? 'completed' : getStatusForStep(currentStep.type),
+              finalAnswer: currentStep.type === 'final-answer' ? currentStep.content : reasoningState.finalAnswer,
+              metrics: {
+                ...reasoningState.metrics,
+                totalSteps: updatedSteps.length,
+                totalBranches: updatedSteps.filter((s) => s.type === 'branch').length,
+                prunedBranches: updatedSteps.filter((s) => s.type === 'pruning').length,
+                atomsCreated: updatedSteps.filter((s) => s.type === 'atom').length,
+                verificationsPerformed: updatedSteps.filter((s) => s.type === 'verification').length,
+                correctionsMade: updatedSteps.filter((s) => s.type === 'correction').length,
+                totalTokens: updatedSteps.reduce((sum, s) => sum + s.content.length / 4, 0),
+                executionTime: Date.now() - startTime,
+              },
+            },
+            currentStepIndex: isLastStep ? steps.length - 1 : i,
+          });
+        }
+
+        set({ isRunning: false });
+      },
+    }),
+    { name: 'ReasoningStore' }
+  )
+);
+
+// Helper function to generate demo reasoning steps
+function generateDemoReasoningSteps(problem: string, pattern: ReasoningPattern): ReasoningStep[] {
+  const steps: ReasoningStep[] = [];
+  let timestamp = Date.now();
+
+  switch (pattern) {
+    case 'cot': {
+      // Chain-of-Thought: Step-by-step reasoning
+      steps.push(
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: `Let me break down this problem step by step: "${problem}"`,
+          timestamp: timestamp,
+          duration: 200,
+        },
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: 'First, I need to identify the key components and what information is needed.',
+          timestamp: timestamp += 300,
+          duration: 250,
+        },
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: 'Next, I should analyze each component systematically and consider the relationships between them.',
+          timestamp: timestamp += 400,
+          duration: 300,
+        },
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: 'Now I can synthesize the information and draw a logical conclusion.',
+          timestamp: timestamp += 500,
+          duration: 200,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: `Based on my step-by-step analysis: [Solution to ${problem}]`,
+          timestamp: timestamp += 400,
+          duration: 300,
+        }
+      );
+      break;
+    }
+
+    case 'tot': {
+      // Tree-of-Thought: Multiple branches with evaluation
+      const branch1 = generateId('branch');
+      const branch2 = generateId('branch');
+      const branch3 = generateId('branch');
+      
+      steps.push(
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: `Problem: "${problem}". Let me explore multiple approaches.`,
+          timestamp: timestamp,
+          duration: 200,
+        },
+        {
+          id: branch1,
+          type: 'branch',
+          content: 'Branch 1: Approach A - Focus on direct solution',
+          timestamp: timestamp += 300,
+          duration: 400,
+          metadata: { branchId: branch1, evaluationScore: 0.7 },
+        },
+        {
+          id: branch2,
+          type: 'branch',
+          content: 'Branch 2: Approach B - Consider alternative perspective',
+          timestamp: timestamp += 200,
+          duration: 400,
+          metadata: { branchId: branch2, evaluationScore: 0.9 },
+        },
+        {
+          id: branch3,
+          type: 'branch',
+          content: 'Branch 3: Approach C - Hybrid method',
+          timestamp: timestamp += 200,
+          duration: 400,
+          metadata: { branchId: branch3, evaluationScore: 0.6 },
+        },
+        {
+          id: generateId('step'),
+          type: 'evaluation',
+          content: 'Evaluating branches: Branch 2 shows highest potential. Branch 3 shows promise but needs refinement.',
+          timestamp: timestamp += 500,
+          duration: 300,
+        },
+        {
+          id: generateId('step'),
+          type: 'pruning',
+          content: 'Pruning Branch 1 (lower score) and refining Branch 2.',
+          timestamp: timestamp += 400,
+          duration: 200,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: `Best solution from Branch 2: [Refined answer based on best approach]`,
+          timestamp: timestamp += 500,
+          duration: 300,
+        }
+      );
+      break;
+    }
+
+    case 'aot': {
+      // Atom of Thought: Independent modular components
+      const atom1 = generateId('atom');
+      const atom2 = generateId('atom');
+      const atom3 = generateId('atom');
+      
+      steps.push(
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: `Problem: "${problem}". Breaking into independent atoms.`,
+          timestamp: timestamp,
+          duration: 200,
+        },
+        {
+          id: atom1,
+          type: 'atom',
+          content: 'Atom 1: Core concept analysis',
+          timestamp: timestamp += 300,
+          duration: 300,
+          metadata: { atomType: 'concept', parentId: undefined },
+        },
+        {
+          id: atom2,
+          type: 'atom',
+          content: 'Atom 2: Contextual factors',
+          timestamp: timestamp += 200,
+          duration: 300,
+          metadata: { atomType: 'context', parentId: undefined },
+        },
+        {
+          id: atom3,
+          type: 'atom',
+          content: 'Atom 3: Solution constraints',
+          timestamp: timestamp += 200,
+          duration: 300,
+          metadata: { atomType: 'constraint', parentId: undefined },
+        },
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: 'Combining independent atoms to form complete solution.',
+          timestamp: timestamp += 400,
+          duration: 250,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: `Synthesized solution from atoms: [Combined result]`,
+          timestamp: timestamp += 400,
+          duration: 300,
+        }
+      );
+      break;
+    }
+
+    case 'react': {
+      // ReAct: Reasoning + Acting
+      steps.push(
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: `Task: "${problem}". I need to think about what information I need.`,
+          timestamp: timestamp,
+          duration: 200,
+        },
+        {
+          id: generateId('step'),
+          type: 'action',
+          content: 'Action: Searching for relevant information...',
+          timestamp: timestamp += 300,
+          duration: 400,
+          metadata: { toolUsed: 'search' },
+        },
+        {
+          id: generateId('step'),
+          type: 'observation',
+          content: 'Observation: Found relevant data. Now I can reason about the solution.',
+          timestamp: timestamp += 500,
+          duration: 200,
+        },
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: 'Based on the information gathered, I can now formulate the answer.',
+          timestamp: timestamp += 300,
+          duration: 250,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: `Solution: [Answer based on reasoning and actions]`,
+          timestamp: timestamp += 400,
+          duration: 300,
+        }
+      );
+      break;
+    }
+
+    case 'cove': {
+      // Chain-of-Verification: Fact-checking approach
+      steps.push(
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: `Problem: "${problem}". Let me generate an initial answer.`,
+          timestamp: timestamp,
+          duration: 200,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: 'Initial answer: [Draft response]',
+          timestamp: timestamp += 300,
+          duration: 300,
+        },
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: 'Now I need to generate verification questions to fact-check my answer.',
+          timestamp: timestamp += 400,
+          duration: 200,
+        },
+        {
+          id: generateId('step'),
+          type: 'verification',
+          content: 'Verification Q1: Is this fact accurate?',
+          timestamp: timestamp += 300,
+          duration: 250,
+          metadata: { verificationResult: 'pass' },
+        },
+        {
+          id: generateId('step'),
+          type: 'verification',
+          content: 'Verification Q2: Are there any contradictions?',
+          timestamp: timestamp += 300,
+          duration: 250,
+          metadata: { verificationResult: 'pass' },
+        },
+        {
+          id: generateId('step'),
+          type: 'verification',
+          content: 'Verification Q3: Is this complete?',
+          timestamp: timestamp += 300,
+          duration: 250,
+          metadata: { verificationResult: 'partial' },
+        },
+        {
+          id: generateId('step'),
+          type: 'correction',
+          content: 'Correction: Adding missing information based on verification.',
+          timestamp: timestamp += 400,
+          duration: 300,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: 'Verified and corrected answer: [Final verified response]',
+          timestamp: timestamp += 500,
+          duration: 300,
+        }
+      );
+      break;
+    }
+
+    case 'reflection': {
+      // Reflection: Self-critique loop
+      steps.push(
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: `Problem: "${problem}". Generating initial response.`,
+          timestamp: timestamp,
+          duration: 200,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: 'Draft answer: [Initial response]',
+          timestamp: timestamp += 300,
+          duration: 300,
+        },
+        {
+          id: generateId('step'),
+          type: 'critique',
+          content: 'Self-critique: The answer covers basics but lacks depth and specific examples.',
+          timestamp: timestamp += 400,
+          duration: 250,
+        },
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: 'Revising based on critique: Adding depth and examples.',
+          timestamp: timestamp += 300,
+          duration: 200,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: 'Improved answer: [Revised response with depth and examples]',
+          timestamp: timestamp += 400,
+          duration: 300,
+        }
+      );
+      break;
+    }
+
+    case 'sot': {
+      // Skeleton-of-Thought: Outline then parallel generation
+      steps.push(
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: `Problem: "${problem}". Creating skeleton structure.`,
+          timestamp: timestamp,
+          duration: 200,
+        },
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: 'Skeleton: 1) Introduction, 2) Main analysis, 3) Conclusion',
+          timestamp: timestamp += 300,
+          duration: 250,
+        },
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: 'Generating content for all sections simultaneously...',
+          timestamp: timestamp += 400,
+          duration: 500,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: 'Complete answer: [All sections filled in parallel]',
+          timestamp: timestamp += 600,
+          duration: 300,
+        }
+      );
+      break;
+    }
+
+    case 'got': {
+      // Graph-of-Thought: Nodes can merge and loop
+      const node1 = generateId('node');
+      const node2 = generateId('node');
+      const node3 = generateId('node');
+      
+      steps.push(
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: `Problem: "${problem}". Creating graph structure.`,
+          timestamp: timestamp,
+          duration: 200,
+        },
+        {
+          id: node1,
+          type: 'branch',
+          content: 'Node 1: Approach A',
+          timestamp: timestamp += 300,
+          duration: 300,
+          metadata: { branchId: node1 },
+        },
+        {
+          id: node2,
+          type: 'branch',
+          content: 'Node 2: Approach B',
+          timestamp: timestamp += 200,
+          duration: 300,
+          metadata: { branchId: node2 },
+        },
+        {
+          id: node3,
+          type: 'branch',
+          content: 'Node 3: Approach C',
+          timestamp: timestamp += 200,
+          duration: 300,
+          metadata: { branchId: node3 },
+        },
+        {
+          id: generateId('step'),
+          type: 'merge',
+          content: 'Merging best elements from Node 1 and Node 2 into superior solution.',
+          timestamp: timestamp += 500,
+          duration: 400,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: 'Merged solution: [Combined best ideas]',
+          timestamp: timestamp += 500,
+          duration: 300,
+        }
+      );
+      break;
+    }
+
+    case 'cod': {
+      // Chain-of-Draft: Shorthand reasoning
+      steps.push(
+        {
+          id: generateId('step'),
+          type: 'draft',
+          content: 'Draft: [key concepts] → [relationships] → [conclusion]',
+          timestamp: timestamp,
+          duration: 200,
+        },
+        {
+          id: generateId('step'),
+          type: 'draft',
+          content: 'Expanding: Key concepts = A, B, C. Relationships = A→B, B→C.',
+          timestamp: timestamp += 300,
+          duration: 300,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: 'Final answer: [Expanded from draft]',
+          timestamp: timestamp += 400,
+          duration: 300,
+        }
+      );
+      break;
+    }
+
+    case 'system2': {
+      // System 2: Hidden reasoning, only final answer shown
+      steps.push(
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: '[Hidden reasoning process - extensive internal computation]',
+          timestamp: timestamp,
+          duration: 2000,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: 'Refined answer: [Result of hidden reasoning]',
+          timestamp: timestamp += 2100,
+          duration: 300,
+        }
+      );
+      break;
+    }
+
+    case 'bot': {
+      // Buffer-of-Thought: Retrieve template and adapt
+      steps.push(
+        {
+          id: generateId('step'),
+          type: 'retrieval',
+          content: `Problem: "${problem}". Retrieving relevant reasoning template from memory.`,
+          timestamp: timestamp,
+          duration: 300,
+        },
+        {
+          id: generateId('step'),
+          type: 'thought',
+          content: 'Template retrieved. Adapting to current problem context.',
+          timestamp: timestamp += 400,
+          duration: 400,
+        },
+        {
+          id: generateId('step'),
+          type: 'final-answer',
+          content: 'Adapted solution: [Template applied to problem]',
+          timestamp: timestamp += 500,
+          duration: 300,
+        }
+      );
+      break;
+    }
+  }
+
+  return steps;
+}
+
+function updateReasoningNodes(
+  nodes: import('@/types').ReasoningNode[],
+  newStep: ReasoningStep
+): import('@/types').ReasoningNode[] {
+  const newNode: import('@/types').ReasoningNode = {
+    id: newStep.id,
+    label: newStep.type,
+    type: newStep.type,
+    content: newStep.content,
+    position: { x: 0, y: nodes.length * 100 },
+    connections: newStep.metadata?.parentId ? [newStep.metadata.parentId] : [],
+    metadata: newStep.metadata,
+  };
+
+  // Update connections if parent exists
+  if (newStep.metadata?.parentId) {
+    const parentNode = nodes.find(n => n.id === newStep.metadata?.parentId);
+    if (parentNode) {
+      parentNode.connections = [...(parentNode.connections || []), newStep.id];
+    }
+  }
+
+  return [...nodes, newNode];
+}
+
+function getStatusForStep(stepType: ReasoningStep['type']): import('@/types').ReasoningStatus {
+  switch (stepType) {
+    case 'thought':
+    case 'draft':
+      return 'thinking';
+    case 'branch':
+    case 'atom':
+      return 'branching';
+    case 'evaluation':
+      return 'evaluating';
+    case 'verification':
+      return 'verifying';
+    case 'correction':
+      return 'correcting';
+    case 'final-answer':
+      return 'completed';
+    default:
+      return 'thinking';
   }
 }

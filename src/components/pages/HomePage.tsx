@@ -5,7 +5,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Database, Bot, Network, ArrowRight, Sparkles, BookOpen, Github } from 'lucide-react';
+import { Database, Bot, Network, ArrowRight, Sparkles, BookOpen, Github, Brain } from 'lucide-react';
 import { Card, Button } from '@/components/shared';
 import { cn } from '@/lib/utils';
 
@@ -39,6 +39,16 @@ const modules = [
     color: 'multiagent',
     features: ['Supervisor Pattern', 'Message Flow', 'Task Delegation', 'Agent Communication'],
     path: '/multi-agent',
+  },
+  {
+    id: 'reasoning',
+    title: 'Prompt Reasoning',
+    subtitle: 'Reasoning Techniques',
+    description: 'Explore modern AI reasoning patterns including CoT, ToT, AoT, ReAct, and more advanced techniques.',
+    icon: Brain,
+    color: 'reasoning',
+    features: ['Chain-of-Thought', 'Tree-of-Thought', 'Atom of Thought', 'ReAct Pattern'],
+    path: '/reasoning',
   },
 ];
 
@@ -103,23 +113,26 @@ export const HomePage: React.FC = () => {
 
       {/* Module Cards */}
       <section className="max-w-6xl mx-auto mb-16">
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {modules.map((module, index) => {
             const Icon = module.icon;
             const colorClasses = {
               rag: 'hover:border-rag-primary/50 hover:shadow-glow-sm',
               agent: 'hover:border-agent-primary/50',
               multiagent: 'hover:border-multiagent-primary/50',
+              reasoning: 'hover:border-reasoning-primary/50',
             };
             const iconColors = {
               rag: 'text-rag-primary',
               agent: 'text-agent-primary',
               multiagent: 'text-multiagent-primary',
+              reasoning: 'text-reasoning-primary',
             };
             const gradients = {
               rag: 'from-rag-primary/20 to-transparent',
               agent: 'from-agent-primary/20 to-transparent',
               multiagent: 'from-multiagent-primary/20 to-transparent',
+              reasoning: 'from-reasoning-primary/20 to-transparent',
             };
 
             return (

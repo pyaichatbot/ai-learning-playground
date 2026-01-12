@@ -6,4 +6,5 @@ export { HomePage } from './HomePage';
 export { RAGStudioPage } from './RAGStudioPage';
 export { AgentLabPage } from './AgentLabPage';
 export { MultiAgentArenaPage } from './MultiAgentArenaPage';
+export { PromptReasoningPage } from './PromptReasoningPage';
 

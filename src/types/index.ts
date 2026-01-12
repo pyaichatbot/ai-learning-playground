@@ -8,7 +8,7 @@
 // Common Types
 // ============================================
 
-export type ModuleType = 'rag' | 'agents' | 'multi-agent';
+export type ModuleType = 'rag' | 'agents' | 'multi-agent' | 'reasoning';
 
 export interface Position {
   x: number;
@@ -451,10 +451,127 @@ export interface APIError {
 // Event Types
 // ============================================
 
+// ============================================
+// Reasoning Techniques Module Types
+// ============================================
+
+export type ReasoningPatternCategory = 
+  | 'linear-sequential'
+  | 'modular-parallel'
+  | 'iterative-self-correcting'
+  | 'advanced-graph-memory';
+
+export type ReasoningPattern = 
+  | 'cot' // Chain-of-Thought
+  | 'cod' // Chain-of-Draft
+  | 'system2' // System 2 / Hidden CoT
+  | 'aot' // Atom of Thought
+  | 'sot' // Skeleton-of-Thought
+  | 'tot' // Tree-of-Thought
+  | 'react' // ReAct (Reason + Act)
+  | 'reflection' // Reflection / Self-Critique
+  | 'cove' // Chain-of-Verification
+  | 'got' // Graph-of-Thought
+  | 'bot'; // Buffer-of-Thought
+
+export interface ReasoningStep {
+  id: string;
+  type: ReasoningStepType;
+  content: string;
+  timestamp: number;
+  duration: number;
+  metadata?: ReasoningStepMetadata;
+}
+
+export type ReasoningStepType = 
+  | 'thought'
+  | 'draft'
+  | 'atom'
+  | 'branch'
+  | 'evaluation'
+  | 'pruning'
+  | 'action'
+  | 'observation'
+  | 'critique'
+  | 'verification'
+  | 'correction'
+  | 'merge'
+  | 'retrieval'
+  | 'final-answer';
+
+export interface ReasoningStepMetadata {
+  confidence?: number;
+  branchId?: string;
+  parentId?: string;
+  childrenIds?: string[];
+  atomType?: string;
+  evaluationScore?: number;
+  toolUsed?: string;
+  verificationResult?: 'pass' | 'fail' | 'partial';
+}
+
+export interface ReasoningNode {
+  id: string;
+  label: string;
+  type: ReasoningStepType;
+  content: string;
+  position?: Position;
+  connections?: string[];
+  metadata?: ReasoningStepMetadata;
+}
+
+export interface ReasoningState {
+  pattern: ReasoningPattern;
+  category: ReasoningPatternCategory;
+  problem: string;
+  steps: ReasoningStep[];
+  nodes: ReasoningNode[];
+  currentStep: number;
+  status: ReasoningStatus;
+  finalAnswer?: string;
+  metrics: ReasoningMetrics;
+}
+
+export type ReasoningStatus = 
+  | 'idle'
+  | 'thinking'
+  | 'drafting'
+  | 'branching'
+  | 'evaluating'
+  | 'verifying'
+  | 'correcting'
+  | 'completed'
+  | 'error';
+
+export interface ReasoningMetrics {
+  totalSteps: number;
+  totalBranches?: number;
+  prunedBranches?: number;
+  atomsCreated?: number;
+  verificationsPerformed?: number;
+  correctionsMade?: number;
+  totalTokens: number;
+  executionTime: number;
+  accuracy?: number;
+}
+
+export interface ReasoningPatternInfo {
+  id: ReasoningPattern;
+  name: string;
+  category: ReasoningPatternCategory;
+  description: string;
+  mentalModel: string;
+  bestFor: string;
+  vibe: string;
+  examplePrompt: string;
+  visualizationType: 'linear' | 'tree' | 'graph' | 'atoms' | 'iterative';
+}
+
 export type PlaygroundEvent = 
   | { type: 'CHUNK_CREATED'; payload: Chunk }
   | { type: 'SEARCH_COMPLETED'; payload: SearchResult[] }
   | { type: 'AGENT_STEP'; payload: AgentStep }
   | { type: 'MESSAGE_SENT'; payload: AgentMessage }
   | { type: 'TASK_COMPLETED'; payload: Task }
+  | { type: 'REASONING_STEP'; payload: ReasoningStep }
   | { type: 'ERROR'; payload: APIError };

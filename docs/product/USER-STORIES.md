@@ -3,7 +3,7 @@
 ## Document Control
 | Version | Date | Author | Status |
 |---------|------|--------|--------|
-| 1.0 | 2026-01 | Product Team | Ready for Implementation |
+| 1.1 | 2026-01 | Product Team | Updated with Prompt Reasoning & New Features |
 
 ---
 
@@ -534,6 +534,355 @@ test('performance metrics are calculated correctly', () => {
 
 ---
 
+## Phase 4: Prompt Reasoning Techniques
+
+### Story 4.1: Prompt Reasoning Techniques Module
+**Phase**: Prompt Reasoning  
+**Priority**: P0  
+**Story Points**: 8  
+**Status**: 🟢 DONE
+
+**User Story**:
+> As a learner, I want to explore modern AI reasoning patterns interactively, so I can understand how different prompt architectures work and when to use each technique.
+
+**Acceptance Criteria**:
+- [x] 11 reasoning patterns implemented (CoT, CoD, System2, AoT, SoT, ToT, ReAct, Reflection, CoVe, GoT, BoT)
+- [x] Pattern categorization (Linear, Modular, Iterative, Advanced)
+- [x] Interactive pattern selector with tooltips
+- [x] Real-time reasoning process visualization
+- [x] Different visualization types (linear, tree, graph, atoms, iterative)
+- [x] Pattern information display (mental model, best for, vibe, example prompts)
+- [x] Metrics tracking (steps, branches, atoms, verifications, corrections)
+- [x] Sample problems for testing
+- [x] Sidebar navigation integration
+
+**Technical Tasks**:
+1. Create reasoning pattern types and interfaces
+2. Implement reasoning store with Zustand
+3. Create ReasoningPatternViz component with multiple visualization types
+4. Create ReasoningPatternSelector component with tooltips
+5. Build PromptReasoningPage with interactive demo
+6. Add routing and navigation
+7. Integrate with sidebar menu
+8. Add reasoning color scheme to design system
+
+**Dependencies**: Story 1.1
+
+**Testing**:
+```typescript
+// Test reasoning pattern execution
+test('CoT pattern generates step-by-step reasoning', async () => {
+  const result = await runDemoReasoning(problem, 'cot');
+  expect(result.steps).toHaveLength(greaterThan(0));
+  expect(result.steps[0].type).toBe('thought');
+});
+
+// Test pattern visualization
+test('ToT pattern shows branching visualization', () => {
+  const viz = renderReasoningViz('tot', steps);
+  expect(viz.type).toBe('tree');
+});
+```
+
+---
+
+## Phase 5: Advanced AI Concepts
+
+### Story 5.1: LLM Next Token Prediction Demo
+**Phase**: Advanced AI Concepts  
+**Priority**: P0  
+**Story Points**: 5  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a learner, I want to see how LLMs predict the next token step-by-step, so I can understand the autoregressive generation process.
+
+**Acceptance Criteria**:
+- [ ] Token-by-token generation visualization
+- [ ] Probability distribution display for each step
+- [ ] Top-k and top-p sampling visualization
+- [ ] Attention weights visualization (if applicable)
+- [ ] Interactive controls (temperature, sampling strategy)
+- [ ] Token probability bar charts
+- [ ] Generation speed controls (step, pause, resume)
+- [ ] Token embeddings visualization
+
+**Technical Tasks**:
+1. Implement token prediction simulation
+2. Create TokenPredictionViz component
+3. Add probability distribution charts
+4. Add sampling strategy controls
+5. Add attention visualization (optional)
+6. Create LLMNextTokenPage
+7. Write token prediction tests
+
+**Dependencies**: Story 1.1
+
+**Testing**:
+```typescript
+// Test token prediction
+test('LLM generates tokens sequentially', () => {
+  const tokens = generateTokens(prompt, { maxTokens: 10 });
+  expect(tokens).toHaveLength(10);
+  expect(tokens[0].probabilities).toBeDefined();
+});
+
+// Test sampling strategies
+test('top-k sampling filters candidates', () => {
+  const sampled = topKSampling(probabilities, { k: 5 });
+  expect(sampled.length).toBeLessThanOrEqual(5);
+});
+```
+
+---
+
+### Story 5.2: Diffusion Model Image Generation Demo
+**Phase**: Advanced AI Concepts  
+**Priority**: P0  
+**Story Points**: 8  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a learner, I want to see how diffusion models generate images step-by-step, so I can understand the denoising process from noise to final image.
+
+**Acceptance Criteria**:
+- [ ] Step-by-step denoising visualization
+- [ ] Noise schedule visualization
+- [ ] Timestep progression slider
+- [ ] Before/after comparison at each step
+- [ ] Latent space visualization
+- [ ] Prompt conditioning visualization
+- [ ] Different diffusion schedules (DDPM, DDIM)
+- [ ] Image quality metrics over timesteps
+
+**Technical Tasks**:
+1. Implement diffusion model simulation
+2. Create DiffusionViz component
+3. Add timestep progression controls
+4. Add noise schedule visualization
+5. Add latent space visualization
+6. Create DiffusionImagePage
+7. Add image comparison views
+8. Write diffusion model tests
+
+**Dependencies**: Story 1.1
+
+**Testing**:
+```typescript
+// Test diffusion process
+test('diffusion model denoises step by step', () => {
+  const steps = diffuseImage(noise, { steps: 50 });
+  expect(steps).toHaveLength(50);
+  expect(steps[0].noiseLevel).toBeGreaterThan(steps[49].noiseLevel);
+});
+
+// Test prompt conditioning
+test('prompt affects generation', () => {
+  const img1 = generateImage("cat");
+  const img2 = generateImage("dog");
+  expect(img1.embedding).not.toEqual(img2.embedding);
+});
+```
+
+---
+
+### Story 5.3: Agent-to-Agent (A2A) Protocol Communication
+**Phase**: Advanced AI Concepts  
+**Priority**: P0  
+**Story Points**: 5  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a learner, I want to see how agents communicate using the A2A protocol, so I can understand structured agent-to-agent messaging in multi-agentic AI systems.
+
+**Acceptance Criteria**:
+- [ ] A2A protocol message format visualization
+- [ ] Message flow animation between agents
+- [ ] Protocol handshake visualization
+- [ ] Message routing visualization
+- [ ] Protocol state machine visualization
+- [ ] Message queue visualization
+- [ ] Error handling and retry visualization
+- [ ] Protocol version compatibility display
+
+**Technical Tasks**:
+1. Implement A2A protocol simulation
+2. Create A2AProtocolViz component
+3. Add message flow animation
+4. Add protocol state machine
+5. Add message routing visualization
+6. Create A2ACommunicationPage
+7. Write A2A protocol tests
+
+**Dependencies**: Story 3.1
+
+**Testing**:
+```typescript
+// Test A2A protocol handshake
+test('A2A protocol establishes connection', () => {
+  const connection = establishA2AConnection(agent1, agent2);
+  expect(connection.status).toBe('established');
+  expect(connection.protocolVersion).toBeDefined();
+});
+
+// Test message routing
+test('A2A messages are routed correctly', () => {
+  const message = createA2AMessage(from, to, payload);
+  const routed = routeA2AMessage(message, network);
+  expect(routed.destination).toBe(to);
+});
+```
+
+---
+
+### Story 5.4: Model Context Protocol (MCP) Demo
+**Phase**: Advanced AI Concepts  
+**Priority**: P0  
+**Story Points**: 5  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a learner, I want to see how MCP clients communicate with MCP servers, so I can understand data propagation and context sharing in the Model Context Protocol.
+
+**Acceptance Criteria**:
+- [ ] MCP client-server architecture visualization
+- [ ] Request/response flow animation
+- [ ] Context propagation visualization
+- [ ] Resource sharing visualization
+- [ ] Protocol message types (initialize, tools/list, resources/read)
+- [ ] Connection lifecycle visualization
+- [ ] Error handling visualization
+- [ ] Performance metrics (latency, throughput)
+
+**Technical Tasks**:
+1. Implement MCP protocol simulation
+2. Create MCPProtocolViz component
+3. Add client-server communication flow
+4. Add context propagation visualization
+5. Add resource sharing visualization
+6. Create MCPDemoPage
+7. Write MCP protocol tests
+
+**Dependencies**: Story 1.1
+
+**Testing**:
+```typescript
+// Test MCP client-server connection
+test('MCP client connects to server', async () => {
+  const connection = await connectMCPClient(serverUrl);
+  expect(connection.status).toBe('connected');
+  expect(connection.capabilities).toBeDefined();
+});
+
+// Test context propagation
+test('MCP context propagates correctly', () => {
+  const context = createMCPContext(data);
+  const propagated = propagateContext(context, clients);
+  expect(propagated.clients).toHaveLength(greaterThan(0));
+});
+```
+
+---
+
+### Story 5.5: Agentic Commerce Platform
+**Phase**: Advanced AI Concepts  
+**Priority**: P1  
+**Story Points**: 8  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a learner, I want to see how AI agents facilitate commerce transactions, so I can understand agentic commerce patterns and workflows.
+
+**Acceptance Criteria**:
+- [ ] Commerce agent roles visualization (buyer, seller, negotiator, payment)
+- [ ] Transaction flow visualization
+- [ ] Price negotiation visualization
+- [ ] Payment processing flow
+- [ ] Inventory management visualization
+- [ ] Order fulfillment workflow
+- [ ] Multi-agent commerce orchestration
+- [ ] Transaction metrics and analytics
+
+**Technical Tasks**:
+1. Implement agentic commerce simulation
+2. Create CommerceAgentViz component
+3. Add transaction flow visualization
+4. Add negotiation visualization
+5. Add payment processing flow
+6. Create AgenticCommercePage
+7. Add commerce metrics dashboard
+8. Write commerce agent tests
+
+**Dependencies**: Story 3.1
+
+**Testing**:
+```typescript
+// Test commerce transaction
+test('commerce agents complete transaction', async () => {
+  const transaction = await processCommerceTransaction(buyer, seller, product);
+  expect(transaction.status).toBe('completed');
+  expect(transaction.payment).toBeDefined();
+});
+
+// Test price negotiation
+test('agents negotiate price', () => {
+  const negotiation = negotiatePrice(buyerAgent, sellerAgent, product);
+  expect(negotiation.finalPrice).toBeLessThanOrEqual(negotiation.initialPrice);
+});
+```
+
+---
+
+### Story 5.6: Agentic E-commerce System
+**Phase**: Advanced AI Concepts  
+**Priority**: P1  
+**Story Points**: 8  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a learner, I want to see how AI agents power e-commerce systems, so I can understand automated shopping, recommendation, and fulfillment workflows.
+
+**Acceptance Criteria**:
+- [ ] E-commerce agent ecosystem (shopping assistant, recommender, cart manager, checkout)
+- [ ] Shopping journey visualization
+- [ ] Product recommendation flow
+- [ ] Cart management visualization
+- [ ] Checkout process flow
+- [ ] Order tracking visualization
+- [ ] Customer service agent interactions
+- [ ] E-commerce analytics dashboard
+
+**Technical Tasks**:
+1. Implement agentic e-commerce simulation
+2. Create EcommerceAgentViz component
+3. Add shopping journey visualization
+4. Add recommendation engine visualization
+5. Add checkout flow visualization
+6. Create AgenticEcommercePage
+7. Add e-commerce analytics
+8. Write e-commerce agent tests
+
+**Dependencies**: Story 3.1
+
+**Testing**:
+```typescript
+// Test e-commerce shopping flow
+test('e-commerce agents complete purchase', async () => {
+  const purchase = await processEcommercePurchase(user, products);
+  expect(purchase.orderId).toBeDefined();
+  expect(purchase.status).toBe('completed');
+});
+
+// Test recommendation system
+test('recommender agent suggests products', () => {
+  const recommendations = recommendProducts(userProfile, catalog);
+  expect(recommendations).toHaveLength(greaterThan(0));
+  expect(recommendations[0].relevanceScore).toBeDefined();
+});
+```
+
+---
+
 ## Sprint Planning Summary
 
 ### Phase 1 (Weeks 1-3): Enhanced RAG Foundation
@@ -554,10 +903,24 @@ test('performance metrics are calculated correctly', () => {
 **Total Points**: 15  
 **Deliverable**: Complete Multi-Agent Arena
 
+### Phase 4 (Weeks 13-14): Prompt Reasoning Techniques
+**Goal**: Interactive reasoning pattern exploration  
+**Stories**: 4.1  
+**Total Points**: 8  
+**Deliverable**: Complete Prompt Reasoning module  
+**Status**: ✅ COMPLETED
+
+### Phase 5 (Weeks 15-22): Advanced AI Concepts
+**Goal**: Advanced AI system visualizations  
+**Stories**: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6  
+**Total Points**: 39  
+**Deliverable**: LLM, Diffusion, A2A, MCP, Agentic Commerce & E-commerce modules
+
 ---
 
 **Document Status**: ACTIVE - Updated Continuously  
-**Total Stories Defined**: 13  
-**Total Story Points**: 52  
-**Estimated Timeline**: 12 weeks
+**Total Stories Defined**: 20  
+**Total Story Points**: 99  
+**Completed Stories**: 2 (1.1, 4.1)  
+**Estimated Timeline**: 22 weeks
 

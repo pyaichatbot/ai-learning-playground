@@ -9,6 +9,7 @@ import {
   Database,
   Bot,
   Network,
+  Brain,
   Menu,
   X,
   Github,
@@ -42,7 +43,7 @@ export const Header: React.FC = () => {
               <h1 className="font-display text-lg font-semibold text-content group-hover:text-brand-400 transition-colors">
                 Learning Playground
               </h1>
-              <p className="text-2xs text-content-subtle">RAG • Agents • Multi-Agent</p>
+              <p className="text-2xs text-content-subtle">RAG • Agents • Multi-Agent • Reasoning</p>
             </div>
           </Link>
         </div>
@@ -79,6 +80,14 @@ export const Header: React.FC = () => {
 // ============================================
 
 const navItems = [
+  {
+    id: 'reasoning',
+    label: 'Prompt Reasoning',
+    icon: Brain,
+    path: '/reasoning',
+    color: 'text-reasoning-primary',
+    description: 'Reasoning Techniques',
+  },
   {
     id: 'rag',
     label: 'RAG Studio',
