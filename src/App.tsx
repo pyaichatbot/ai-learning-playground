@@ -9,8 +9,9 @@ import { HomePage, RAGStudioPage, AgentLabPage, MultiAgentArenaPage } from '@/co
 
 export const App: React.FC = () => {
   // Get base path from Vite config (for GitHub Pages subdirectory)
-  // BASE_URL is set by Vite based on the 'base' config option
-  const base = (import.meta as any).env?.BASE_URL || '/';
+  // BASE_URL is automatically set by Vite based on the 'base' config option
+  // It will be '/ai-learning-playground/' in production, '/' in development
+  const base = import.meta.env.BASE_URL;
   
   return (
     <BrowserRouter basename={base}>

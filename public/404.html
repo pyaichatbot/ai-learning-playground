@@ -6,17 +6,13 @@
     <title>AI Learning Playground</title>
     <script>
       // GitHub Pages SPA redirect
-      // Redirects 404s to index.html for client-side routing
+      // Simple redirect to index.html - React Router will handle routing
       var path = window.location.pathname;
       var base = '/ai-learning-playground';
       
-      // Remove base path if present
-      if (path.startsWith(base)) {
-        path = path.slice(base.length);
-      }
-      
-      // Redirect to index.html with the path as hash
-      window.location.replace(base + '/index.html' + (path !== '/' ? '#' + path : ''));
+      // Redirect to index.html
+      // React Router with basename will handle the routing based on current URL
+      window.location.replace(base + '/index.html');
     </script>
   </head>
   <body>
