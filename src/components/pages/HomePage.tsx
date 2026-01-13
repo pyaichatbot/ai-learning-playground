@@ -11,6 +11,16 @@ import { cn } from '@/lib/utils';
 
 const modules = [
   {
+    id: 'reasoning',
+    title: 'Prompt Reasoning',
+    subtitle: 'Reasoning Techniques',
+    description: 'Explore modern AI reasoning patterns including CoT, ToT, AoT, ReAct, and more advanced techniques.',
+    icon: Brain,
+    color: 'reasoning',
+    features: ['Chain-of-Thought', 'Tree-of-Thought', 'Atom of Thought', 'ReAct Pattern'],
+    path: '/reasoning',
+  },
+  {
     id: 'rag',
     title: 'RAG Studio',
     subtitle: 'Retrieval-Augmented Generation',
@@ -39,16 +49,6 @@ const modules = [
     color: 'multiagent',
     features: ['Supervisor Pattern', 'Message Flow', 'Task Delegation', 'Agent Communication'],
     path: '/multi-agent',
-  },
-  {
-    id: 'reasoning',
-    title: 'Prompt Reasoning',
-    subtitle: 'Reasoning Techniques',
-    description: 'Explore modern AI reasoning patterns including CoT, ToT, AoT, ReAct, and more advanced techniques.',
-    icon: Brain,
-    color: 'reasoning',
-    features: ['Chain-of-Thought', 'Tree-of-Thought', 'Atom of Thought', 'ReAct Pattern'],
-    path: '/reasoning',
   },
 ];
 
@@ -80,7 +80,7 @@ export const HomePage: React.FC = () => {
           </p>
 
           <div className="flex items-center justify-center gap-4">
-            <Link to="/rag">
+            <Link to="/reasoning">
               <Button size="lg" className="group">
                 Start Learning
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
