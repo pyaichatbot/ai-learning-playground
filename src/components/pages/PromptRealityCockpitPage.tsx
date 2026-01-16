@@ -5,9 +5,10 @@
  * - Story 6.4: Paste Real Prompt
  * - Story 6.5: Context Budget Visualization
  * - Story 6.6: Smart Heuristics Insight Engine
+ * - Story 6.7: Instruction Conflict Detector
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, X } from 'lucide-react';
@@ -16,6 +17,7 @@ import {
   PromptTextarea,
   ContextBudgetViz,
   HeuristicsInsights,
+  InstructionConflictDetector,
   SAMPLE_PROMPTS,
 } from '@/components/cockpits/prompt-reality';
 import { useCockpitStore } from '@/lib/store';
@@ -28,6 +30,7 @@ export const PromptRealityCockpitPage: React.FC = () => {
   const [prompt, setPrompt] = useState('');
   const [model, setModel] = useState<TokenizerModel>('gpt-4');
   const [promptKey, setPromptKey] = useState(0); // Key to force remount when loading sample
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setActiveCockpit('prompt-reality');
@@ -82,6 +85,7 @@ export const PromptRealityCockpitPage: React.FC = () => {
               onPromptChange={setPrompt}
               initialModel={model}
               onModelChange={setModel}
+              textareaRef={textareaRef}
             />
 
             {/* Sample Prompts - Inline like Multi-Agent Arena */}
@@ -125,6 +129,7 @@ export const PromptRealityCockpitPage: React.FC = () => {
             <div className="pt-4 border-t border-content-subtle/20 space-y-6">
               <ContextBudgetViz prompt={prompt} model={model} />
               <HeuristicsInsights prompt={prompt} model={model} />
+              <InstructionConflictDetector prompt={prompt} textareaRef={textareaRef} />
             </div>
           )}
         </Card>

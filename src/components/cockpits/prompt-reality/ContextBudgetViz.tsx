@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { countTokens } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import type { TokenizerModel } from '@/types';
-import { AlertTriangle, TrendingUp, Download, BarChart3, X, Check, Plus, Trash2, ArrowRight } from 'lucide-react';
+import { AlertTriangle, TrendingUp, Download, BarChart3, X, Check, Trash2, ArrowRight, Info } from 'lucide-react';
 import { Button, Select } from '@/components/shared';
 import { useModeStore } from '@/lib/store';
 
@@ -228,12 +228,19 @@ function getPressureGradientColor(percentage: number): string {
 }
 
 /**
- * Calculate benchmark percentile (simulated - in production would use real data)
- * Returns percentile where this prompt ranks compared to "production prompts"
+ * Calculate benchmark percentile (ESTIMATED - based on typical prompt patterns)
+ * 
+ * NOTE: This uses an estimated distribution based on common prompt patterns.
+ * In a production system, this would use real analytics data from actual
+ * production prompts. For educational purposes, this provides a reasonable
+ * estimate to help learners understand relative prompt size.
+ * 
+ * Returns percentile where this prompt ranks compared to estimated "production prompts"
  */
 function calculateBenchmarkPercentile(totalTokens: number): number {
-  // Simulated distribution: Most production prompts are 500-3000 tokens
-  // This is a placeholder - in production would use real analytics data
+  // Estimated distribution based on typical prompt patterns:
+  // Most production prompts are 500-3000 tokens
+  // This is an EDUCATIONAL ESTIMATE, not real production data
   const distribution = [
     { tokens: 0, percentile: 0 },
     { tokens: 500, percentile: 20 },
@@ -262,6 +269,13 @@ function calculateBenchmarkPercentile(totalTokens: number): number {
 /**
  * Calculate context efficiency score (0-100)
  * Higher score = more efficient use of context
+ * 
+ * NOTE: This is a heuristic-based score using rules of thumb:
+ * - Optimal utilization: 50-80% of context window
+ * - Instruction overhead: <40% is good
+ * - Overflow: Major penalty
+ * 
+ * This provides educational guidance, not absolute truth.
  */
 function calculateEfficiencyScore(budget: ContextBudget): {
   score: number;
@@ -498,19 +512,35 @@ export const ContextBudgetViz: React.FC<ContextBudgetVizProps> = ({
       {/* Benchmark & Efficiency Score */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="p-4 bg-surface-muted/50 rounded-lg border border-content-subtle/20 shadow-sm">
-          <div className="text-xs font-medium text-content-muted mb-2 uppercase tracking-wide">Benchmark</div>
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-xs font-medium text-content-muted uppercase tracking-wide">Benchmark</div>
+            <div title="Based on estimated distribution of production prompts">
+              <Info className="w-3 h-3 text-content-subtle" />
+            </div>
+          </div>
           <div className="text-lg font-bold text-content mb-1">
             Top {100 - benchmarkPercentile}% of prompts
           </div>
-          <div className="text-xs text-content-subtle">
+          <div className="text-xs text-content-subtle mb-1">
             Your prompt uses more tokens than {benchmarkPercentile}% of production prompts
+          </div>
+          <div className="text-xs text-content-subtle italic">
+            * Estimated based on typical prompt patterns
           </div>
         </div>
         <div className="p-4 bg-surface-muted/50 rounded-lg border border-content-subtle/20 shadow-sm">
-          <div className="text-xs font-medium text-content-muted mb-2 uppercase tracking-wide">Efficiency Score</div>
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-xs font-medium text-content-muted uppercase tracking-wide">Efficiency Score</div>
+            <div title="Calculated based on utilization, instruction ratio, and overflow">
+              <Info className="w-3 h-3 text-content-subtle" />
+            </div>
+          </div>
           <div className="flex items-baseline gap-3">
             <div className="text-2xl font-bold text-content">{efficiencyScore.score}/100</div>
             <div className="text-sm text-content-subtle pt-1">{efficiencyScore.message}</div>
+          </div>
+          <div className="text-xs text-content-subtle italic mt-1">
+            * Based on heuristic analysis (utilization, instruction overhead, overflow)
           </div>
         </div>
       </div>

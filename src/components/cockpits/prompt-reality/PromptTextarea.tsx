@@ -17,6 +17,7 @@ interface PromptTextareaProps {
   initialModel?: TokenizerModel;
   onModelChange?: (model: TokenizerModel) => void;
   className?: string;
+  textareaRef?: React.RefObject<HTMLTextAreaElement>;
 }
 
 const TOKENIZER_MODELS: Array<{ value: TokenizerModel; label: string; group: string }> = [
@@ -69,13 +70,15 @@ export const PromptTextarea: React.FC<PromptTextareaProps> = ({
   initialModel = 'gpt-4',
   onModelChange,
   className,
+  textareaRef: externalTextareaRef,
 }) => {
   const [prompt, setPrompt] = useState(initialValue);
   const [selectedModel, setSelectedModel] = useState<TokenizerModel>(initialModel);
   const [lastUpdatedAt, setLastUpdatedAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [showTokenBoundaries, setShowTokenBoundaries] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const internalTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = externalTextareaRef || internalTextareaRef;
   const overlayRef = useRef<HTMLDivElement>(null);
 
   const tokenCount = useMemo(() => countTokens(prompt, selectedModel), [prompt, selectedModel]);

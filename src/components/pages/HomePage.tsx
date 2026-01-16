@@ -1,13 +1,17 @@
 /**
  * AI Learning Playground - Home Page
+ * 
+ * Always shows Basic Mode landing page content and activates Basic Mode.
+ * This is the default landing page for all users.
  */
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Database, Bot, Network, ArrowRight, Sparkles, BookOpen, Github, Brain, GraduationCap } from 'lucide-react';
 import { Card, Button } from '@/components/shared';
 import { cn } from '@/lib/utils';
+import { useModeStore } from '@/lib/store';
 
 const modules = [
   {
@@ -63,6 +67,21 @@ const modules = [
 ];
 
 export const HomePage: React.FC = () => {
+  const { mode, setMode } = useModeStore();
+  const location = useLocation();
+
+  // Always activate Basic Mode when landing on home page
+  // Only set mode if we're actually on the home page route
+  useEffect(() => {
+    // Only activate Basic Mode if we're on the home page
+    if (location.pathname === '/' || location.pathname === '/ai-learning-playground/' || location.pathname.endsWith('/')) {
+      if (mode !== 'basic') {
+        setMode('basic');
+      }
+    }
+  }, [location.pathname, setMode]); // Remove 'mode' from dependencies to avoid reset loop
+
+  // HomePage always shows Basic Mode landing content
   return (
     <div className="min-h-screen p-6 lg:p-8">
       {/* Hero Section */}
