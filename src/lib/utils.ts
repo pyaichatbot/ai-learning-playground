@@ -334,12 +334,160 @@ export async function retry<T>(
 // Text Processing Utilities
 // ============================================
 
+import { getEncoding, type Tiktoken } from 'js-tiktoken';
+import type { TokenizerModel } from '@/types';
+
+// Cache encodings for performance
+const encodingCache = new Map<string, Tiktoken>();
+
+// Valid tiktoken encoding names
+type TiktokenEncodingName = 'cl100k_base' | 'p50k_base' | 'r50k_base' | 'p50k_edit';
+
 /**
- * Count tokens (approximate)
+ * Get tiktoken encoding for a model
  */
-export function countTokens(text: string): number {
-  // Rough approximation: ~4 characters per token for English
-  return Math.ceil(text.length / 4);
+function getEncodingForModel(model: TokenizerModel): Tiktoken {
+  // Map models to their tiktoken encodings
+  // OpenAI models use accurate tiktoken, others use cl100k_base as approximation
+  const modelToEncoding: Record<TokenizerModel, TiktokenEncodingName> = {
+    // OpenAI (accurate)
+    'gpt-4': 'cl100k_base',
+    'gpt-4-turbo': 'cl100k_base',
+    'gpt-4o': 'cl100k_base',
+    'gpt-4o-mini': 'cl100k_base',
+    'gpt-3.5-turbo': 'cl100k_base',
+    // Anthropic Claude (approximation)
+    'claude-3-opus': 'cl100k_base',
+    'claude-3-sonnet': 'cl100k_base',
+    'claude-3-haiku': 'cl100k_base',
+    'claude-3.5-sonnet': 'cl100k_base',
+    // Google Gemini (approximation)
+    'gemini-pro': 'cl100k_base',
+    'gemini-1.5-pro': 'cl100k_base',
+    'gemini-1.5-flash': 'cl100k_base',
+    'gemini-ultra': 'cl100k_base',
+    // DeepSeek (approximation)
+    'deepseek-chat': 'cl100k_base',
+    'deepseek-coder': 'cl100k_base',
+    // Qwen (approximation)
+    'qwen-turbo': 'cl100k_base',
+    'qwen-plus': 'cl100k_base',
+    'qwen-max': 'cl100k_base',
+    // Other models (approximation)
+    'llama-3': 'cl100k_base',
+    'llama-3.1': 'cl100k_base',
+    'mistral-large': 'cl100k_base',
+    'mixtral': 'cl100k_base',
+  };
+
+  const encodingName = modelToEncoding[model];
+  
+  // Check cache first
+  if (encodingCache.has(encodingName)) {
+    return encodingCache.get(encodingName)!;
+  }
+
+  // Get encoding and cache it
+  try {
+    const encoding = getEncoding(encodingName);
+    encodingCache.set(encodingName, encoding);
+    return encoding;
+  } catch (error) {
+    // Fallback to cl100k_base if model not found
+    console.warn(`Encoding not found for model ${model}, using cl100k_base as fallback`);
+    const fallback = getEncoding('cl100k_base');
+    encodingCache.set('cl100k_base', fallback);
+    return fallback;
+  }
+}
+
+/**
+ * Count tokens using tiktoken (accurate for OpenAI models)
+ * Uses approximation for other models (no official JS tokenizer available)
+ */
+export function countTokens(text: string, model: TokenizerModel = 'gpt-4'): number {
+  if (!text || text.length === 0) {
+    return 0;
+  }
+
+  // For all models, use tiktoken encoding (accurate for OpenAI, approximation for others)
+  try {
+    const encoding = getEncodingForModel(model);
+    return encoding.encode(text).length;
+  } catch (error) {
+    console.error('Error counting tokens with tiktoken:', error);
+    // Fallback to approximation
+    return Math.ceil(text.length / 4);
+  }
+}
+
+/**
+ * Get token boundaries (start and end character positions) for highlighting
+ * Returns array of {start, end} positions for each token
+ * 
+ * Note: This is an approximation. For perfect accuracy, we'd need to track
+ * token positions during encoding, which tiktoken doesn't provide directly.
+ */
+export function getTokenBoundaries(text: string, model: TokenizerModel = 'gpt-4'): Array<{ start: number; end: number }> {
+  if (!text || text.length === 0) {
+    return [];
+  }
+
+  try {
+    const encoding = getEncodingForModel(model);
+    const tokenIds = encoding.encode(text);
+    const boundaries: Array<{ start: number; end: number }> = [];
+    let currentPos = 0;
+
+    // Decode each token and find its position in the original text sequentially
+    for (const tokenId of tokenIds) {
+      const tokenText = encoding.decode([tokenId]);
+      
+      // Find the token text starting from currentPos to maintain order
+      const tokenStart = text.indexOf(tokenText, currentPos);
+      
+      if (tokenStart === -1) {
+        // If not found from currentPos, the tokenization might have issues
+        // Try to find it from the beginning as fallback
+        const fallbackStart = text.indexOf(tokenText, 0);
+        if (fallbackStart !== -1 && fallbackStart >= currentPos) {
+          boundaries.push({
+            start: fallbackStart,
+            end: fallbackStart + tokenText.length,
+          });
+          currentPos = fallbackStart + tokenText.length;
+        } else {
+          // If still not found or position is before currentPos, advance currentPos
+          // This handles edge cases where token text doesn't match exactly
+          currentPos = Math.max(currentPos + 1, currentPos);
+        }
+      } else {
+        boundaries.push({
+          start: tokenStart,
+          end: tokenStart + tokenText.length,
+        });
+        currentPos = tokenStart + tokenText.length;
+      }
+    }
+
+    // Ensure boundaries don't overlap and are in order
+    const sortedBoundaries = boundaries
+      .filter(b => b.start >= 0 && b.end <= text.length)
+      .sort((a, b) => a.start - b.start);
+
+    // Remove any overlapping boundaries
+    const cleanedBoundaries: Array<{ start: number; end: number }> = [];
+    for (const boundary of sortedBoundaries) {
+      if (cleanedBoundaries.length === 0 || boundary.start >= cleanedBoundaries[cleanedBoundaries.length - 1].end) {
+        cleanedBoundaries.push(boundary);
+      }
+    }
+
+    return cleanedBoundaries;
+  } catch (error) {
+    console.error('Error getting token boundaries:', error);
+    return [];
+  }
 }
 
 /**

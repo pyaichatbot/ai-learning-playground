@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from '@/components/layout';
 import { SettingsProvider } from '@/components/shared';
 import { RouteGuard } from '@/components/navigation';
-import { HomePage, RAGStudioPage, AgentLabPage, MultiAgentArenaPage, PromptReasoningPage, LLMTrainingPage, AdvancedModeLandingPage, CockpitSelectionPage } from '@/components/pages';
+import { HomePage, RAGStudioPage, AgentLabPage, MultiAgentArenaPage, PromptReasoningPage, LLMTrainingPage, AdvancedModeLandingPage, CockpitSelectionPage, PromptRealityCockpitPage } from '@/components/pages';
 import { BasicModeContainer } from '@/components/modes';
 
 export const App: React.FC = () => {
@@ -44,7 +44,7 @@ export const App: React.FC = () => {
             <Route path="/advanced" element={<RouteGuard />}>
               <Route path="landing" element={<AdvancedModeLandingPage />} />
               <Route path="cockpits" element={<CockpitSelectionPage />} />
-              <Route path="prompt-reality" element={<Navigate to="/advanced/cockpits" replace />} />
+              <Route path="prompt-reality" element={<PromptRealityCockpitPage />} />
               <Route path="*" element={<Navigate to="/advanced/landing" replace />} />
             </Route>
             

@@ -577,3 +577,45 @@ export type PlaygroundEvent =
   | { type: 'TASK_COMPLETED'; payload: Task }
   | { type: 'REASONING_STEP'; payload: ReasoningStep }
   | { type: 'ERROR'; payload: APIError };
+
+// ============================================
+// Tokenizer Types
+// ============================================
+
+/**
+ * Supported tokenizer models for accurate token counting
+ */
+export type TokenizerModel = 
+  // OpenAI (GPT-4 onwards)
+  | 'gpt-4'           // cl100k_base
+  | 'gpt-4-turbo'     // cl100k_base
+  | 'gpt-4o'          // cl100k_base
+  | 'gpt-4o-mini'     // cl100k_base
+  | 'gpt-3.5-turbo'   // cl100k_base
+  // Anthropic Claude
+  | 'claude-3-opus'    // Approximation (no official JS tokenizer)
+  | 'claude-3-sonnet' // Approximation
+  | 'claude-3-haiku'  // Approximation
+  | 'claude-3.5-sonnet' // Approximation
+  // Google Gemini
+  | 'gemini-pro'      // Approximation
+  | 'gemini-1.5-pro'  // Approximation
+  | 'gemini-1.5-flash' // Approximation
+  | 'gemini-ultra'    // Approximation
+  // DeepSeek
+  | 'deepseek-chat'   // Approximation
+  | 'deepseek-coder'  // Approximation
+  // Qwen (Alibaba)
+  | 'qwen-turbo'      // Approximation
+  | 'qwen-plus'       // Approximation
+  | 'qwen-max'        // Approximation
+  // Other models
+  | 'llama-3'         // Approximation
+  | 'llama-3.1'       // Approximation
+  | 'mistral-large'   // Approximation
+  | 'mixtral'         // Approximation;
+
+export interface TokenizerConfig {
+  model: TokenizerModel;
+  encoding?: string; // For tiktoken encodings (cl100k_base, p50k_base, etc.)
+}

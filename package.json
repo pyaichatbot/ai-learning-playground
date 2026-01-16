@@ -28,6 +28,7 @@
     "clsx": "^2.1.1",
     "d3": "^7.9.0",
     "framer-motion": "^11.3.0",
+    "js-tiktoken": "^1.0.21",
     "lucide-react": "^0.428.0",
     "nanoid": "^5.0.7",
     "react": "^18.3.1",
