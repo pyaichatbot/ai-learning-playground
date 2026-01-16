@@ -1,7 +1,10 @@
 /**
  * AI Learning Playground - Prompt Reality Cockpit Page
  *
- * Implements story 6.4: Paste Real Prompt and story 6.5: Context Budget Visualization.
+ * Implements:
+ * - Story 6.4: Paste Real Prompt
+ * - Story 6.5: Context Budget Visualization
+ * - Story 6.6: Smart Heuristics Insight Engine
  */
 
 import React, { useEffect, useState } from 'react';
@@ -12,6 +15,7 @@ import { Card, Button } from '@/components/shared';
 import {
   PromptTextarea,
   ContextBudgetViz,
+  HeuristicsInsights,
   SAMPLE_PROMPTS,
 } from '@/components/cockpits/prompt-reality';
 import { useCockpitStore } from '@/lib/store';
@@ -118,8 +122,9 @@ export const PromptRealityCockpitPage: React.FC = () => {
           </div>
 
           {prompt && (
-            <div className="pt-4 border-t border-content-subtle/20">
+            <div className="pt-4 border-t border-content-subtle/20 space-y-6">
               <ContextBudgetViz prompt={prompt} model={model} />
+              <HeuristicsInsights prompt={prompt} model={model} />
             </div>
           )}
         </Card>

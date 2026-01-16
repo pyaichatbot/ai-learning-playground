@@ -49,16 +49,8 @@ const ModeSwitcher: React.FC = () => {
           navigate('/');
         }
       } else if (newMode === 'advanced') {
-        // Check if landing page has been seen this session
-        const landingSeen = sessionStorage.getItem('advanced-mode-landing-seen') === 'true';
-        
-      if (landingSeen) {
-        // If already seen, go directly to cockpit selection
-        navigate('/advanced/cockpits');
-      } else {
-        // Show landing page first
+        // Always show landing page when switching to Advanced Mode
         navigate('/advanced/landing');
-      }
       }
       
       // End transition after navigation

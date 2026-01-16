@@ -6,11 +6,13 @@
  */
 
 import React, { useMemo, useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { countTokens } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import type { TokenizerModel } from '@/types';
-import { AlertTriangle, TrendingUp, Download, BarChart3, X, Check, Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, TrendingUp, Download, BarChart3, X, Check, Plus, Trash2, ArrowRight } from 'lucide-react';
 import { Button, Select } from '@/components/shared';
+import { useModeStore } from '@/lib/store';
 
 export interface PromptSegments {
   system: string;
@@ -337,6 +339,13 @@ export const ContextBudgetViz: React.FC<ContextBudgetVizProps> = ({
   contextWindow,
   className,
 }) => {
+  const navigate = useNavigate();
+  const { setMode } = useModeStore();
+
+  const handleNavigateToBasicMode = () => {
+    setMode('basic');
+    navigate('/basic/reasoning');
+  };
   const [showComparison, setShowComparison] = useState(false);
   const [selectedComparisonModels, setSelectedComparisonModels] = useState<TokenizerModel[]>([]);
   const [selectKey, setSelectKey] = useState(0); // Key to force Select reset
@@ -795,7 +804,14 @@ export const ContextBudgetViz: React.FC<ContextBudgetVizProps> = ({
           <div className="text-sm text-content flex-1">
             <div className="font-medium text-accent-amber mb-1">Optimize Challenge</div>
             <div className="text-content-muted">
-              Can you express this prompt in 30% fewer tokens? Explore Basic Mode to learn cost-reduction patterns.
+              Can you express this prompt in 30% fewer tokens?{' '}
+              <button
+                onClick={handleNavigateToBasicMode}
+                className="inline-flex items-center gap-1 text-accent-amber hover:text-accent-amber/80 underline transition-colors cursor-pointer"
+              >
+                Learn more about prompt engineering in Basic Mode
+                <ArrowRight size={14} className="inline" />
+              </button>
             </div>
           </div>
         </div>

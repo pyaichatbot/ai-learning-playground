@@ -586,6 +586,101 @@ test('ToT pattern shows branching visualization', () => {
 
 ---
 
+## Phase 4.5: Prompt Efficiency Module (Basic Mode)
+
+### Story 4.2: Prompt Efficiency & Cost-Reduction Patterns
+**Phase**: Basic Mode Enhancement  
+**Priority**: P1  
+**Story Points**: 5  
+**Status**: 🟡 READY
+
+**User Story** (Visitor-Focused):
+> As a learner, I want to explore cost-reduction patterns and token optimization techniques, so I can write more efficient prompts that reduce costs while maintaining quality.
+
+**Value Proposition for Traffic**:
+- **Cost Awareness**: "Learn to write prompts that cost 50% less"
+- **SEO Keywords**: "prompt optimization", "token reduction", "AI cost efficiency", "prompt efficiency patterns"
+- **Cross-Mode Integration**: Links from Advanced Mode cost insights to Basic Mode learning
+- **Practical Value**: Bookmark-worthy resource for prompt engineers
+
+**Acceptance Criteria**:
+- [ ] **Prompt Efficiency Module** in Basic Mode:
+  - Interactive token reduction techniques
+  - Before/after prompt comparisons
+  - Cost impact visualization
+  - Pattern library (Chain-of-Draft, instruction compression, etc.)
+- [ ] **Techniques Covered**:
+  - Instruction compression (removing redundancy)
+  - Role definition optimization
+  - Task clarity improvements
+  - Context window management
+  - Token-efficient reasoning patterns
+- [ ] **Interactive Examples**:
+  - Side-by-side comparison: "Before (847 tokens) → After (523 tokens)"
+  - Real-time token counting as you edit
+  - Cost savings calculator
+- [ ] **Pattern Library**:
+  - Common inefficiency patterns
+  - Optimization strategies
+  - Best practices (non-prescriptive, educational)
+- [ ] **Integration with Advanced Mode**:
+  - Link from Context Budget Viz "Optimize Challenge"
+  - Link from Cost Reality Cockpit
+  - Seamless mode switching
+
+**Technical Tasks**:
+1. Create PromptEfficiencyPage component
+2. Implement token reduction techniques analyzer
+3. Add before/after comparison tool
+4. Create pattern library with examples
+5. Add cost savings calculator
+6. Integrate with mode switching
+7. Add routing (`/basic/prompt-efficiency`)
+8. Write component tests
+
+**Dependencies**: Story 4.1 (Prompt Reasoning), Story 6.3 (Mode Switching)
+
+**Testing**:
+```typescript
+// Test prompt efficiency module
+test('prompt efficiency module shows token reduction', () => {
+  const { getByText } = render(<PromptEfficiencyPage />);
+  expect(getByText(/token reduction/i)).toBeInTheDocument();
+});
+
+// Test before/after comparison
+test('user can compare prompt versions', () => {
+  const { getByTestId } = render(<PromptEfficiencyPage />);
+  const beforeInput = getByTestId('before-prompt');
+  const afterInput = getByTestId('after-prompt');
+  
+  fireEvent.change(beforeInput, { target: { value: longPrompt } });
+  fireEvent.change(afterInput, { target: { value: optimizedPrompt } });
+  
+  expect(getByTestId('token-savings')).toHaveTextContent('324 tokens saved');
+  expect(getByTestId('cost-savings')).toHaveTextContent('$0.01 per call');
+});
+
+// Test mode switching integration
+test('clicking link from Advanced Mode switches to Basic Mode', () => {
+  useModeStore.setState({ mode: 'advanced' });
+  const { getByText } = render(<ContextBudgetViz prompt={testPrompt} />);
+  const link = getByText(/learn more about prompt engineering/i);
+  
+  fireEvent.click(link);
+  
+  expect(useModeStore.getState().mode).toBe('basic');
+  expect(window.location.pathname).toBe('/basic/prompt-efficiency');
+});
+```
+
+**Gamification Elements**:
+- [ ] **Efficiency Badge**: "You reduced this prompt by 38% - Great job!"
+- [ ] **Challenge Mode**: "Can you reduce this prompt to under 500 tokens?"
+- [ ] **Progress Tracking**: "You've optimized 5 prompts this session"
+
+---
+
 ## Phase 5: Advanced AI Concepts
 
 ### Story 5.1: LLM Next Token Prediction Demo
@@ -2076,6 +2171,13 @@ test('suggests relevant next module', () => {
 **Deliverable**: Complete Prompt Reasoning module  
 **Status**: ✅ COMPLETED
 
+### Phase 4.5 (Future): Prompt Efficiency Module
+**Goal**: Cost-reduction patterns and token optimization techniques  
+**Stories**: 4.2  
+**Total Points**: 5  
+**Deliverable**: Prompt Efficiency module in Basic Mode  
+**Status**: 🟡 READY
+
 ### Phase 5 (Weeks 15-22): Advanced AI Concepts
 **Goal**: Advanced AI system visualizations  
 **Stories**: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6  
@@ -2125,8 +2227,8 @@ test('suggests relevant next module', () => {
 ---
 
 **Document Status**: ACTIVE - Updated Continuously (Phase 6 Enhanced for Traffic & Engagement)  
-**Total Stories Defined**: 35 (increased from 32)  
-**Total Story Points**: 162 (increased from 149)  
+**Total Stories Defined**: 36 (increased from 35)  
+**Total Story Points**: 167 (increased from 162)  
 **Completed Stories**: 6 (1.1, 4.1, 6.1, 6.2, 6.3, 6.4)  
-**Estimated Timeline**: 32 weeks (increased from 30 weeks)
+**Estimated Timeline**: 33 weeks (increased from 32 weeks)
 
