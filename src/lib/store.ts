@@ -105,8 +105,6 @@ interface PreferencesStore extends UserPreferences {
 
 const defaultPreferences: UserPreferences = {
   defaultModule: 'rag',
-  animationsEnabled: true,
-  codeTheme: 'one-dark',
   fontSize: 'medium',
 };
 

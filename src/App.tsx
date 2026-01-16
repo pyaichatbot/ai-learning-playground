@@ -5,7 +5,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from '@/components/layout';
-import { HomePage, RAGStudioPage, AgentLabPage, MultiAgentArenaPage, PromptReasoningPage } from '@/components/pages';
+import { SettingsProvider } from '@/components/shared';
+import { HomePage, RAGStudioPage, AgentLabPage, MultiAgentArenaPage, PromptReasoningPage, LLMTrainingPage } from '@/components/pages';
 
 export const App: React.FC = () => {
   // Get base path from Vite config (for GitHub Pages subdirectory)
@@ -14,18 +15,21 @@ export const App: React.FC = () => {
   const base = import.meta.env.BASE_URL;
   
   return (
-    <BrowserRouter basename={base}>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/rag" element={<RAGStudioPage />} />
-          <Route path="/agents" element={<AgentLabPage />} />
-          <Route path="/multi-agent" element={<MultiAgentArenaPage />} />
-          <Route path="/reasoning" element={<PromptReasoningPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+    <SettingsProvider>
+      <BrowserRouter basename={base}>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/rag" element={<RAGStudioPage />} />
+            <Route path="/agents" element={<AgentLabPage />} />
+            <Route path="/multi-agent" element={<MultiAgentArenaPage />} />
+            <Route path="/reasoning" element={<PromptReasoningPage />} />
+            <Route path="/llm-training" element={<LLMTrainingPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </SettingsProvider>
   );
 };
 

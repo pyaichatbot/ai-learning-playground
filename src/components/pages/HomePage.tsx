@@ -5,7 +5,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Database, Bot, Network, ArrowRight, Sparkles, BookOpen, Github, Brain } from 'lucide-react';
+import { Database, Bot, Network, ArrowRight, Sparkles, BookOpen, Github, Brain, GraduationCap } from 'lucide-react';
 import { Card, Button } from '@/components/shared';
 import { cn } from '@/lib/utils';
 
@@ -49,6 +49,16 @@ const modules = [
     color: 'multiagent',
     features: ['Supervisor Pattern', 'Message Flow', 'Task Delegation', 'Agent Communication'],
     path: '/multi-agent',
+  },
+  {
+    id: 'llm-training',
+    title: 'LLM Training',
+    subtitle: 'Training Stages',
+    description: 'Explore the 4 stages of LLM training from random initialization to reasoning mastery with interactive visualizations.',
+    icon: GraduationCap,
+    color: 'training',
+    features: ['Pre-training', 'SFT', 'RLHF', 'Reasoning'],
+    path: '/llm-training',
   },
 ];
 
@@ -121,18 +131,21 @@ export const HomePage: React.FC = () => {
               agent: 'hover:border-agent-primary/50',
               multiagent: 'hover:border-multiagent-primary/50',
               reasoning: 'hover:border-reasoning-primary/50',
+              training: 'hover:border-accent-amber/50',
             };
             const iconColors = {
               rag: 'text-rag-primary',
               agent: 'text-agent-primary',
               multiagent: 'text-multiagent-primary',
               reasoning: 'text-reasoning-primary',
+              training: 'text-accent-amber',
             };
             const gradients = {
               rag: 'from-rag-primary/20 to-transparent',
               agent: 'from-agent-primary/20 to-transparent',
               multiagent: 'from-multiagent-primary/20 to-transparent',
               reasoning: 'from-reasoning-primary/20 to-transparent',
+              training: 'from-accent-amber/20 to-transparent',
             };
 
             return (
@@ -207,10 +220,10 @@ export const HomePage: React.FC = () => {
       <section className="max-w-4xl mx-auto mb-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Concepts', value: '15+', color: 'text-rag-primary' },
-            { label: 'Visualizations', value: '25+', color: 'text-agent-primary' },
+            { label: 'Concepts', value: '20+', color: 'text-rag-primary' },
+            { label: 'Visualizations', value: '30+', color: 'text-agent-primary' },
             { label: 'Patterns', value: '10+', color: 'text-multiagent-primary' },
-            { label: 'Examples', value: '30+', color: 'text-accent-amber' },
+            { label: 'Examples', value: '35+', color: 'text-accent-amber' },
           ].map((stat, i) => (
             <motion.div
               key={stat.label}

@@ -28,18 +28,18 @@ const config: Config = {
           amber: '#f59e0b',
           rose: '#f43f5e',
         },
-        // Surface colors for cards and sections
+        // Surface colors for cards and sections (using CSS variables for theme support)
         surface: {
-          DEFAULT: '#0f172a',
-          elevated: '#1e293b',
-          muted: '#334155',
-          bright: '#475569',
+          DEFAULT: 'rgb(var(--color-surface) / <alpha-value>)',
+          elevated: 'rgb(var(--color-surface-elevated) / <alpha-value>)',
+          muted: 'rgb(var(--color-surface-muted) / <alpha-value>)',
+          bright: 'rgb(var(--color-surface-bright) / <alpha-value>)',
         },
-        // Text colors
+        // Text colors (using CSS variables for theme support)
         content: {
-          DEFAULT: '#f8fafc',
-          muted: '#94a3b8',
-          subtle: '#64748b',
+          DEFAULT: 'rgb(var(--color-content) / <alpha-value>)',
+          muted: 'rgb(var(--color-content-muted) / <alpha-value>)',
+          subtle: 'rgb(var(--color-content-subtle) / <alpha-value>)',
         },
         // Module-specific colors
         rag: {

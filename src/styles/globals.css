@@ -9,12 +9,17 @@
 
 @layer base {
   :root {
-    /* Color tokens */
+    /* Color tokens - Dark theme (default) */
     --color-surface: 15 23 42; /* slate-900 */
     --color-surface-elevated: 30 41 59; /* slate-800 */
+    --color-surface-muted: 51 65 85; /* slate-700 */
+    --color-surface-bright: 71 85 105; /* slate-600 */
     --color-brand: 6 182 212; /* cyan-500 */
     --color-accent-violet: 139 92 246;
     --color-accent-emerald: 16 185 129;
+    --color-content: 248 250 252; /* slate-50 */
+    --color-content-muted: 148 163 184; /* slate-400 */
+    --color-content-subtle: 100 116 139; /* slate-500 */
     
     /* Spacing */
     --section-padding: 2rem;
@@ -39,19 +44,64 @@
     --z-tooltip: 400;
   }
 
+  /* Light theme variables */
+  html.light {
+    --color-surface: 248 250 252; /* slate-50 */
+    --color-surface-elevated: 241 245 249; /* slate-100 */
+    --color-surface-muted: 226 232 240; /* slate-200 */
+    --color-surface-bright: 203 213 225; /* slate-300 */
+    --color-content: 15 23 42; /* slate-900 */
+    --color-content-muted: 51 65 85; /* slate-700 */
+    --color-content-subtle: 100 116 139; /* slate-500 */
+  }
+
   html {
-    @apply bg-surface text-content antialiased;
+    @apply antialiased;
     scroll-behavior: smooth;
+    background-color: rgb(var(--color-surface));
+    color: rgb(var(--color-content));
+  }
+
+  /* Font Size Classes */
+  html.font-size-small {
+    font-size: 14px;
+  }
+
+  html.font-size-medium {
+    font-size: 16px;
+  }
+
+  html.font-size-large {
+    font-size: 18px;
+  }
+
+  /* Animation Control */
+  html.no-animations *,
+  html.no-animations *::before,
+  html.no-animations *::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
   }
 
   body {
     @apply font-body min-h-screen;
+    background-color: rgb(var(--color-surface));
     background-image: 
       radial-gradient(ellipse at top, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
       radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
       radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
     background-attachment: fixed;
   }
+
+  html.light body {
+    background-image: 
+      radial-gradient(ellipse at top, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
+  }
+
 
   /* Custom selection colors */
   ::selection {

@@ -382,8 +382,6 @@ export interface Notification {
 
 export interface UserPreferences {
   defaultModule: ModuleType;
-  animationsEnabled: boolean;
-  codeTheme: string;
   fontSize: 'small' | 'medium' | 'large';
 }
 

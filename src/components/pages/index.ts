@@ -7,4 +7,5 @@ export { RAGStudioPage } from './RAGStudioPage';
 export { AgentLabPage } from './AgentLabPage';
 export { MultiAgentArenaPage } from './MultiAgentArenaPage';
 export { PromptReasoningPage } from './PromptReasoningPage';
+export { LLMTrainingPage } from './LLMTrainingPage';
 

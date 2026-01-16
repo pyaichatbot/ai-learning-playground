@@ -14,11 +14,11 @@ import {
   X,
   Github,
   BookOpen,
-  Settings,
+  GraduationCap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
-import { Button } from '@/components/shared';
+import { Button, SettingsDialog } from '@/components/shared';
 
 // ============================================
 // Header Component
@@ -66,9 +66,7 @@ export const Header: React.FC = () => {
           >
             <Github size={20} />
           </a>
-          <Button variant="icon">
-            <Settings size={20} />
-          </Button>
+          <SettingsDialog />
         </div>
       </div>
     </header>
@@ -111,6 +109,14 @@ const navItems = [
     path: '/multi-agent',
     color: 'text-multiagent-primary',
     description: 'Orchestration Patterns',
+  },
+  {
+    id: 'llm-training',
+    label: 'LLM Training',
+    icon: GraduationCap,
+    path: '/llm-training',
+    color: 'text-accent-amber',
+    description: 'Training Stages',
   },
 ];
 
