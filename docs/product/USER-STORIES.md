@@ -3,7 +3,7 @@
 ## Document Control
 | Version | Date | Author | Status |
 |---------|------|--------|--------|
-| 1.1 | 2026-01 | Product Team | Updated with Prompt Reasoning & New Features |
+| 1.2 | 2026-01 | Product Team | Updated with Advanced Mode & Cockpits (Phase 6) |
 
 ---
 
@@ -883,6 +883,592 @@ test('recommender agent suggests products', () => {
 
 ---
 
+## Phase 6: Advanced Mode & Cockpits
+
+### Story 6.1: Basic Mode Refactoring
+**Phase**: Advanced Mode Infrastructure  
+**Priority**: P0  
+**Story Points**: 5  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a developer, I want the existing Playground refactored into Basic Mode architecture, so that Advanced Mode can be built without affecting existing functionality.
+
+**Acceptance Criteria**:
+- [ ] Existing Playground modules (RAG Studio, Agent Lab, Multi-Agent Arena, Prompt Reasoning) preserved as Basic Mode
+- [ ] No cockpit logic leaks into Basic Mode components
+- [ ] Basic Mode maintains exploratory, open-ended, educational characteristics
+- [ ] Basic Mode remains free forever
+- [ ] All existing functionality works identically after refactoring
+- [ ] Clear architectural separation between Basic and Advanced Mode
+
+**Technical Tasks**:
+1. Create mode routing infrastructure
+2. Wrap existing modules in Basic Mode container
+3. Add mode state management (Basic/Advanced)
+4. Ensure no Advanced Mode imports in Basic Mode components
+5. Add mode boundary checks
+6. Write integration tests to verify separation
+7. Update navigation to support mode switching
+
+**Dependencies**: None
+
+**Testing**:
+```typescript
+// Test Basic Mode isolation
+test('Basic Mode has no Advanced Mode dependencies', () => {
+  const basicModeModules = getBasicModeModules();
+  expect(basicModeModules.every(m => !hasAdvancedModeImports(m))).toBe(true);
+});
+
+// Test existing functionality preserved
+test('all existing features work in Basic Mode', () => {
+  const playground = renderBasicMode();
+  expect(playground.hasRAGStudio).toBe(true);
+  expect(playground.hasAgentLab).toBe(true);
+  expect(playground.hasMultiAgentArena).toBe(true);
+});
+```
+
+---
+
+### Story 6.2: Advanced Mode Landing Page
+**Phase**: Advanced Mode Infrastructure  
+**Priority**: P0  
+**Story Points**: 3  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a professional user, I want to see a clear landing page for Advanced Mode, so I can understand what it offers and consciously opt into constraint-driven thinking.
+
+**Acceptance Criteria**:
+- [ ] Landing page with calm, confident, non-marketing tone
+- [ ] Title: "Advanced Mode", Subtitle: "System-level insight under real constraints"
+- [ ] Framing copy explaining Advanced Mode purpose (no optimization, reveals limits)
+- [ ] Explicit contrast section: "How this differs from Basic Mode"
+- [ ] "What you will gain" section with bullet points
+- [ ] "What this mode intentionally avoids" section with bullet points
+- [ ] Entry CTA button: "Enter Prompt Reality Cockpit"
+- [ ] Microcopy: "You can return to Basic Mode at any time"
+- [ ] Monetization signaling (future-safe, hidden/secondary)
+- [ ] UX behavior: appears once per session, no modal popups, no feature comparison tables, no pricing language
+
+**Technical Tasks**:
+1. Create AdvancedModeLandingPage component
+2. Implement framing copy sections
+3. Add contrast section with Basic Mode comparison
+4. Add "What you will gain" and "What this mode intentionally avoids" sections
+5. Add entry CTA button
+6. Implement session-based display logic (once per session)
+7. Add monetization signaling (hidden/secondary)
+8. Ensure no marketing language or dark patterns
+9. Write component tests
+
+**Dependencies**: Story 6.1
+
+**Testing**:
+```typescript
+// Test landing page content
+test('landing page has all required sections', () => {
+  const landing = render(<AdvancedModeLandingPage />);
+  expect(landing.getByText('Advanced Mode')).toBeInTheDocument();
+  expect(landing.getByText('What you will gain')).toBeInTheDocument();
+  expect(landing.getByText('What this mode intentionally avoids')).toBeInTheDocument();
+});
+
+// Test session behavior
+test('landing page appears once per session', () => {
+  const { rerender } = render(<App />);
+  expect(screen.getByText('Advanced Mode')).toBeInTheDocument();
+  rerender(<App />);
+  expect(screen.queryByText('Advanced Mode')).not.toBeInTheDocument();
+});
+```
+
+---
+
+### Story 6.3: Mode Switching Mechanism
+**Phase**: Advanced Mode Infrastructure  
+**Priority**: P0  
+**Story Points**: 3  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a user, I want to switch between Basic and Advanced Mode, so I can access different learning experiences based on my needs.
+
+**Acceptance Criteria**:
+- [ ] Mode toggle/switcher component
+- [ ] First-time users default to Basic Mode
+- [ ] Advanced Mode is discoverable but never forced
+- [ ] Mode state persisted in localStorage
+- [ ] Navigation rules enforced: no tabs inside cockpits
+- [ ] One cockpit active at a time in Advanced Mode
+- [ ] Explicit mode switch (clear visual indication)
+- [ ] Smooth transition between modes
+
+**Technical Tasks**:
+1. Create ModeSwitcher component
+2. Implement mode state management (Zustand store)
+3. Add localStorage persistence for mode preference
+4. Implement default behavior (first-time users → Basic Mode)
+5. Add navigation guard to enforce cockpit rules
+6. Create mode transition animations
+7. Add visual indicators for current mode
+8. Write mode switching tests
+
+**Dependencies**: Story 6.1
+
+**Testing**:
+```typescript
+// Test mode switching
+test('user can switch between Basic and Advanced Mode', () => {
+  const { getByRole } = render(<App />);
+  const switcher = getByRole('button', { name: /switch to advanced mode/i });
+  fireEvent.click(switcher);
+  expect(getMode()).toBe('advanced');
+});
+
+// Test default mode
+test('first-time users default to Basic Mode', () => {
+  localStorage.clear();
+  render(<App />);
+  expect(getMode()).toBe('basic');
+});
+
+// Test navigation rules
+test('Advanced Mode enforces one cockpit at a time', () => {
+  setMode('advanced');
+  const cockpit1 = selectCockpit('prompt-reality');
+  const cockpit2 = selectCockpit('retrieval-reality');
+  expect(cockpit1.isActive).toBe(false);
+  expect(cockpit2.isActive).toBe(true);
+});
+```
+
+---
+
+### Story 6.4: Paste Real Prompt
+**Phase**: Prompt Reality Cockpit  
+**Priority**: P0  
+**Story Points**: 2  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a professional user, I want to paste a real production prompt, so I can understand how it behaves under system constraints.
+
+**Acceptance Criteria**:
+- [ ] Single large textarea component
+- [ ] Accepts long prompts (>10k tokens)
+- [ ] No formatting loss on paste
+- [ ] Immediate feedback on change
+- [ ] Real-time token counting
+- [ ] Support for multi-line prompts
+
+**Technical Tasks**:
+1. Create PromptTextarea component
+2. Implement large textarea with proper sizing
+3. Add paste event handling (preserve formatting)
+4. Add real-time token counting
+5. Add change detection and immediate feedback
+6. Handle very long prompts (>10k tokens)
+7. Write component tests
+
+**Dependencies**: Story 6.3
+
+**Testing**:
+```typescript
+// Test textarea accepts long prompts
+test('textarea accepts prompts >10k tokens', () => {
+  const longPrompt = generatePrompt(15000);
+  const { getByRole } = render(<PromptTextarea />);
+  const textarea = getByRole('textbox');
+  fireEvent.change(textarea, { target: { value: longPrompt } });
+  expect(textarea.value.length).toBeGreaterThan(10000);
+});
+
+// Test formatting preservation
+test('textarea preserves formatting on paste', () => {
+  const formattedText = 'Line 1\nLine 2\nLine 3';
+  const { getByRole } = render(<PromptTextarea />);
+  const textarea = getByRole('textbox');
+  fireEvent.paste(textarea, { clipboardData: { getData: () => formattedText } });
+  expect(textarea.value).toBe(formattedText);
+});
+```
+
+---
+
+### Story 6.5: Context Budget Visualization
+**Phase**: Prompt Reality Cockpit  
+**Priority**: P0  
+**Story Points**: 5  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a user, I want to see how my prompt consumes the context window, so I can understand limits and token pressure.
+
+**Acceptance Criteria**:
+- [ ] Finite context bar visualization
+- [ ] Segmented bar showing: system, instructions, user, overflow
+- [ ] Overflow clearly marked (visual distinction)
+- [ ] Token pressure indicators
+- [ ] Real-time visual updates as prompt changes
+- [ ] Percentage and absolute token counts displayed
+- [ ] Color coding for different segments
+
+**Technical Tasks**:
+1. Create ContextBudgetViz component
+2. Implement segmented progress bar
+3. Add token counting for each segment (system, instructions, user)
+4. Add overflow detection and visualization
+5. Implement token pressure indicators
+6. Add real-time updates on prompt change
+7. Add color coding and visual styling
+8. Write visualization tests
+
+**Dependencies**: Story 6.4
+
+**Testing**:
+```typescript
+// Test context budget visualization
+test('context budget shows all segments', () => {
+  const prompt = createPrompt({ system: 100, instructions: 500, user: 200 });
+  const { getByTestId } = render(<ContextBudgetViz prompt={prompt} />);
+  expect(getByTestId('system-segment')).toBeInTheDocument();
+  expect(getByTestId('instructions-segment')).toBeInTheDocument();
+  expect(getByTestId('user-segment')).toBeInTheDocument();
+});
+
+// Test overflow detection
+test('overflow is clearly marked', () => {
+  const prompt = createPrompt({ total: 9000 }); // Exceeds 8k context
+  const { getByTestId } = render(<ContextBudgetViz prompt={prompt} />);
+  const overflow = getByTestId('overflow-segment');
+  expect(overflow).toHaveClass('overflow');
+  expect(overflow).toBeVisible();
+});
+```
+
+---
+
+### Story 6.6: Heuristics Engine Foundation
+**Phase**: Prompt Reality Cockpit  
+**Priority**: P0  
+**Story Points**: 8  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a user, I want to see system-level insights about my prompt, so I can understand structural risks and constraints without being told how to fix them.
+
+**Acceptance Criteria**:
+- [ ] Heuristics engine with 5 categories: Context Capacity, Truncation Risk, Instruction Dilution, Structural Ambiguity, Cost Pressure
+- [ ] All 9 specific rules implemented:
+  - CC-1: Context Overflow (High severity)
+  - CC-2: Near Capacity (Medium severity)
+  - TR-1: Critical Content After Cutoff (High severity)
+  - ID-1: Multiple Role Definitions (Medium severity)
+  - ID-2: Excessive Instruction Density (Medium severity)
+  - SA-1: Multiple Primary Tasks (Medium severity)
+  - SA-2: Late Task Definition (Low severity)
+  - CP-1: High Fixed Cost Prompt (Medium severity)
+  - CP-2: Cost Disproportionate to Task (Low severity)
+- [ ] Severity-based prioritization (max 3 visible insights)
+- [ ] High severity always shown, Medium if no High, Low only if space allows
+- [ ] Deterministic behavior (same input = same output)
+- [ ] Explainable (every insight maps to a clear rule)
+- [ ] Alerts, not scores
+- [ ] Non-prescriptive (never suggests fixes)
+
+**Technical Tasks**:
+1. Create HeuristicsEngine class
+2. Implement 5 heuristic category analyzers
+3. Implement all 9 specific rules with conditions
+4. Add severity-based prioritization logic
+5. Create insight display component (max 3 visible)
+6. Add deterministic rule evaluation
+7. Ensure explainable insights (rule mapping)
+8. Add alert formatting (not scores)
+9. Write comprehensive heuristics tests
+
+**Dependencies**: Story 6.5
+
+**Testing**:
+```typescript
+// Test heuristics engine determinism
+test('heuristics engine is deterministic', () => {
+  const prompt = createPrompt();
+  const insights1 = heuristicsEngine.analyze(prompt);
+  const insights2 = heuristicsEngine.analyze(prompt);
+  expect(insights1).toEqual(insights2);
+});
+
+// Test rule CC-1: Context Overflow
+test('CC-1 triggers on context overflow', () => {
+  const prompt = createPrompt({ tokens: 9000 }); // Exceeds 8k
+  const insights = heuristicsEngine.analyze(prompt);
+  expect(insights.some(i => i.rule === 'CC-1' && i.severity === 'high')).toBe(true);
+});
+
+// Test prioritization (max 3 insights)
+test('max 3 insights shown, prioritized by severity', () => {
+  const prompt = createPromptWithMultipleIssues();
+  const insights = heuristicsEngine.analyze(prompt);
+  const visible = insights.filter(i => i.visible);
+  expect(visible.length).toBeLessThanOrEqual(3);
+  expect(visible.every(i => i.severity === 'high' || visible.length < 3)).toBe(true);
+});
+```
+
+---
+
+### Story 6.7: Instruction Dilution Detection
+**Phase**: Prompt Reality Cockpit  
+**Priority**: P0  
+**Story Points**: 3  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a user, I want to know when multiple instructions conflict or dilute clarity, so I can understand instruction ambiguity.
+
+**Acceptance Criteria**:
+- [ ] Detect multiple role/task instructions
+- [ ] Trigger "Instruction dilution detected" alert
+- [ ] Alert explains impact, not solution
+- [ ] Integrates with heuristics engine (ID-1, ID-2 rules)
+- [ ] Visual indication of conflicting instructions
+
+**Technical Tasks**:
+1. Implement instruction parsing
+2. Detect multiple role definitions (ID-1 rule)
+3. Detect excessive instruction density (ID-2 rule)
+4. Create instruction dilution alert component
+5. Add visual highlighting of conflicting instructions
+6. Ensure alerts explain impact, not solutions
+7. Write instruction detection tests
+
+**Dependencies**: Story 6.6
+
+**Testing**:
+```typescript
+// Test ID-1: Multiple Role Definitions
+test('detects multiple role definitions', () => {
+  const prompt = 'You are a writer. Act as a developer.';
+  const insights = heuristicsEngine.analyze(prompt);
+  expect(insights.some(i => i.rule === 'ID-1')).toBe(true);
+});
+
+// Test ID-2: Excessive Instruction Density
+test('detects excessive instruction density', () => {
+  const prompt = createPrompt({ instructionTokens: 4000, totalTokens: 8000 });
+  const insights = heuristicsEngine.analyze(prompt);
+  expect(insights.some(i => i.rule === 'ID-2')).toBe(true);
+});
+```
+
+---
+
+### Story 6.8: Truncation Simulation
+**Phase**: Prompt Reality Cockpit  
+**Priority**: P0  
+**Story Points**: 3  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a user, I want to simulate truncation, so I can see what the model may ignore due to context limits.
+
+**Acceptance Criteria**:
+- [ ] "Simulate truncation" button
+- [ ] Visually fade ignored content
+- [ ] Show what gets truncated based on context window
+- [ ] No auto-correction or suggestions
+- [ ] Clear visual distinction between visible and truncated content
+
+**Technical Tasks**:
+1. Create TruncationSimulator component
+2. Implement truncation logic based on context window
+3. Add visual fade effect for truncated content
+4. Add "Simulate truncation" button
+5. Ensure no auto-correction or suggestions
+6. Add clear visual indicators
+7. Write truncation simulation tests
+
+**Dependencies**: Story 6.5
+
+**Testing**:
+```typescript
+// Test truncation simulation
+test('truncation simulator fades ignored content', () => {
+  const prompt = createPrompt({ tokens: 9000 }); // Exceeds context
+  const { getByRole, getByTestId } = render(<TruncationSimulator prompt={prompt} />);
+  const button = getByRole('button', { name: /simulate truncation/i });
+  fireEvent.click(button);
+  const truncated = getByTestId('truncated-content');
+  expect(truncated).toHaveClass('faded');
+  expect(truncated).toHaveStyle({ opacity: '0.5' });
+});
+```
+
+---
+
+### Story 6.9: Cost Impact Awareness
+**Phase**: Prompt Reality Cockpit  
+**Priority**: P0  
+**Story Points**: 3  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a user, I want to understand cost implications before production use, so I can make informed decisions about prompt design.
+
+**Acceptance Criteria**:
+- [ ] Per-call cost estimate
+- [ ] Clear "at scale" wording
+- [ ] No optimization suggestions
+- [ ] Cost breakdown by segment (system, instructions, user)
+- [ ] Model pricing configuration support
+
+**Technical Tasks**:
+1. Create CostCalculator component
+2. Implement per-call cost calculation
+3. Add "at scale" cost projection
+4. Add cost breakdown visualization
+5. Add model pricing configuration
+6. Ensure no optimization suggestions
+7. Write cost calculation tests
+
+**Dependencies**: Story 6.5
+
+**Testing**:
+```typescript
+// Test cost calculation
+test('calculates per-call cost correctly', () => {
+  const prompt = createPrompt({ tokens: 1000 });
+  const cost = calculateCost(prompt, { model: 'gpt-4', pricePer1kTokens: 0.03 });
+  expect(cost.perCall).toBeCloseTo(0.03, 2);
+});
+
+// Test at scale projection
+test('shows at scale cost projection', () => {
+  const prompt = createPrompt({ tokens: 1000 });
+  const cost = calculateCost(prompt, { model: 'gpt-4', pricePer1kTokens: 0.03 });
+  expect(cost.atScale1M).toBeDefined();
+  expect(cost.atScale1M).toBeGreaterThan(cost.perCall);
+});
+```
+
+---
+
+### Story 6.10: Retrieval Reality Cockpit
+**Phase**: Future Cockpits  
+**Priority**: P2  
+**Story Points**: 8  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a learner, I want to understand what actually gets retrieved and why, so I can understand retrieval system behavior.
+
+**Acceptance Criteria**:
+- [ ] Chunk ordering visualization
+- [ ] Recall vs precision indicators
+- [ ] Retrieval noise exposure
+- [ ] Context pollution simulation
+- [ ] Deterministic retrieval simulation
+
+**Technical Tasks**:
+1. Design Retrieval Reality Cockpit architecture
+2. Implement chunk ordering visualization
+3. Add recall vs precision metrics
+4. Add retrieval noise detection
+5. Add context pollution simulation
+6. Write cockpit tests
+
+**Dependencies**: Story 6.3
+
+**Testing**:
+```typescript
+// Test retrieval cockpit
+test('retrieval cockpit visualizes chunk ordering', () => {
+  const cockpit = render(<RetrievalRealityCockpit />);
+  expect(cockpit.getByTestId('chunk-ordering')).toBeInTheDocument();
+});
+```
+
+---
+
+### Story 6.11: Cost Reality Cockpit
+**Phase**: Future Cockpits  
+**Priority**: P2  
+**Story Points**: 8  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a learner, I want to understand where the money really goes in AI systems, so I can make cost-aware decisions.
+
+**Acceptance Criteria**:
+- [ ] Fixed vs variable cost modeling
+- [ ] Scale-based cost simulation
+- [ ] Retry amplification visualization
+- [ ] Model pricing impact analysis
+- [ ] Cost breakdown by component
+
+**Technical Tasks**:
+1. Design Cost Reality Cockpit architecture
+2. Implement fixed vs variable cost modeling
+3. Add scale-based cost simulation
+4. Add retry amplification visualization
+5. Add model pricing impact analysis
+6. Write cockpit tests
+
+**Dependencies**: Story 6.3
+
+**Testing**:
+```typescript
+// Test cost cockpit
+test('cost cockpit models fixed vs variable costs', () => {
+  const cockpit = render(<CostRealityCockpit />);
+  expect(cockpit.getByTestId('fixed-costs')).toBeInTheDocument();
+  expect(cockpit.getByTestId('variable-costs')).toBeInTheDocument();
+});
+```
+
+---
+
+### Story 6.12: Agent Reality Cockpit
+**Phase**: Future Cockpits  
+**Priority**: P2  
+**Story Points**: 8  
+**Status**: 🟡 READY
+
+**User Story**:
+> As a learner, I want to understand where autonomy breaks down in agent systems, so I can design more reliable agent architectures.
+
+**Acceptance Criteria**:
+- [ ] Planning drift visualization
+- [ ] Tool misuse scenarios
+- [ ] Loop detection
+- [ ] Decision boundary exposure
+- [ ] Failure mode analysis
+
+**Technical Tasks**:
+1. Design Agent Reality Cockpit architecture
+2. Implement planning drift visualization
+3. Add tool misuse detection
+4. Add loop detection
+5. Add decision boundary visualization
+6. Write cockpit tests
+
+**Dependencies**: Story 6.3
+
+**Testing**:
+```typescript
+// Test agent cockpit
+test('agent cockpit detects planning drift', () => {
+  const cockpit = render(<AgentRealityCockpit />);
+  expect(cockpit.getByTestId('planning-drift')).toBeInTheDocument();
+});
+```
+
+---
+
 ## Sprint Planning Summary
 
 ### Phase 1 (Weeks 1-3): Enhanced RAG Foundation
@@ -916,11 +1502,17 @@ test('recommender agent suggests products', () => {
 **Total Points**: 39  
 **Deliverable**: LLM, Diffusion, A2A, MCP, Agentic Commerce & E-commerce modules
 
+### Phase 6 (Weeks 23-30): Advanced Mode & Cockpits
+**Goal**: System-level insight under real constraints  
+**Stories**: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 6.10, 6.11, 6.12  
+**Total Points**: 50  
+**Deliverable**: Advanced Mode infrastructure, Prompt Reality Cockpit v1, future cockpit placeholders
+
 ---
 
 **Document Status**: ACTIVE - Updated Continuously  
-**Total Stories Defined**: 20  
-**Total Story Points**: 99  
+**Total Stories Defined**: 32  
+**Total Story Points**: 149  
 **Completed Stories**: 2 (1.1, 4.1)  
-**Estimated Timeline**: 22 weeks
+**Estimated Timeline**: 30 weeks
 

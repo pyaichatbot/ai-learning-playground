@@ -18,7 +18,7 @@ const modules = [
     icon: Brain,
     color: 'reasoning',
     features: ['Chain-of-Thought', 'Tree-of-Thought', 'Atom of Thought', 'ReAct Pattern'],
-    path: '/reasoning',
+    path: '/basic/reasoning',
   },
   {
     id: 'rag',
@@ -28,7 +28,7 @@ const modules = [
     icon: Database,
     color: 'rag',
     features: ['Chunking Strategies', 'Hybrid Search', 'Reranking', 'Query Expansion'],
-    path: '/rag',
+    path: '/basic/rag',
   },
   {
     id: 'agents',
@@ -38,7 +38,7 @@ const modules = [
     icon: Bot,
     color: 'agent',
     features: ['ReAct Pattern', 'Self-Reflection', 'Tool Calling', 'Step Tracing'],
-    path: '/agents',
+    path: '/basic/agents',
   },
   {
     id: 'multi-agent',
@@ -48,7 +48,7 @@ const modules = [
     icon: Network,
     color: 'multiagent',
     features: ['Supervisor Pattern', 'Message Flow', 'Task Delegation', 'Agent Communication'],
-    path: '/multi-agent',
+    path: '/basic/multi-agent',
   },
   {
     id: 'llm-training',
@@ -58,7 +58,7 @@ const modules = [
     icon: GraduationCap,
     color: 'training',
     features: ['Pre-training', 'SFT', 'RLHF', 'Reasoning'],
-    path: '/llm-training',
+    path: '/basic/llm-training',
   },
 ];
 
@@ -90,7 +90,7 @@ export const HomePage: React.FC = () => {
           </p>
 
           <div className="flex items-center justify-center gap-4">
-            <Link to="/reasoning">
+            <Link to="/basic/reasoning">
               <Button size="lg" className="group">
                 Start Learning
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />

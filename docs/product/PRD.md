@@ -4,7 +4,7 @@
 ### Document Control
 | Version | Date | Author | Status |
 |---------|------|--------|--------|
-| 1.0 | 2026-01 | Product Team | Draft |
+| 1.1 | 2026-01 | Product Team | Updated with Advanced Mode & Cockpits |
 
 ---
 
@@ -12,6 +12,8 @@
 
 ### 1.1 Product Vision
 Build an **interactive learning platform** that helps developers and architects understand **RAG**, **AI Agents**, and **Multi-Agent Systems** through **visualization and hands-on experimentation**.
+
+> Where AI concepts become interactive system-level experiences.
 
 ### 1.2 Business Goals
 - Enable **visual learning** of complex AI concepts
@@ -33,7 +35,7 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ## 2. User Personas
 
-### 2.1 Developer Learner (Primary)
+### 2.1 Developer Learner (Primary - Basic Mode)
 **Description**: Software developer learning AI/ML concepts  
 **Goals**:
 - Understand RAG pipelines visually
@@ -55,7 +57,7 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ---
 
-### 2.2 Technical Architect (Secondary)
+### 2.2 Technical Architect (Secondary - Basic & Advanced Mode)
 **Description**: Architect evaluating AI patterns for projects  
 **Goals**:
 - Compare different approaches
@@ -77,7 +79,7 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ---
 
-### 2.3 Educator (Tertiary)
+### 2.3 Educator (Tertiary - Basic Mode)
 **Description**: Instructor teaching AI/ML courses  
 **Goals**:
 - Use in classroom demonstrations
@@ -99,9 +101,134 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ---
 
-## 3. Product Modules
+### 2.4 Senior Engineer (Advanced Mode)
+**Description**: Senior engineer understanding system behavior under constraints  
+**Goals**:
+- Understand how AI systems behave in production
+- See system-level constraints and limits
+- Make informed decisions about prompt design
+- Understand cost implications at scale
 
-### 3.1 RAG Studio
+**Pain Points**:
+- System behavior is opaque
+- Constraints not visible until production
+- Cost implications unclear
+- Failure modes unknown
+
+**Needs**:
+- System-level insights
+- Constraint visualization
+- Cost awareness
+- Failure mode exposure
+
+---
+
+### 2.5 Engineering Manager (Advanced Mode)
+**Description**: Manager making strategic decisions about AI systems  
+**Goals**:
+- Understand cost implications
+- Evaluate system reliability
+- Make informed architecture decisions
+- Understand scale implications
+
+**Pain Points**:
+- Cost data is scattered
+- Reliability metrics unclear
+- Scale implications unknown
+- Decision-making lacks data
+
+**Needs**:
+- Cost reality visualization
+- System reliability metrics
+- Scale-based simulations
+- Decision support data
+
+---
+
+### 2.6 Advanced AI Practitioner (Advanced Mode)
+**Description**: Experienced practitioner seeking deep system understanding  
+**Goals**:
+- Understand system behavior under constraints
+- See where systems break down
+- Understand trade-offs and limits
+- Make judgment-level decisions
+
+**Pain Points**:
+- System behavior is abstract
+- Failure modes are hidden
+- Trade-offs are unclear
+- Need for professional judgment
+
+**Needs**:
+- System-level insights
+- Constraint-driven experiences
+- Failure mode visualization
+- Professional-grade tools
+
+---
+
+## 3. Product Modes
+
+The Playground consists of two distinct modes, each serving different learning needs:
+
+### 3.1 Basic Mode (Current)
+**Purpose**: Exploration, learning, zero pressure
+
+**Characteristics**:
+- Exploratory and open-ended
+- Educational and free forever
+- Multiple tools visible simultaneously
+- Flexible inputs and experimentation
+- No alerts or strong opinions
+- Encourages experimentation
+
+**Target Users**: Developer Learners, Educators, Casual Visitors
+
+**Modules**:
+- RAG Studio
+- Agent Lab
+- Multi-Agent Arena
+- Prompt Reasoning Techniques
+- Advanced AI Concepts (LLM, Diffusion, A2A, MCP, Commerce)
+
+---
+
+### 3.2 Advanced Mode (Future, Monetizable)
+**Purpose**: System understanding, professional judgment, constraint awareness
+
+**Characteristics**:
+- Opinionated and constraint-driven
+- System behavior focused
+- Single cockpit visible at a time
+- Alerts instead of tips
+- Explicit constraints
+- Reveals limits, trade-offs, and failure modes
+
+**Target Users**: Senior Engineers, Architects, Tech Leads, Engineering Managers, Advanced AI Practitioners
+
+**Core Principles**:
+- Insight over output
+- Constraints over flexibility
+- Explanation over optimization
+- Confidence and curiosity as primary outcomes
+
+**Cockpits**:
+- Prompt Reality Cockpit (v1)
+- Retrieval Reality Cockpit (future)
+- Cost Reality Cockpit (future)
+- Agent Reality Cockpit (future)
+
+**Boundary Rules**:
+- No cockpit logic leaks into Basic Mode
+- Advanced Mode is never required
+- Advanced Mode explains, never fixes
+- Basic Mode remains intact
+
+---
+
+## 4. Product Modules
+
+### 4.1 RAG Studio (Basic Mode)
 **Purpose**: Visualize and understand RAG pipelines
 
 **Features**:
@@ -122,7 +249,7 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ---
 
-### 3.2 Agent Lab
+### 4.2 Agent Lab (Basic Mode)
 **Purpose**: Understand AI agent patterns through visualization
 
 **Features**:
@@ -144,7 +271,7 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ---
 
-### 3.3 Multi-Agent Arena
+### 4.3 Multi-Agent Arena (Basic Mode)
 **Purpose**: Understand multi-agent orchestration patterns
 
 **Features**:
@@ -166,9 +293,84 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ---
 
-## 4. Functional Requirements
+### 4.4 Prompt Reality Cockpit (Advanced Mode)
+**Purpose**: Understand what actually happens to prompts before the model responds
 
-### 4.1 Core Features (P0 - Must Have)
+**Question**: What actually happens to my prompt before the model responds?
+
+**Key Features**:
+- Context window visualization with token pressure indicators
+- Context budget visualization (system, instructions, user, overflow segments)
+- Instruction dilution detection (multiple role/task instructions)
+- Truncation simulation (visualize what gets ignored)
+- Per-call cost estimation with scale implications
+- Heuristics engine with 9 specific rules across 5 categories:
+  - Context Capacity (CC-1, CC-2)
+  - Truncation Risk (TR-1)
+  - Instruction Dilution (ID-1, ID-2)
+  - Structural Ambiguity (SA-1, SA-2)
+  - Cost Pressure (CP-1, CP-2)
+
+**User Flow**:
+1. Enter Advanced Mode
+2. View landing page with framing copy
+3. Enter Prompt Reality Cockpit
+4. Paste real production prompt
+5. See context budget visualization
+6. View heuristics insights (max 3, prioritized by severity)
+7. Simulate truncation if needed
+8. See cost implications
+
+**Design Principles**:
+- Deterministic and explainable
+- Alerts, not scores
+- Non-prescriptive (never suggests fixes)
+- Conservative (prefer under-warning to false authority)
+
+---
+
+### 4.5 Future Cockpits (Advanced Mode)
+
+**Retrieval Reality Cockpit**:
+- Question: What actually gets retrieved and why?
+- Features: Chunk ordering visualization, recall vs precision indicators, retrieval noise exposure, context pollution simulation
+
+**Cost Reality Cockpit**:
+- Question: Where does the money really go?
+- Features: Fixed vs variable cost modeling, scale-based cost simulation, retry amplification visualization, model pricing impact
+
+**Agent Reality Cockpit**:
+- Question: Where does autonomy break down?
+- Features: Planning drift visualization, tool misuse scenarios, loop detection, decision boundary exposure
+
+---
+
+## 5. Core Principles
+
+### 5.1 Product Philosophy
+- **Insight over output**: Focus on understanding, not optimization
+- **Constraints over flexibility**: Show limits and trade-offs
+- **Explanation over optimization**: Explain behavior, don't fix prompts
+- **Confidence and curiosity**: Primary outcomes for users
+
+### 5.2 Design Principles
+- **Constraint-first design**: Show constraints explicitly
+- **Minimal surface area**: One cockpit = one question
+- **No optimization shortcuts**: Never auto-fix or suggest fixes
+- **Alerts over suggestions**: Show problems, not solutions
+- **Explanations over metrics**: Explain why, not just what
+
+### 5.3 Tone Guidelines
+- Calm, confident, non-marketing
+- Senior, direct, low verbosity
+- High clarity
+- Professional and respectful
+
+---
+
+## 6. Functional Requirements
+
+### 6.1 Core Features (P0 - Must Have)
 
 **FR-1: Document Upload & Processing**
 - Users can upload text documents
@@ -208,7 +410,7 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ---
 
-### 4.2 Enhanced Features (P1 - Should Have)
+### 6.2 Enhanced Features (P1 - Should Have)
 
 **FR-7: Reranking Visualization**
 - Cross-encoder reranking
@@ -231,7 +433,7 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ---
 
-### 4.3 Future Features (P2 - Nice to Have)
+### 6.3 Future Features (P2 - Nice to Have)
 
 **FR-11: Real LLM Integration**
 - Connect to OpenAI/Anthropic APIs
@@ -248,78 +450,137 @@ Build an **interactive learning platform** that helps developers and architects 
 - Team workspaces
 - Commenting system
 
+### 6.4 Advanced Mode Features (P0 - Must Have)
+
+**FR-14: Mode Switching**
+- Basic ↔ Advanced mode toggle
+- First-time users default to Basic Mode
+- Advanced Mode discoverable but never forced
+- Mode state persistence
+
+**FR-15: Advanced Mode Landing Page**
+- Framing copy with explicit contrast
+- "What you will gain" section
+- "What this mode intentionally avoids" section
+- Entry CTA: "Enter Prompt Reality Cockpit"
+- Appears once per session
+
+**FR-16: Prompt Reality Cockpit**
+- Large textarea for production prompts (>10k tokens)
+- Context budget visualization with segments
+- Token pressure indicators
+- Heuristics engine with 9 rules
+- Instruction dilution detection
+- Truncation simulation
+- Per-call cost estimation
+
+**FR-17: Heuristics Engine**
+- 5 heuristic categories
+- 9 specific rules with severity levels
+- Max 3 visible insights (prioritized)
+- Deterministic and explainable
+- Alerts, not scores
+- Non-prescriptive
+
 ---
 
-## 5. Non-Functional Requirements
+## 7. Anti-Features (Explicitly Excluded)
 
-### 5.1 Performance
+The following features are **explicitly excluded** from the product:
+
+- **Auto prompt fixing**: Never automatically rewrite or fix prompts
+- **AI-generated suggestions**: No AI-generated recommendations or tips
+- **Best-practice checklists**: No generic best-practice guidance
+- **Model tuning controls**: No fine-tuning or model configuration
+- **Optimization shortcuts**: No automatic optimization
+- **Step-by-step guidance**: No hand-holding or tutorials
+- **Feature overload**: Minimal surface area, one cockpit = one question
+
+**Rationale**: Advanced Mode is designed for professionals who want to understand system behavior, not for optimization or automation. Understanding comes before optimization.
+
+---
+
+## 8. Non-Functional Requirements
+
+### 8.1 Performance
 - Initial page load: <2 seconds
 - Visualization render: <500ms
 - Interaction response: <100ms
 - Support 100+ concurrent users
+- **Advanced Mode**: Low-latency, client-side first
 
-### 5.2 Usability
+### 8.2 Usability
 - Intuitive navigation
 - Clear visual feedback
-- Helpful tooltips
+- Helpful tooltips (Basic Mode)
+- Alerts instead of tips (Advanced Mode)
 - Responsive design (mobile-friendly)
 
-### 5.3 Reliability
+### 8.3 Reliability
 - 99% uptime
 - Graceful error handling
 - Data persistence (localStorage/IndexedDB)
 - Offline capability (basic features)
+- **Advanced Mode**: 100% deterministic behavior
 
-### 5.4 Security
+### 8.4 Security
 - No sensitive data collection
 - Client-side processing (privacy)
 - Secure API calls (if implemented)
 - Input validation
 
-### 5.5 Accessibility
+### 8.5 Accessibility
 - WCAG 2.1 AA compliance
 - Keyboard navigation
 - Screen reader support
 - High contrast mode
+- Accessible and readable UI
+
+### 8.6 Advanced Mode Specific
+- **100% deterministic**: Same input always produces same output
+- **Low-latency**: Client-side first architecture
+- **Client-side first**: All processing in browser
+- **Accessible and readable**: Clear, professional UI
+- **No dark patterns**: Transparent, honest UX
 
 ---
 
-## 6. Technical Constraints
+## 9. Technical Constraints
 
-### 6.1 Technology Stack
+### 9.1 Technology Stack
 - **Frontend**: React 18, TypeScript, Vite
 - **Styling**: Tailwind CSS, Framer Motion
 - **Visualization**: D3.js, Recharts, Three.js
 - **State**: Zustand
 - **Routing**: React Router v6
 
-### 6.2 Browser Support
+### 9.2 Browser Support
 - Chrome/Edge (latest 2 versions)
 - Firefox (latest 2 versions)
 - Safari (latest 2 versions)
 
-### 6.3 Performance Constraints
+### 9.3 Performance Constraints
 - Client-side only (no backend required initially)
 - Embeddings via Transformers.js (browser)
 - Large datasets handled with virtualization
 
 ---
 
-## 7. User Experience Requirements
+## 10. User Experience Requirements
 
-### 7.1 Onboarding
+### 10.1 Onboarding
 - Welcome tour for first-time users
 - Sample examples available
 - Quick start guide
 - Interactive tutorials
 
-### 7.2 Navigation
+### 10.2 Navigation
 - Clear module navigation
 - Breadcrumbs
 - Search functionality
 - Recent activity
 
-### 7.3 Feedback
+### 10.3 Feedback
 - Loading states
 - Error messages
 - Success confirmations
@@ -327,27 +588,34 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ---
 
-## 8. Success Criteria
+## 11. Success Criteria
 
-### 8.1 User Engagement
+### 11.1 User Engagement (Basic Mode)
 - 70% of users complete at least one module
 - Average session duration >15 minutes
 - 50% return rate (weekly)
 
-### 8.2 Learning Outcomes
+### 11.2 Learning Outcomes (Basic Mode)
 - 75% improvement in concept comprehension
 - 80% can explain RAG after using RAG Studio
 - 70% can implement basic agent after Agent Lab
 
-### 8.3 Community
+### 11.3 Community
 - 100+ GitHub stars
 - 10+ contributors
 - 5+ community examples
 - Active discussions
 
+### 11.4 Advanced Mode Success Metrics
+- Repeat visits to cockpits
+- Time spent per cockpit (>10 minutes)
+- Prompt re-submission rate (users refining prompts)
+- Newsletter conversions
+- Professional user engagement
+
 ---
 
-## 9. Out of Scope (v1.0)
+## 12. Out of Scope (v1.0)
 
 - Real-time collaboration
 - User authentication
@@ -359,7 +627,7 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ---
 
-## 10. Future Considerations
+## 13. Future Considerations
 
 - Real LLM integration (Phase 2)
 - Backend API for advanced features
@@ -377,7 +645,7 @@ Build an **interactive learning platform** that helps developers and architects 
 
 ---
 
-**Document Status**: DRAFT  
-**Next Review**: After Phase 1 completion  
+**Document Status**: ACTIVE  
+**Next Review**: After Phase 6 completion  
 **Owner**: Product Team
 

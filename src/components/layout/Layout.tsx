@@ -2,9 +2,9 @@
  * AI Learning Playground - Layout Components
  */
 
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Database,
   Bot,
@@ -15,17 +15,100 @@ import {
   Github,
   BookOpen,
   GraduationCap,
+  Layers,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAppStore } from '@/lib/store';
+import { useAppStore, useModeStore } from '@/lib/store';
 import { Button, SettingsDialog } from '@/components/shared';
+import type { PlaygroundMode } from '@/types';
 
 // ============================================
 // Header Component
 // ============================================
 
+// Mode Switcher Component
+const ModeSwitcher: React.FC = () => {
+  const { mode, setMode } = useModeStore();
+  const navigate = useNavigate();
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const handleModeSwitch = (newMode: PlaygroundMode) => {
+    if (newMode === mode) return;
+    
+    // Start transition
+    setIsTransitioning(true);
+    
+    // Small delay for smooth transition
+    setTimeout(() => {
+      setMode(newMode);
+      
+      // Navigate to appropriate route based on mode
+      if (newMode === 'basic') {
+        // If on advanced route, redirect to home page (Basic Mode landing)
+        if (window.location.pathname.includes('/advanced')) {
+          navigate('/');
+        }
+      } else if (newMode === 'advanced') {
+        // Check if landing page has been seen this session
+        const landingSeen = sessionStorage.getItem('advanced-mode-landing-seen') === 'true';
+        
+      if (landingSeen) {
+        // If already seen, go directly to cockpit selection
+        navigate('/advanced/cockpits');
+      } else {
+        // Show landing page first
+        navigate('/advanced/landing');
+      }
+      }
+      
+      // End transition after navigation
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 100);
+    }, 150);
+  };
+
+  return (
+    <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-surface-muted/30 border border-surface-muted">
+      <motion.button
+        onClick={() => handleModeSwitch('basic')}
+        disabled={isTransitioning}
+        className={cn(
+          'px-3 py-1 text-xs font-medium rounded transition-all',
+          mode === 'basic'
+            ? 'bg-surface-bright text-content shadow-sm'
+            : 'text-content-muted hover:text-content',
+          isTransitioning && 'opacity-50 cursor-not-allowed'
+        )}
+        aria-label="Switch to Basic Mode"
+        whileHover={!isTransitioning ? { scale: 1.05 } : {}}
+        whileTap={!isTransitioning ? { scale: 0.95 } : {}}
+      >
+        Basic
+      </motion.button>
+      <motion.button
+        onClick={() => handleModeSwitch('advanced')}
+        disabled={isTransitioning}
+        className={cn(
+          'px-3 py-1 text-xs font-medium rounded transition-all',
+          mode === 'advanced'
+            ? 'bg-surface-bright text-content shadow-sm'
+            : 'text-content-muted hover:text-content',
+          isTransitioning && 'opacity-50 cursor-not-allowed'
+        )}
+        aria-label="Switch to Advanced Mode"
+        whileHover={!isTransitioning ? { scale: 1.05 } : {}}
+        whileTap={!isTransitioning ? { scale: 0.95 } : {}}
+      >
+        Advanced
+      </motion.button>
+    </div>
+  );
+};
+
 export const Header: React.FC = () => {
   const { sidebarOpen, toggleSidebar } = useAppStore();
+  const { mode } = useModeStore();
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-surface/80 backdrop-blur-md border-b border-surface-muted z-50">
@@ -49,6 +132,11 @@ export const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          <ModeSwitcher />
+          <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded text-xs text-content-subtle">
+            <Layers size={12} />
+            <span className="capitalize">{mode} Mode</span>
+          </div>
           <a
             href="https://yellamaraju.com/blog"
             target="_blank"
@@ -77,12 +165,12 @@ export const Header: React.FC = () => {
 // Sidebar Component
 // ============================================
 
-const navItems = [
+const basicModeNavItems = [
   {
     id: 'reasoning',
     label: 'Prompt Reasoning',
     icon: Brain,
-    path: '/reasoning',
+    path: '/basic/reasoning',
     color: 'text-reasoning-primary',
     description: 'Reasoning Techniques',
   },
@@ -90,7 +178,7 @@ const navItems = [
     id: 'rag',
     label: 'RAG Studio',
     icon: Database,
-    path: '/rag',
+    path: '/basic/rag',
     color: 'text-rag-primary',
     description: 'Retrieval-Augmented Generation',
   },
@@ -98,7 +186,7 @@ const navItems = [
     id: 'agents',
     label: 'Agent Lab',
     icon: Bot,
-    path: '/agents',
+    path: '/basic/agents',
     color: 'text-agent-primary',
     description: 'AI Agent Patterns',
   },
@@ -106,7 +194,7 @@ const navItems = [
     id: 'multi-agent',
     label: 'Multi-Agent Arena',
     icon: Network,
-    path: '/multi-agent',
+    path: '/basic/multi-agent',
     color: 'text-multiagent-primary',
     description: 'Orchestration Patterns',
   },
@@ -114,15 +202,31 @@ const navItems = [
     id: 'llm-training',
     label: 'LLM Training',
     icon: GraduationCap,
-    path: '/llm-training',
+    path: '/basic/llm-training',
     color: 'text-accent-amber',
     description: 'Training Stages',
   },
 ];
 
+// Advanced Mode nav items - placeholder for future implementation
+const advancedModeNavItems: typeof basicModeNavItems = [];
+
 export const Sidebar: React.FC = () => {
   const location = useLocation();
   const { sidebarOpen } = useAppStore();
+  const { mode } = useModeStore();
+  const [previousMode, setPreviousMode] = useState<PlaygroundMode>(mode);
+
+  // Track mode changes for animation
+  useEffect(() => {
+    if (mode !== previousMode) {
+      setPreviousMode(mode);
+    }
+  }, [mode, previousMode]);
+
+  // Get nav items based on current mode
+  const navItems = mode === 'basic' ? basicModeNavItems : advancedModeNavItems;
+  const modeLabel = mode === 'basic' ? 'Basic Mode' : 'Advanced Mode';
 
   return (
     <motion.aside
@@ -132,48 +236,72 @@ export const Sidebar: React.FC = () => {
       className="fixed left-0 top-16 bottom-0 bg-surface-elevated/50 backdrop-blur-sm border-r border-surface-muted overflow-hidden z-40"
     >
       <nav className="p-4 space-y-2">
-        <p className="text-2xs uppercase tracking-wider text-content-subtle px-3 mb-4">
-          Modules
-        </p>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={mode}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.2 }}
+            className="px-3 mb-4"
+          >
+            <p className="text-2xs uppercase tracking-wider text-content-subtle mb-1">
+              {modeLabel}
+            </p>
+            <p className="text-2xs uppercase tracking-wider text-content-subtle">
+              Modules
+            </p>
+          </motion.div>
+        </AnimatePresence>
         
-        {navItems.map((item) => {
-          const isActive = location.pathname.startsWith(item.path);
-          const Icon = item.icon;
-          
-          return (
-            <Link
-              key={item.id}
-              to={item.path}
-              className={cn(
-                'flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group',
-                isActive
-                  ? 'bg-surface-muted/50 border border-surface-bright'
-                  : 'hover:bg-surface-muted/30'
-              )}
-            >
-              <div
+        {navItems.length > 0 ? (
+          navItems.map((item) => {
+            const isActive = location.pathname.startsWith(item.path);
+            const Icon = item.icon;
+            
+            return (
+              <Link
+                key={item.id}
+                to={item.path}
                 className={cn(
-                  'w-10 h-10 rounded-lg flex items-center justify-center transition-all',
-                  isActive ? 'bg-surface-muted' : 'bg-surface/50 group-hover:bg-surface-muted/50'
+                  'flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group',
+                  isActive
+                    ? 'bg-surface-muted/50 border border-surface-bright'
+                    : 'hover:bg-surface-muted/30'
                 )}
               >
-                <Icon size={20} className={cn(item.color, 'transition-colors')} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className={cn('font-medium text-sm', isActive ? 'text-content' : 'text-content-muted group-hover:text-content')}>
-                  {item.label}
-                </p>
-                <p className="text-2xs text-content-subtle truncate">{item.description}</p>
-              </div>
-              {isActive && (
-                <motion.div
-                  layoutId="sidebar-indicator"
-                  className="w-1 h-8 rounded-full bg-gradient-to-b from-brand-400 to-brand-600"
-                />
-              )}
-            </Link>
-          );
-        })}
+                <div
+                  className={cn(
+                    'w-10 h-10 rounded-lg flex items-center justify-center transition-all',
+                    isActive ? 'bg-surface-muted' : 'bg-surface/50 group-hover:bg-surface-muted/50'
+                  )}
+                >
+                  <Icon size={20} className={cn(item.color, 'transition-colors')} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={cn('font-medium text-sm', isActive ? 'text-content' : 'text-content-muted group-hover:text-content')}>
+                    {item.label}
+                  </p>
+                  <p className="text-2xs text-content-subtle truncate">{item.description}</p>
+                </div>
+                {isActive && (
+                  <motion.div
+                    layoutId="sidebar-indicator"
+                    className="w-1 h-8 rounded-full bg-gradient-to-b from-brand-400 to-brand-600"
+                  />
+                )}
+              </Link>
+            );
+          })
+        ) : (
+          <div className="px-3 py-4 text-center">
+            <p className="text-sm text-content-muted">
+              {mode === 'advanced' 
+                ? 'Advanced Mode modules coming soon'
+                : 'No modules available'}
+            </p>
+          </div>
+        )}
       </nav>
 
       <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-surface-muted">
@@ -203,19 +331,25 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { sidebarOpen } = useAppStore();
+  const { mode } = useModeStore();
+  const location = useLocation();
 
   return (
     <div className="min-h-screen bg-surface">
       <Header />
       <Sidebar />
-      <motion.main
-        initial={false}
-        animate={{ marginLeft: sidebarOpen ? 280 : 0 }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
-        className="pt-16 min-h-screen"
-      >
-        {children}
-      </motion.main>
+      <AnimatePresence mode="wait">
+        <motion.main
+          key={`${mode}-${location.pathname}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, marginLeft: sidebarOpen ? 280 : 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          className="pt-16 min-h-screen"
+        >
+          {children}
+        </motion.main>
+      </AnimatePresence>
     </div>
   );
 };

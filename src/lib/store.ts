@@ -22,6 +22,8 @@ import type {
   ReasoningState,
   ReasoningStep,
   ReasoningPatternCategory,
+  PlaygroundMode,
+  CockpitType,
 } from '@/types';
 import { generateId } from '@/lib/utils';
 
@@ -1818,3 +1820,89 @@ function getStatusForStep(stepType: ReasoningStep['type']): import('@/types').Re
       return 'thinking';
   }
 }
+
+// ============================================
+// Mode Store
+// ============================================
+
+interface ModeStore {
+  // State
+  mode: PlaygroundMode;
+  
+  // Actions
+  setMode: (mode: PlaygroundMode) => void;
+}
+
+export const useModeStore = create<ModeStore>()(
+  devtools(
+    persist(
+      (set) => ({
+        // Initial state - default to 'basic' for first-time users
+        mode: 'basic',
+        
+        // Actions
+        setMode: (mode) => set({ mode }),
+      }),
+      {
+        name: 'ai-playground-mode',
+        partialize: (state) => ({
+          mode: state.mode,
+        }),
+      }
+    ),
+    { name: 'ModeStore' }
+  )
+);
+
+// ============================================
+// Cockpit Store
+// ============================================
+
+interface CockpitStore {
+  // State
+  activeCockpit: CockpitType | null;
+  previousCockpit: CockpitType | null;
+  
+  // Actions
+  setActiveCockpit: (cockpit: CockpitType | null) => void;
+  clearCockpit: () => void;
+}
+
+export const useCockpitStore = create<CockpitStore>()(
+  devtools(
+    (set, get) => ({
+      // Initial state
+      activeCockpit: null,
+      previousCockpit: null,
+      
+      // Actions
+      setActiveCockpit: (cockpit) => {
+        const current = get().activeCockpit;
+        
+        // Enforce one cockpit at a time rule
+        // If switching to a different cockpit, store previous
+        if (current && cockpit && current !== cockpit) {
+          set({
+            previousCockpit: current,
+            activeCockpit: cockpit,
+          });
+        } else {
+          // Setting same cockpit or clearing
+          set({
+            activeCockpit: cockpit,
+            previousCockpit: current,
+          });
+        }
+      },
+      
+      clearCockpit: () => {
+        const current = get().activeCockpit;
+        set({
+          previousCockpit: current,
+          activeCockpit: null,
+        });
+      },
+    }),
+    { name: 'CockpitStore' }
+  )
+);

@@ -10,6 +10,10 @@
 
 export type ModuleType = 'rag' | 'agents' | 'multi-agent' | 'reasoning';
 
+export type PlaygroundMode = 'basic' | 'advanced';
+
+export type CockpitType = 'prompt-reality' | 'retrieval-reality' | 'cost-reality' | 'agent-reality';
+
 export interface Position {
   x: number;
   y: number;

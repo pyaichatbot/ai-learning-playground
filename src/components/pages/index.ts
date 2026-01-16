@@ -8,4 +8,6 @@ export { AgentLabPage } from './AgentLabPage';
 export { MultiAgentArenaPage } from './MultiAgentArenaPage';
 export { PromptReasoningPage } from './PromptReasoningPage';
 export { LLMTrainingPage } from './LLMTrainingPage';
+export { AdvancedModeLandingPage } from './AdvancedModeLandingPage';
+export { CockpitSelectionPage } from './CockpitSelectionPage';
 
