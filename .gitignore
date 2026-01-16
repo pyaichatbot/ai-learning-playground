@@ -55,5 +55,3 @@ mnt/
 
 # GitHub Pages
 # Note: dist/ is ignored but will be built by GitHub Actions
-
-llm-training/
