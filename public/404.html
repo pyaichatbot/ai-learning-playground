@@ -6,13 +6,19 @@
     <title>AI Learning Playground</title>
     <script>
       // GitHub Pages SPA redirect
-      // Simple redirect to index.html - React Router will handle routing
+      // Handle both root and subdirectory deployments
       var path = window.location.pathname;
       var base = '/ai-learning-playground';
       
-      // Redirect to index.html
-      // React Router with basename will handle the routing based on current URL
-      window.location.replace(base + '/index.html');
+      // Check if we're already on the base path
+      if (path.startsWith(base)) {
+        // Already on base path, just redirect to index.html
+        var newPath = path.replace(/\/$/, '') + '/index.html';
+        window.location.replace(newPath);
+      } else {
+        // Not on base path, redirect to base/index.html
+        window.location.replace(base + '/index.html');
+      }
     </script>
   </head>
   <body>

@@ -30,6 +30,7 @@ import type { PlaygroundMode } from '@/types';
 const ModeSwitcher: React.FC = () => {
   const { mode, setMode } = useModeStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const handleModeSwitch = (newMode: PlaygroundMode) => {
@@ -43,9 +44,10 @@ const ModeSwitcher: React.FC = () => {
       setMode(newMode);
       
       // Navigate to appropriate route based on mode
+      // Use location.pathname (from react-router) which respects basename
       if (newMode === 'basic') {
         // If on advanced route, redirect to home page (Basic Mode landing)
-        if (window.location.pathname.includes('/advanced')) {
+        if (location.pathname.includes('/advanced')) {
           navigate('/');
         }
       } else if (newMode === 'advanced') {
@@ -61,7 +63,7 @@ const ModeSwitcher: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-surface-muted/30 border border-surface-muted">
+    <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-surface-muted/30 border border-surface-muted flex-shrink-0">
       <motion.button
         onClick={() => handleModeSwitch('basic')}
         disabled={isTransitioning}
@@ -104,14 +106,14 @@ export const Header: React.FC = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-surface/80 backdrop-blur-md border-b border-surface-muted z-50">
-      <div className="h-full px-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="h-full px-4 flex items-center justify-between overflow-hidden">
+        <div className="flex items-center gap-4 min-w-0 flex-shrink-0">
           <Button variant="icon" onClick={toggleSidebar} aria-label="Toggle sidebar">
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </Button>
           
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-rag-primary via-agent-primary to-multiagent-primary flex items-center justify-center">
+          <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-rag-primary via-agent-primary to-multiagent-primary flex items-center justify-center flex-shrink-0">
               <span className="text-white font-bold text-sm">AI</span>
             </div>
             <div className="hidden sm:block">
@@ -123,7 +125,7 @@ export const Header: React.FC = () => {
           </Link>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <ModeSwitcher />
           <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded text-xs text-content-subtle">
             <Layers size={12} />

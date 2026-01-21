@@ -5,14 +5,23 @@
  * Provides clear, non-marketing explanation of what Advanced Mode offers and what it avoids.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Check, X, Info } from 'lucide-react';
 import { Button, Card } from '@/components/shared';
+import { useModeStore } from '@/lib/store';
 
 export const AdvancedModeLandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const { mode, setMode } = useModeStore();
+
+  // Ensure Advanced Mode is activated when landing on this page
+  useEffect(() => {
+    if (mode !== 'advanced') {
+      setMode('advanced');
+    }
+  }, [mode, setMode]);
 
   const handleEnterCockpit = () => {
     // Mark landing page as seen for this session

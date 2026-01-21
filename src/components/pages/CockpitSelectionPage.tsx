@@ -4,12 +4,12 @@
  * Lists available and upcoming Advanced Mode cockpits.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Card, Button } from '@/components/shared';
-import { useCockpitStore } from '@/lib/store';
+import { useCockpitStore, useModeStore } from '@/lib/store';
 import type { CockpitType } from '@/types';
 
 const cockpits: Array<{
@@ -47,6 +47,14 @@ const cockpits: Array<{
 export const CockpitSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const { setActiveCockpit } = useCockpitStore();
+  const { mode, setMode } = useModeStore();
+
+  // Ensure Advanced Mode is activated when accessing this page
+  useEffect(() => {
+    if (mode !== 'advanced') {
+      setMode('advanced');
+    }
+  }, [mode, setMode]);
 
   const handleSelectCockpit = (cockpitId: CockpitType, status: 'available' | 'coming-soon') => {
     if (status !== 'available') return;

@@ -6,7 +6,24 @@ export default defineConfig({
   // For GitHub Pages: use repository name as base path
   // For custom domain: change to '/'
   base: '/ai-learning-playground/',
-  plugins: [react()],
+  plugins: [
+    react(),
+    // Custom plugin to handle base path redirects in dev server
+    {
+      name: 'base-path-redirect',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          // If accessing /ai-learning-playground without trailing slash, redirect
+          if (req.url === '/ai-learning-playground') {
+            res.writeHead(301, { Location: '/ai-learning-playground/' });
+            res.end();
+            return;
+          }
+          next();
+        });
+      },
+    },
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -20,6 +37,12 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    // Handle base path redirects in dev server
+    // Redirect /ai-learning-playground to /ai-learning-playground/
+    middlewareMode: false,
+    fs: {
+      strict: false,
+    },
   },
   build: {
     outDir: 'dist',

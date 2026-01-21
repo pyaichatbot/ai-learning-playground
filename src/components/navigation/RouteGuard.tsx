@@ -17,7 +17,14 @@ interface RouteGuardProps {
 export const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { mode } = useModeStore();
+  const { mode, setMode } = useModeStore();
+
+  // Ensure Advanced Mode is activated when accessing Advanced routes
+  useEffect(() => {
+    if (mode !== 'advanced') {
+      setMode('advanced');
+    }
+  }, [mode, setMode]);
 
   useEffect(() => {
     // Only enforce rules in Advanced Mode

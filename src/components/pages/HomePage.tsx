@@ -71,10 +71,15 @@ export const HomePage: React.FC = () => {
   const location = useLocation();
 
   // Always activate Basic Mode when landing on home page
-  // Only set mode if we're actually on the home page route
+  // Only set mode if we're actually on the home page route (not Advanced routes)
   useEffect(() => {
-    // Only activate Basic Mode if we're on the home page
-    if (location.pathname === '/' || location.pathname === '/ai-learning-playground/' || location.pathname.endsWith('/')) {
+    // React Router's location.pathname already accounts for basename
+    // So '/' means we're on the home page regardless of base path
+    // Don't reset mode if we're on Advanced routes
+    const isHomePage = location.pathname === '/' || location.pathname === '';
+    const isAdvancedRoute = location.pathname.startsWith('/advanced');
+    
+    if (isHomePage && !isAdvancedRoute) {
       if (mode !== 'basic') {
         setMode('basic');
       }
