@@ -15,17 +15,40 @@ Extend the AI Learning Playground from its current single live cockpit (Prompt R
 
 ---
 
-## 2. Guiding Principles
+## 2. Platform Experience
+
+The product is not a set of disconnected demos. It is a guided playground with a visible learning journey, strong orientation, and continuity between cockpits.
+
+**Platform shell**
+- **Playground Home** is the entry point. It presents the 8 cockpits as a visual learning map grouped by theme: Foundations, Protocols, Orchestration, and End-to-End Workflows.
+- **Recommended pathways** give users three ways to enter: Beginner Path, Builder Path, and Expert Explorer. The same cockpits are reused, but ordered differently.
+- **Progress rails** show "Start here", "Continue", and "Next best cockpit" recommendations so users never hit a dead end after completing a scenario.
+- **Capstone framing** makes Workflow & DAG Visualizer the explicit final synthesis experience, with links back into prior cockpits using the exact simulation context that produced each step.
+
+**Learner journey contract**
+- Every cockpit has a consistent entry sequence: Intro card → Quick win scenario → Guided walkthrough → Sandbox mode.
+- Every cockpit exposes the same completion states: `not-started`, `explored`, `walkthrough-complete`, `sandbox-built`.
+- Every cockpit ends with a clear next action: replay, modify, compare with another cockpit, or jump to the next recommended concept.
+- Platform chrome includes a persistent breadcrumb, pathway progress, and context-sensitive glossary access.
+
+**One-stop ecosystem promise**
+- The user can start from zero, move through progressively harder concepts, save or share what they built, and revisit the same simulation later.
+- Cross-cockpit transitions must preserve context so the system feels like one living model, not separate pages with similar styling.
+
+---
+
+## 3. Guiding Principles
 
 - **Simulation-only, always client-side.** No backend, no real network calls, no API keys required. 100% deployable to GitHub Pages as-is.
 - **Three interaction levels in every cockpit.** Level 1 = trigger & observe. Level 2 = edit params & explore. Level 3 = build custom entities & experiment.
 - **Animation as a first-class teaching tool.** HyperFrames powers all multi-scene animated sequences. GSAP handles in-page graph and node animations. D3 handles data visualizations.
 - **SimulatedProtocol pattern.** One architecture, eight instances. Every cockpit that represents a protocol (MCP, A2A, AG-UI, multi-agent) shares the same three-layer engine: Simulation Layer + Animation Layer + Interaction Layer.
 - **Beginner to expert in one cockpit.** Progressive depth — not separate beginner/expert apps. Explorer tab → Walkthrough tab → Inspector tab.
+- **Durable learning without servers.** Client-side only does not mean disposable; user-created scenarios must survive refreshes and support export/import/share links.
 
 ---
 
-## 3. Tech Stack
+## 4. Tech Stack
 
 ### Unchanged
 - React 18 + TypeScript + Vite
@@ -69,7 +92,7 @@ src/components/cockpits/    ← new cockpit UI components (alongside existing pr
 
 ---
 
-## 4. SimulatedProtocol Pattern
+## 5. SimulatedProtocol Pattern
 
 Every protocol cockpit is built on three layers:
 
@@ -87,9 +110,15 @@ Every protocol cockpit is built on three layers:
 - Level 2: User edits input parameters before triggering a call. Server validates and responds to valid and invalid inputs correctly.
 - Level 3: User creates custom entities (tools, resources, agents, workflow nodes) via a schema builder UI. The simulation engine registers and serves them.
 
+**Persistence and share layer**
+- `ScenarioLibrary` stores pre-built and user-built scenarios in a versioned client-side format.
+- `SessionSnapshot` captures the exact state of a run: selected scenario, user edits, event log, animation step, and derived metrics.
+- `ShareCodec` serializes a scenario or snapshot into a compressed URL-safe payload and supports export/import JSON files for larger creations.
+- Default behavior: auto-save user-created Level 3 content locally; explicit "Share" and "Export" actions make creations portable without a backend.
+
 ---
 
-## 5. Build Sequence (User-Confirmed)
+## 6. Build Sequence (User-Confirmed)
 
 | Build Order | Phase Label | Cockpits |
 |-------------|-------------|----------|
@@ -103,9 +132,9 @@ Each phase gets its own spec → plan → implementation cycle. This document co
 
 ---
 
-## 6. Cockpit Designs
+## 7. Cockpit Designs
 
-### 6.1 MCP Protocol Inspector (Build First)
+### 7.1 MCP Protocol Inspector (Build First)
 
 **Question it answers:** What actually happens on the wire when an AI app connects to an MCP server?
 
@@ -139,7 +168,7 @@ Each phase gets its own spec → plan → implementation cycle. This document co
 
 ---
 
-### 6.2 Multi-Agent Orchestration (Build Second — Part A)
+### 7.2 Multi-Agent Orchestration (Build Second — Part A)
 
 **Question it answers:** How do agents divide work, communicate, and fail?
 
@@ -170,7 +199,7 @@ Each phase gets its own spec → plan → implementation cycle. This document co
 
 ---
 
-### 6.3 Subagent Dispatch Tree (Build Second — Part B)
+### 7.3 Subagent Dispatch Tree (Build Second — Part B)
 
 **Question it answers:** How does a parent agent spawn, delegate to, and aggregate results from subagents?
 
@@ -189,7 +218,7 @@ Each phase gets its own spec → plan → implementation cycle. This document co
 
 ---
 
-### 6.4 AG-UI Event Stream Cockpit (Build Third — Part A)
+### 7.4 AG-UI Event Stream Cockpit (Build Third — Part A)
 
 **Question it answers:** What events flow between an agent backend and a user-facing application over AG-UI?
 
@@ -218,7 +247,7 @@ Each phase gets its own spec → plan → implementation cycle. This document co
 
 ---
 
-### 6.5 A2A Protocol Visualizer (Build Third — Part B)
+### 7.5 A2A Protocol Visualizer (Build Third — Part B)
 
 **Question it answers:** How do agents from different frameworks discover each other and exchange tasks?
 
@@ -243,7 +272,7 @@ Each phase gets its own spec → plan → implementation cycle. This document co
 
 ---
 
-### 6.6 LLM Fine-Tuning Animator (Build Fourth — Part A)
+### 7.6 LLM Fine-Tuning Animator (Build Fourth — Part A)
 
 **Question it answers:** What actually happens at each step of fine-tuning an LLM — internally and end-to-end?
 
@@ -275,7 +304,7 @@ Each phase gets its own spec → plan → implementation cycle. This document co
 
 ---
 
-### 6.7 ML Training Lab (Build Fourth — Part B)
+### 7.7 ML Training Lab (Build Fourth — Part B)
 
 **Lives as a tab within the LLM Fine-Tuning cockpit** — the beginner entry point before the LLM-specific stages.
 
@@ -289,7 +318,7 @@ Beginner completes ML Training Lab first, then proceeds to the Pipeline tab to s
 
 ---
 
-### 6.8 Workflow & DAG Visualizer (Build Fifth — Capstone)
+### 7.8 Workflow & DAG Visualizer (Build Fifth — Capstone)
 
 **Question it answers:** How does a full AI workflow execute — step by step, decision by decision?
 
@@ -305,7 +334,7 @@ Beginner completes ML Training Lab first, then proceeds to the Pipeline tab to s
 - Click any DAG node: right-panel drawer shows:
   - Input state entering this step
   - Output state produced
-  - Which agents, tools, or subagents were invoked (links to Subagent Tree from 6.3)
+  - Which agents, tools, or subagents were invoked (links to Subagent Tree from 7.3)
   - Protocol messages exchanged (links to MCP/A2A/AG-UI cockpits)
   - Duration, token cost
 - Capstone connection: this cockpit references all prior protocol knowledge
@@ -323,7 +352,36 @@ Beginner completes ML Training Lab first, then proceeds to the Pipeline tab to s
 
 ---
 
-## 7. Cross-Cockpit Connections
+## 8. Shared Simulation Session Model
+
+Cross-cockpit navigation must carry exact state, not just route the user to a thematically related page.
+
+**Canonical entities**
+- `sessionId` — unique ID for one learner run
+- `scenarioId` — the pre-built or user-built scenario definition
+- `snapshotId` — a point-in-time capture of the session
+- `entityRef` — stable reference to a tool, resource, event, task, node, agent, or message
+- `focusTarget` — the specific UI object to open and highlight when navigating into another cockpit
+
+**Shared event model**
+- Every simulator emits typed events into a common session log.
+- Events are append-only, timestamped, and deterministic for a given scenario and user input.
+- Cross-cockpit links are built from these events, not from hardcoded demo routes.
+
+**Navigation contract**
+- A link from Workflow DAG into MCP opens the exact tool call, selected message row, and relevant walkthrough step.
+- A link from Multi-Agent into Subagent Dispatch opens the exact child tree and highlights the selected node.
+- A link from AG-UI or A2A into another cockpit restores the related snapshot and focuses the matching event or task lifecycle state.
+- If the originating session is unavailable, the destination cockpit opens a closest-match fallback scenario and clearly labels it as a reconstructed view.
+
+**State boundaries**
+- Scenario definitions are reusable templates.
+- Session snapshots are learner-specific state.
+- UI view state is separate from simulation state so deep links and replay remain stable across layouts and screen sizes.
+
+---
+
+## 9. Cross-Cockpit Connections
 
 | From | To | Connection |
 |------|----|------------|
@@ -336,31 +394,63 @@ Beginner completes ML Training Lab first, then proceeds to the Pipeline tab to s
 
 ---
 
-## 8. Non-Functional Requirements
+## 10. Non-Functional Requirements
 
 - **100% client-side.** No backend, no API keys, no network calls. GitHub Pages deployable.
 - **No regression on existing cockpits.** Prompt Reality Cockpit, Basic Mode, routing, and mode switching all continue working.
 - **Progressive disclosure.** Every cockpit is usable by a beginner without reading any documentation. Advanced features reveal themselves as the user explores.
 - **Deterministic simulations.** Every pre-built scenario produces the same output every time. No random variation that confuses learners.
 - **HyperFrames animations are scrubbable.** Users can pause, rewind, and step through any animation.
-- **Mobile-aware.** Cockpits gracefully degrade to a readable (if less interactive) state on small screens.
+- **Durable client-side state.** User-created scenarios, custom entities, and saved snapshots persist locally across sessions and can be exported/imported without any server dependency.
+- **Shareable runs.** Every pre-built or custom scenario can generate a stable deep link or export payload for replay and teaching.
+- **Mobile-aware by design.** Every cockpit must define a small-screen mode intentionally, not as an afterthought.
+
+### 10.1 Mobile and Small-Screen Rules
+
+**Global rules**
+- On narrow screens, only one primary pane is visible at a time. Secondary panes move into bottom sheets, drawers, or segmented sub-tabs.
+- Scrubbable animations remain available, but nonessential decorative motion is reduced.
+- Dense graphs switch from free-pan exploration to guided focus mode with one selected node, edge, or step at a time.
+- Raw payloads collapse by default, with field-by-field drill-down instead of full expanded trees.
+
+**Cockpit-specific expectations**
+- **MCP Inspector:** tree, schema editor, and protocol log become segmented views; replay preserves the selected message and scroll position.
+- **Multi-Agent Orchestration:** force graph simplifies to an active-agent spotlight view with a swipeable agent roster and edge inspector sheet.
+- **Subagent Dispatch Tree:** tree becomes a vertical outline with expandable branches and a sticky summary bar for parent/selected child.
+- **AG-UI Event Stream:** live ticker becomes pause-first on mobile, with event cards replacing dense streaming rows.
+- **A2A Visualizer:** agent cards remain scrollable; task lifecycle becomes a stepper rather than a full-state graph.
+- **LLM Fine-Tuning / ML Training Lab:** 3D and chart-heavy views provide stepped scenes and presets before free manipulation.
+- **Workflow & DAG Visualizer:** DAG defaults to a linearized execution list with optional mini-map, not a full freeform canvas.
+
+### 10.2 Performance and Accessibility
+
+- Target 60fps for primary animations on desktop and a reduced-motion-compatible fallback on all supported devices.
+- Respect `prefers-reduced-motion` with stepped playback and minimized ambient animation.
+- All instructional interactions must remain keyboard reachable.
+- Color is never the only carrier of meaning in charts, protocol logs, or status states.
 
 ---
 
-## 9. Out of Scope
+## 11. Out of Scope
 
 - Real network connections to live MCP servers, A2A endpoints, or AG-UI backends
 - Authentication or user accounts
-- Persistent state across browser sessions (localStorage for preferences only, not simulation state)
 - Backend services, databases, or server-side rendering
 - SEO tooling or marketing pages
 - Monetization mechanics (designed for later, not now)
+- Cloud-synced user profiles or multi-device sync in the first release
 
 ---
 
-## 10. Success Criteria
+## 12. Success Criteria
 
 - A beginner can open the MCP Inspector, complete the Walkthrough tab, and explain what `initialize` does — without reading any external docs.
 - An expert can open the A2A Visualizer, define a custom Agent Card, and send a task to a custom agent they built in Level 3 — all within the browser.
 - The LLM Fine-Tuning Pipeline tab plays end-to-end as a self-contained animated explainer that someone could share as a learning resource.
 - Every cockpit's simulation engine is independently testable (unit tests for the state machine, separate from the UI).
+- A first-time user can enter from Playground Home, complete a recommended first cockpit, and clearly identify the next best cockpit without external guidance.
+- A user who builds a Level 3 custom scenario can return after a refresh and continue from their saved state, or share the scenario with another person via export/import or deep link.
+- Cross-cockpit links restore concrete context: the destination opens the exact run, event, tool call, task, or node that triggered navigation.
+- On mobile, every cockpit remains understandable and teachable, even when some advanced interactions move into drawers, steppers, or reduced-detail views.
+- The experience feels visually premium and intentional: transitions reinforce mental models, animation never blocks comprehension, and the platform reads as one coherent ecosystem rather than isolated demos.
+- Core flows meet defined quality bars for accessibility, reduced motion support, and performance on GitHub Pages deployment targets.
