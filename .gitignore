@@ -54,4 +54,4 @@ mnt/
 .vitest/
 
 # GitHub Pages
-# Note: dist/ is ignored but will be built by GitHub Actions
+# Note: dist/ is ignored but will be built by GitHub Actions.superpowers/
