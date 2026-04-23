@@ -20,27 +20,24 @@ import {
   InstructionConflictDetector,
   SAMPLE_PROMPTS,
 } from '@/components/cockpits/prompt-reality';
-import { useCockpitStore, useModeStore } from '@/lib/store';
+import { usePlatformStore } from '@/lib/store';
+import { useCockpitPage } from '@/lib/cockpitPage';
 import { cn } from '@/lib/utils';
 import type { TokenizerModel } from '@/types';
 
 export const PromptRealityCockpitPage: React.FC = () => {
   const navigate = useNavigate();
-  const { setActiveCockpit } = useCockpitStore();
-  const { setMode } = useModeStore();
+  const { setCompletion } = usePlatformStore();
   const [prompt, setPrompt] = useState('');
   const [model, setModel] = useState<TokenizerModel>('gpt-4');
   const [promptKey, setPromptKey] = useState(0); // Key to force remount when loading sample
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    setActiveCockpit('prompt-reality');
-  }, [setActiveCockpit]);
+  useCockpitPage({ cockpit: 'prompt-reality' });
 
-  // Ensure Advanced Mode is activated when accessing this page
   useEffect(() => {
-    setMode('advanced');
-  }, [setMode]);
+    setCompletion('prompt-reality', prompt ? 'sandbox-built' : 'explored');
+  }, [prompt, setCompletion]);
 
   const handleSelectSample = (samplePrompt: string) => {
     setPrompt(samplePrompt);

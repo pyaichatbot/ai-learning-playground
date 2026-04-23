@@ -18,6 +18,7 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+.venv/
 
 # Logs
 logs
@@ -44,6 +45,8 @@ mnt/
 *.output
 .cache/
 
+.claude/
+
 # TypeScript
 *.tsbuildinfo
 
@@ -55,3 +58,19 @@ mnt/
 
 # GitHub Pages
 # Note: dist/ is ignored but will be built by GitHub Actions.superpowers/
+
+.playwright-mcp/
+
+graphify-out/
+
+.superpowers/
+
+public/
+
+.agents/
+
+.github/
+
+docs/superpowers/*
+
+docs/superpowers/specs/*.md

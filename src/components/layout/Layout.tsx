@@ -16,6 +16,12 @@ import {
   BookOpen,
   GraduationCap,
   Layers,
+  Cable,
+  GitBranch,
+  RadioTower,
+  ScrollText,
+  Shield,
+  Workflow,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore, useModeStore } from '@/lib/store';
@@ -202,8 +208,72 @@ const basicModeNavItems = [
   },
 ];
 
-// Advanced Mode nav items - placeholder for future implementation
-const advancedModeNavItems: typeof basicModeNavItems = [];
+const advancedModeNavItems = [
+  {
+    id: 'cockpits',
+    label: 'Cockpit Map',
+    icon: Layers,
+    path: '/advanced/cockpits',
+    color: 'text-brand-400',
+    description: 'Learning ecosystem',
+  },
+  {
+    id: 'prompt-reality',
+    label: 'Prompt Reality',
+    icon: Brain,
+    path: '/advanced/prompt-reality',
+    color: 'text-accent-violet',
+    description: 'Prompt behavior lab',
+  },
+  {
+    id: 'mcp-inspector',
+    label: 'MCP Inspector',
+    icon: Cable,
+    path: '/advanced/mcp-inspector',
+    color: 'text-accent-cyan',
+    description: 'Registry, gateway, tools',
+  },
+  {
+    id: 'multi-agent',
+    label: 'Multi-Agent',
+    icon: RadioTower,
+    path: '/advanced/multi-agent',
+    color: 'text-accent-emerald',
+    description: 'Orchestration cockpit',
+  },
+  {
+    id: 'subagent-dispatch',
+    label: 'Subagent Dispatch',
+    icon: GitBranch,
+    path: '/advanced/subagent-dispatch',
+    color: 'text-accent-amber',
+    description: 'Spawn tree and costs',
+  },
+  {
+    id: 'agui-stream',
+    label: 'AG-UI Stream',
+    icon: Workflow,
+    path: '/advanced/agui-stream',
+    color: 'text-brand-300',
+    description: 'Event stream protocol',
+  },
+  {
+    id: 'a2a-protocol',
+    label: 'A2A Protocol',
+    icon: Shield,
+    path: '/advanced/a2a-protocol',
+    color: 'text-accent-rose',
+    description: 'Agent cards and tasks',
+  },
+  {
+    id: 'docs',
+    label: 'Design Spec',
+    icon: ScrollText,
+    path: '/advanced/landing',
+    color: 'text-content-muted',
+    description: 'Advanced overview',
+  },
+];
 
 export const Sidebar: React.FC = () => {
   const location = useLocation();
@@ -327,19 +397,23 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { sidebarOpen } = useAppStore();
   const { mode } = useModeStore();
   const location = useLocation();
+  const isImmersiveCockpit =
+    location.pathname.includes('/advanced/mcp-inspector') ||
+    location.pathname.includes('/advanced/multi-agent') ||
+    location.pathname.includes('/advanced/subagent-dispatch');
 
   return (
     <div className="min-h-screen bg-surface">
-      <Header />
-      <Sidebar />
+      {!isImmersiveCockpit ? <Header /> : null}
+      {!isImmersiveCockpit ? <Sidebar /> : null}
       <AnimatePresence mode="wait">
         <motion.main
           key={`${mode}-${location.pathname}`}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1, marginLeft: sidebarOpen ? 280 : 0 }}
+          animate={{ opacity: 1, marginLeft: !isImmersiveCockpit && sidebarOpen ? 280 : 0 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className="pt-16 min-h-screen"
+          className={cn('min-h-screen', !isImmersiveCockpit && 'pt-16')}
         >
           {children}
         </motion.main>

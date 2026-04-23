@@ -26,6 +26,18 @@ import type {
   CockpitType,
 } from '@/types';
 import { generateId } from '@/lib/utils';
+import type {
+  MCPScenario,
+  MCPMessage,
+  MCPConnectionState,
+  MCPTool,
+  MCPResource,
+  MCPPrompt,
+} from './simulation/mcp/types';
+import type {
+  FocusTarget,
+  SessionSnapshot,
+} from './simulation/core/session';
 
 // ============================================
 // App Store
@@ -1904,5 +1916,160 @@ export const useCockpitStore = create<CockpitStore>()(
       },
     }),
     { name: 'CockpitStore' }
+  )
+);
+
+interface MCPStoreState {
+  activeScenario: MCPScenario | null;
+  connectionState: MCPConnectionState;
+  messageLog: MCPMessage[];
+  activeTab: 'explorer' | 'walkthrough' | 'inspector';
+  selectedTreeItem: { type: 'tool' | 'resource' | 'prompt'; name: string } | null;
+  walkthroughStep: number;
+  customTools: MCPTool[];
+  customResources: MCPResource[];
+  customPrompts: MCPPrompt[];
+  setActiveScenario: (scenario: MCPScenario) => void;
+  setConnectionState: (state: MCPConnectionState) => void;
+  appendMessage: (message: MCPMessage) => void;
+  clearMessages: () => void;
+  setActiveTab: (tab: 'explorer' | 'walkthrough' | 'inspector') => void;
+  setSelectedTreeItem: (item: { type: 'tool' | 'resource' | 'prompt'; name: string } | null) => void;
+  setWalkthroughStep: (step: number) => void;
+  addCustomTool: (tool: MCPTool) => void;
+  addCustomResource: (resource: MCPResource) => void;
+  addCustomPrompt: (prompt: MCPPrompt) => void;
+  resetSession: () => void;
+}
+
+export const useMCPStore = create<MCPStoreState>()(
+  devtools(
+    (set) => ({
+      activeScenario: null,
+      connectionState: 'disconnected',
+      messageLog: [],
+      activeTab: 'explorer',
+      selectedTreeItem: null,
+      walkthroughStep: 0,
+      customTools: [],
+      customResources: [],
+      customPrompts: [],
+      setActiveScenario: (scenario) =>
+        set({
+          activeScenario: scenario,
+          connectionState: 'disconnected',
+          messageLog: [],
+        }),
+      setConnectionState: (connectionState) => set({ connectionState }),
+      appendMessage: (message) =>
+        set((state) => ({
+          messageLog: [...state.messageLog, message],
+        })),
+      clearMessages: () => set({ messageLog: [] }),
+      setActiveTab: (activeTab) => set({ activeTab }),
+      setSelectedTreeItem: (selectedTreeItem) => set({ selectedTreeItem }),
+      setWalkthroughStep: (walkthroughStep) => set({ walkthroughStep }),
+      addCustomTool: (tool) =>
+        set((state) => ({
+          customTools: [...state.customTools, tool],
+        })),
+      addCustomResource: (resource) =>
+        set((state) => ({
+          customResources: [...state.customResources, resource],
+        })),
+      addCustomPrompt: (prompt) =>
+        set((state) => ({
+          customPrompts: [...state.customPrompts, prompt],
+        })),
+      resetSession: () =>
+        set({
+          connectionState: 'disconnected',
+          messageLog: [],
+          walkthroughStep: 0,
+          selectedTreeItem: null,
+        }),
+    }),
+    { name: 'mcp-store' }
+  )
+);
+
+export type CockpitCompletionState =
+  | 'not-started'
+  | 'explored'
+  | 'walkthrough-complete'
+  | 'sandbox-built';
+
+export type LearningPathway = 'beginner' | 'builder' | 'expert';
+
+interface PlatformStore {
+  pathway: LearningPathway;
+  completion: Partial<Record<CockpitType, CockpitCompletionState>>;
+  activeSessionId: string | null;
+  playbackSnapshotId: string | null;
+  snapshots: SessionSnapshot[];
+  focusTarget: FocusTarget | null;
+  lastVisitedCockpit: CockpitType | null;
+  glossaryOpen: boolean;
+  setPathway: (pathway: LearningPathway) => void;
+  setCompletion: (cockpit: CockpitType, state: CockpitCompletionState) => void;
+  startSession: (sessionId: string) => void;
+  storeSnapshot: (snapshot: SessionSnapshot) => void;
+  setFocusTarget: (focusTarget: FocusTarget | null) => void;
+  setLastVisitedCockpit: (cockpit: CockpitType | null) => void;
+  setPlaybackSnapshotId: (snapshotId: string | null) => void;
+  toggleGlossary: () => void;
+}
+
+export const usePlatformStore = create<PlatformStore>()(
+  devtools(
+    persist(
+      (set) => ({
+        pathway: 'beginner',
+        completion: {},
+        activeSessionId: null,
+        playbackSnapshotId: null,
+        snapshots: [],
+        focusTarget: null,
+        lastVisitedCockpit: null,
+        glossaryOpen: false,
+        setPathway: (pathway) => set({ pathway }),
+        setCompletion: (cockpit, state) =>
+          set((current) => ({
+            completion: {
+              ...current.completion,
+              [cockpit]: state,
+            },
+          })),
+        startSession: (sessionId) =>
+          set({
+            activeSessionId: sessionId,
+          }),
+        storeSnapshot: (snapshot) =>
+          set((current) => ({
+            activeSessionId: snapshot.sessionId,
+            snapshots: [
+              snapshot,
+              ...current.snapshots.filter((item) => item.id !== snapshot.id),
+            ].slice(0, 25),
+          })),
+        setFocusTarget: (focusTarget) => set({ focusTarget }),
+        setLastVisitedCockpit: (lastVisitedCockpit) => set({ lastVisitedCockpit }),
+        setPlaybackSnapshotId: (playbackSnapshotId) => set({ playbackSnapshotId }),
+        toggleGlossary: () =>
+          set((current) => ({
+            glossaryOpen: !current.glossaryOpen,
+          })),
+      }),
+      {
+        name: 'platform-store',
+        partialize: (state) => ({
+          pathway: state.pathway,
+          completion: state.completion,
+          snapshots: state.snapshots,
+          lastVisitedCockpit: state.lastVisitedCockpit,
+        }),
+      }
+    ),
+    { name: 'PlatformStore' }
   )
 );

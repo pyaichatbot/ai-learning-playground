@@ -8,7 +8,18 @@
 
 import type { PlaygroundMode } from '@/types';
 
-export type CockpitType = 'prompt-reality' | 'retrieval-reality' | 'cost-reality' | 'agent-reality';
+export type CockpitType =
+  | 'prompt-reality'
+  | 'retrieval-reality'
+  | 'cost-reality'
+  | 'agent-reality'
+  | 'mcp-inspector'
+  | 'multi-agent'
+  | 'subagent-dispatch'
+  | 'agui-stream'
+  | 'a2a-protocol'
+  | 'llm-finetuning'
+  | 'workflow-dag';
 
 /**
  * Check if a path is a cockpit route
@@ -29,7 +40,19 @@ export const getCockpitFromPath = (path: string): CockpitType | null => {
   if (!cockpitMatch) return null;
   
   const cockpit = cockpitMatch[1] as CockpitType;
-  const validCockpits: CockpitType[] = ['prompt-reality', 'retrieval-reality', 'cost-reality', 'agent-reality'];
+  const validCockpits: CockpitType[] = [
+    'prompt-reality',
+    'retrieval-reality',
+    'cost-reality',
+    'agent-reality',
+    'mcp-inspector',
+    'multi-agent',
+    'subagent-dispatch',
+    'agui-stream',
+    'a2a-protocol',
+    'llm-finetuning',
+    'workflow-dag',
+  ];
   
   return validCockpits.includes(cockpit) ? cockpit : null;
 };

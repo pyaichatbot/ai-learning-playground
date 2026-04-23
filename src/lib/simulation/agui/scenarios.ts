@@ -1,0 +1,146 @@
+import type { AGUIScenario } from './types';
+
+export const AGUI_SCENARIOS: AGUIScenario[] = [
+  {
+    id: 'agent-assist',
+    name: 'Agent Assist Session',
+    description: 'A single agent streams UI state, invokes a tool, and completes the run.',
+    category: 'assistant',
+    events: [
+      {
+        type: 'session.started',
+        source: 'server',
+        title: 'Session opened',
+        summary: 'Browser subscribes to the AG-UI event stream.',
+        payload: { sessionId: 'assist-001', transport: 'sse' },
+      },
+      {
+        type: 'run.created',
+        source: 'server',
+        title: 'Run created',
+        summary: 'Backend creates a new interactive run for the assistant.',
+        payload: { runId: 'run-assist-1', agent: 'support-assistant' },
+        focus: [{ cockpit: 'multi-agent', targetId: 'brief-root', targetType: 'task' }],
+      },
+      {
+        type: 'message.delta',
+        source: 'agent',
+        title: 'Assistant stream begins',
+        summary: 'The model starts emitting user-visible text.',
+        body: 'I am reviewing the latest product signals before I recommend the next cockpit.',
+        tags: ['token-stream'],
+      },
+      {
+        type: 'tool.called',
+        source: 'agent',
+        title: 'Tool call requested',
+        summary: 'The agent asks the browser shell to fetch the latest scenario metadata.',
+        payload: { tool: 'fetchScenarioMeta', args: { cockpit: 'mcp-inspector' } },
+        focus: [{ cockpit: 'multi-agent', targetId: 'brief-analysis', targetType: 'task' }],
+      },
+      {
+        type: 'tool.output',
+        source: 'server',
+        title: 'Tool result returned',
+        summary: 'The shell resolves the metadata request and returns structured data.',
+        payload: { tool: 'fetchScenarioMeta', result: { availableTabs: 3, messages: 14 } },
+      },
+      {
+        type: 'state.updated',
+        source: 'ui',
+        title: 'UI patch applied',
+        summary: 'The client patches the visible inspector state without reloading the page.',
+        payload: { patch: 'inspector.selectedTool = fetchScenarioMeta' },
+      },
+      {
+        type: 'run.completed',
+        source: 'server',
+        title: 'Run completed',
+        summary: 'The backend marks the run complete and closes the stream cleanly.',
+        payload: { runId: 'run-assist-1', status: 'completed' },
+      },
+    ],
+  },
+  {
+    id: 'handoff-review',
+    name: 'Human Review Handoff',
+    description: 'A run pauses for review, updates the UI, then continues to completion.',
+    category: 'human-in-loop',
+    events: [
+      {
+        type: 'session.started',
+        source: 'server',
+        title: 'Stream subscribed',
+        summary: 'The web client opens a long-lived event stream.',
+      },
+      {
+        type: 'run.created',
+        source: 'server',
+        title: 'Review run created',
+        summary: 'A run is created for a gated approval step.',
+        payload: { runId: 'review-33', gate: 'human-review' },
+        focus: [{ cockpit: 'multi-agent', targetId: 'dispatch-root', targetType: 'task' }],
+      },
+      {
+        type: 'state.updated',
+        source: 'ui',
+        title: 'Approval drawer opened',
+        summary: 'The app surfaces a review card for the user to inspect.',
+        payload: { drawer: 'approval', state: 'open' },
+      },
+      {
+        type: 'message.delta',
+        source: 'agent',
+        title: 'Agent explains the gate',
+        summary: 'The model explains why approval is needed before proceeding.',
+        body: 'I found a risk signal that requires a human decision before continuing.',
+      },
+      {
+        type: 'run.completed',
+        source: 'server',
+        title: 'Review acknowledged',
+        summary: 'The human approves the step and the run completes.',
+        payload: { runId: 'review-33', resolution: 'approved' },
+      },
+    ],
+  },
+  {
+    id: 'error-recovery',
+    name: 'Error Recovery',
+    description: 'The stream encounters a failure, renders the error, and ends in a recoverable state.',
+    category: 'handoff',
+    events: [
+      {
+        type: 'session.started',
+        source: 'server',
+        title: 'Session started',
+        summary: 'AG-UI transport opens successfully.',
+      },
+      {
+        type: 'run.created',
+        source: 'server',
+        title: 'Recovery run created',
+        summary: 'A run begins for a delegated protocol check.',
+        focus: [{ cockpit: 'multi-agent', targetId: 'network-root', targetType: 'task' }],
+      },
+      {
+        type: 'tool.called',
+        source: 'agent',
+        title: 'Remote tool invoked',
+        summary: 'The agent calls an upstream runtime dependency.',
+        payload: { tool: 'remoteLookup', args: { endpoint: 'a2a-discovery' } },
+      },
+      {
+        type: 'run.failed',
+        source: 'server',
+        title: 'Transport error raised',
+        summary: 'The runtime surfaces an upstream error to the client.',
+        body: 'A dependency timed out while resolving the remote card catalog.',
+        tags: ['error', 'recovery'],
+        payload: { code: 'UPSTREAM_TIMEOUT', retryable: true },
+      },
+    ],
+  },
+];
+
+export const DEFAULT_AGUI_SCENARIO = AGUI_SCENARIOS[0];

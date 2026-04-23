@@ -17,6 +17,11 @@ describe('Navigation Guard', () => {
     it('should return true for cockpit routes', () => {
       expect(isCockpitRoute('/advanced/prompt-reality')).toBe(true);
       expect(isCockpitRoute('/advanced/retrieval-reality')).toBe(true);
+      expect(isCockpitRoute('/advanced/mcp-inspector')).toBe(true);
+      expect(isCockpitRoute('/advanced/agui-stream')).toBe(true);
+      expect(isCockpitRoute('/advanced/a2a-protocol')).toBe(true);
+      expect(isCockpitRoute('/advanced/multi-agent')).toBe(true);
+      expect(isCockpitRoute('/advanced/subagent-dispatch')).toBe(true);
     });
 
     it('should return false for landing page', () => {
@@ -39,6 +44,11 @@ describe('Navigation Guard', () => {
       expect(getCockpitFromPath('/advanced/retrieval-reality')).toBe('retrieval-reality');
       expect(getCockpitFromPath('/advanced/cost-reality')).toBe('cost-reality');
       expect(getCockpitFromPath('/advanced/agent-reality')).toBe('agent-reality');
+      expect(getCockpitFromPath('/advanced/mcp-inspector')).toBe('mcp-inspector');
+      expect(getCockpitFromPath('/advanced/agui-stream')).toBe('agui-stream');
+      expect(getCockpitFromPath('/advanced/a2a-protocol')).toBe('a2a-protocol');
+      expect(getCockpitFromPath('/advanced/multi-agent')).toBe('multi-agent');
+      expect(getCockpitFromPath('/advanced/subagent-dispatch')).toBe('subagent-dispatch');
     });
 
     it('should return null for invalid paths', () => {
@@ -52,6 +62,11 @@ describe('Navigation Guard', () => {
     it('should return false for root cockpit paths', () => {
       expect(hasNestedRoutes('/advanced/prompt-reality')).toBe(false);
       expect(hasNestedRoutes('/advanced/retrieval-reality')).toBe(false);
+      expect(hasNestedRoutes('/advanced/mcp-inspector')).toBe(false);
+      expect(hasNestedRoutes('/advanced/agui-stream')).toBe(false);
+      expect(hasNestedRoutes('/advanced/a2a-protocol')).toBe(false);
+      expect(hasNestedRoutes('/advanced/multi-agent')).toBe(false);
+      expect(hasNestedRoutes('/advanced/subagent-dispatch')).toBe(false);
     });
 
     it('should return true for nested paths', () => {
@@ -69,6 +84,9 @@ describe('Navigation Guard', () => {
     it('should return root path for cockpit routes', () => {
       expect(getCockpitRootPath('/advanced/prompt-reality')).toBe('/advanced/prompt-reality');
       expect(getCockpitRootPath('/advanced/prompt-reality/tab1')).toBe('/advanced/prompt-reality');
+      expect(getCockpitRootPath('/advanced/mcp-inspector/payload')).toBe('/advanced/mcp-inspector');
+      expect(getCockpitRootPath('/advanced/agui-stream/event')).toBe('/advanced/agui-stream');
+      expect(getCockpitRootPath('/advanced/multi-agent/graph')).toBe('/advanced/multi-agent');
     });
 
     it('should return null for non-cockpit routes', () => {
@@ -95,6 +113,31 @@ describe('Navigation Guard', () => {
 
     it('should allow direct cockpit navigation in Advanced Mode', () => {
       const result = validateAdvancedModeNavigation('/advanced/landing', '/advanced/prompt-reality', 'advanced');
+      expect(result.allowed).toBe(true);
+    });
+
+    it('should allow direct MCP cockpit navigation in Advanced Mode', () => {
+      const result = validateAdvancedModeNavigation(
+        '/advanced/landing',
+        '/advanced/mcp-inspector',
+        'advanced'
+      );
+      expect(result.allowed).toBe(true);
+    });
+
+    it('should allow direct Tranche C cockpit navigation in Advanced Mode', () => {
+      const agui = validateAdvancedModeNavigation('/advanced/landing', '/advanced/agui-stream', 'advanced');
+      const a2a = validateAdvancedModeNavigation('/advanced/landing', '/advanced/a2a-protocol', 'advanced');
+      expect(agui.allowed).toBe(true);
+      expect(a2a.allowed).toBe(true);
+    });
+
+    it('should allow direct Phase 4 cockpit navigation in Advanced Mode', () => {
+      const result = validateAdvancedModeNavigation(
+        '/advanced/landing',
+        '/advanced/subagent-dispatch',
+        'advanced'
+      );
       expect(result.allowed).toBe(true);
     });
 
@@ -132,6 +175,18 @@ describe('Navigation Guard', () => {
       const result = enforceCockpitRules(null, 'prompt-reality');
       expect(result.allowed).toBe(true);
       expect(result.previousCockpit).toBe(null);
+    });
+
+    it('should allow switching to MCP cockpit', () => {
+      const result = enforceCockpitRules('prompt-reality', 'mcp-inspector');
+      expect(result.allowed).toBe(true);
+      expect(result.previousCockpit).toBe('prompt-reality');
+    });
+
+    it('should allow switching to Multi-Agent cockpit', () => {
+      const result = enforceCockpitRules('mcp-inspector', 'multi-agent');
+      expect(result.allowed).toBe(true);
+      expect(result.previousCockpit).toBe('mcp-inspector');
     });
   });
 });

@@ -21,9 +21,9 @@ describe('Cockpit Store', () => {
   });
 
   it('should allow setting active cockpit', () => {
-    useCockpitStore.getState().setActiveCockpit('prompt-reality');
+    useCockpitStore.getState().setActiveCockpit('mcp-inspector');
     const state = useCockpitStore.getState();
-    expect(state.activeCockpit).toBe('prompt-reality');
+    expect(state.activeCockpit).toBe('mcp-inspector');
   });
 
   it('should enforce one cockpit at a time when switching', () => {
@@ -68,5 +68,32 @@ describe('Cockpit Store', () => {
     const secondState = useCockpitStore.getState();
     
     expect(secondState.previousCockpit).toBe(firstState.activeCockpit);
+  });
+
+  it('should track MCP cockpit when switching from another cockpit', () => {
+    useCockpitStore.getState().setActiveCockpit('prompt-reality');
+    useCockpitStore.getState().setActiveCockpit('mcp-inspector');
+
+    const state = useCockpitStore.getState();
+    expect(state.activeCockpit).toBe('mcp-inspector');
+    expect(state.previousCockpit).toBe('prompt-reality');
+  });
+
+  it('should track Phase 4 cockpit switching', () => {
+    useCockpitStore.getState().setActiveCockpit('multi-agent');
+    useCockpitStore.getState().setActiveCockpit('subagent-dispatch');
+
+    const state = useCockpitStore.getState();
+    expect(state.activeCockpit).toBe('subagent-dispatch');
+    expect(state.previousCockpit).toBe('multi-agent');
+  });
+
+  it('should track Tranche C cockpit switching', () => {
+    useCockpitStore.getState().setActiveCockpit('agui-stream');
+    useCockpitStore.getState().setActiveCockpit('a2a-protocol');
+
+    const state = useCockpitStore.getState();
+    expect(state.activeCockpit).toBe('a2a-protocol');
+    expect(state.previousCockpit).toBe('agui-stream');
   });
 });

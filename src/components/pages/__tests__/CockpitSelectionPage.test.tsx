@@ -31,12 +31,14 @@ describe('CockpitSelectionPage', () => {
     );
 
     expect(screen.getByText('Prompt Reality Cockpit')).toBeInTheDocument();
-    expect(screen.getByText('Retrieval Reality Cockpit')).toBeInTheDocument();
-    expect(screen.getByText('Cost Reality Cockpit')).toBeInTheDocument();
-    expect(screen.getByText('Agent Reality Cockpit')).toBeInTheDocument();
+    expect(screen.getAllByText('MCP Protocol Inspector').length).toBeGreaterThan(0);
+    expect(screen.getByText('Multi-Agent Orchestration')).toBeInTheDocument();
+    expect(screen.getByText('Subagent Dispatch Tree')).toBeInTheDocument();
+    expect(screen.getByText('AG-UI Event Stream')).toBeInTheDocument();
+    expect(screen.getByText('Workflow & DAG Visualizer')).toBeInTheDocument();
   });
 
-  it('should navigate to available cockpit', () => {
+  it('should navigate to available prompt cockpit', () => {
     render(
       <MemoryRouter>
         <CockpitSelectionPage />
@@ -50,6 +52,45 @@ describe('CockpitSelectionPage', () => {
     expect(useCockpitStore.getState().activeCockpit).toBe('prompt-reality');
   });
 
+  it('should navigate to available MCP cockpit', () => {
+    render(
+      <MemoryRouter>
+        <CockpitSelectionPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getAllByText('MCP Protocol Inspector')[1]);
+
+    expect(mockNavigate).toHaveBeenCalledWith('/advanced/mcp-inspector');
+    expect(useCockpitStore.getState().activeCockpit).toBe('mcp-inspector');
+  });
+
+  it('should navigate to available Multi-Agent cockpit', () => {
+    render(
+      <MemoryRouter>
+        <CockpitSelectionPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByText('Multi-Agent Orchestration'));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/advanced/multi-agent');
+    expect(useCockpitStore.getState().activeCockpit).toBe('multi-agent');
+  });
+
+  it('should navigate to available AG-UI cockpit', () => {
+    render(
+      <MemoryRouter>
+        <CockpitSelectionPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByText('AG-UI Event Stream'));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/advanced/agui-stream');
+    expect(useCockpitStore.getState().activeCockpit).toBe('agui-stream');
+  });
+
   it('should not navigate to coming soon cockpits', () => {
     render(
       <MemoryRouter>
@@ -57,7 +98,7 @@ describe('CockpitSelectionPage', () => {
       </MemoryRouter>
     );
 
-    const retrievalCockpit = screen.getByText('Retrieval Reality Cockpit');
+    const retrievalCockpit = screen.getByText('LLM Fine-Tuning Animator');
     fireEvent.click(retrievalCockpit);
 
     expect(mockNavigate).not.toHaveBeenCalled();

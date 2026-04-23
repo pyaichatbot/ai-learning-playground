@@ -7,7 +7,22 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from '@/components/layout';
 import { SettingsProvider } from '@/components/shared';
 import { RouteGuard } from '@/components/navigation';
-import { HomePage, RAGStudioPage, AgentLabPage, MultiAgentArenaPage, PromptReasoningPage, LLMTrainingPage, AdvancedModeLandingPage, CockpitSelectionPage, PromptRealityCockpitPage } from '@/components/pages';
+import {
+  HomePage,
+  RAGStudioPage,
+  AgentLabPage,
+  MultiAgentArenaPage,
+  PromptReasoningPage,
+  LLMTrainingPage,
+  AdvancedModeLandingPage,
+  AGUIEventStreamPage,
+  A2AProtocolVisualizerPage,
+  CockpitSelectionPage,
+  MCPInspectorPage,
+  MultiAgentOrchestrationPage,
+  PromptRealityCockpitPage,
+  SubagentDispatchPage,
+} from '@/components/pages';
 import { BasicModeContainer } from '@/components/modes';
 
 export const App: React.FC = () => {
@@ -45,6 +60,11 @@ export const App: React.FC = () => {
               <Route path="landing" element={<AdvancedModeLandingPage />} />
               <Route path="cockpits" element={<CockpitSelectionPage />} />
               <Route path="prompt-reality" element={<PromptRealityCockpitPage />} />
+              <Route path="mcp-inspector" element={<MCPInspectorPage />} />
+              <Route path="agui-stream" element={<AGUIEventStreamPage />} />
+              <Route path="a2a-protocol" element={<A2AProtocolVisualizerPage />} />
+              <Route path="multi-agent" element={<MultiAgentOrchestrationPage />} />
+              <Route path="subagent-dispatch" element={<SubagentDispatchPage />} />
               <Route path="*" element={<Navigate to="/advanced/landing" replace />} />
             </Route>
             

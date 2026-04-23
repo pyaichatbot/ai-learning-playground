@@ -12,7 +12,18 @@ export type ModuleType = 'rag' | 'agents' | 'multi-agent' | 'reasoning';
 
 export type PlaygroundMode = 'basic' | 'advanced';
 
-export type CockpitType = 'prompt-reality' | 'retrieval-reality' | 'cost-reality' | 'agent-reality';
+export type CockpitType =
+  | 'prompt-reality'
+  | 'retrieval-reality'
+  | 'cost-reality'
+  | 'agent-reality'
+  | 'mcp-inspector'
+  | 'multi-agent'
+  | 'subagent-dispatch'
+  | 'agui-stream'
+  | 'a2a-protocol'
+  | 'llm-finetuning'
+  | 'workflow-dag';
 
 export interface Position {
   x: number;

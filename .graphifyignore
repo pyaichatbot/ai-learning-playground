@@ -1,0 +1,18 @@
+# Dependencies and local environments
+node_modules/
+.venv/
+
+# Build and test output
+dist/
+build/
+coverage/
+.vite/
+.vitest/
+
+# Generated assistant and graph files
+.github/copilot-instructions.md
+graphify-out/
+
+# Local/generated workspace artifacts
+.superpowers/
+.DS_Store

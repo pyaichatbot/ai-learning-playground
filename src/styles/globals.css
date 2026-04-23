@@ -9,12 +9,31 @@
 
 @layer base {
   :root {
+    /* Deep Space design tokens */
+    --void: #020810;
+    --void-near: #060d1a;
+    --void-panel: #0a1628;
+    --void-rim: #0f2040;
+    --signal: #00d4ff;
+    --signal-dim: #0090b8;
+    --signal-glow: #003d4d;
+    --telemetry: #f0c060;
+    --telemetry-dim: #7a6030;
+    --nominal: #3ddc84;
+    --nominal-dim: #1e6e42;
+    --caution: #ffa040;
+    --critical: #ff4060;
+    --critical-glow: #4d0014;
+    --text-primary: #e8f4ff;
+    --text-secondary: #7aa4cc;
+    --text-dim: #2a4060;
+
     /* Color tokens - Dark theme (default) */
-    --color-surface: 15 23 42; /* slate-900 */
-    --color-surface-elevated: 30 41 59; /* slate-800 */
-    --color-surface-muted: 51 65 85; /* slate-700 */
-    --color-surface-bright: 71 85 105; /* slate-600 */
-    --color-brand: 6 182 212; /* cyan-500 */
+    --color-surface: 2 8 16;
+    --color-surface-elevated: 6 13 26;
+    --color-surface-muted: 10 22 40;
+    --color-surface-bright: 15 32 64;
+    --color-brand: 0 212 255;
     --color-accent-violet: 139 92 246;
     --color-accent-emerald: 16 185 129;
     --color-content: 248 250 252; /* slate-50 */
@@ -87,11 +106,13 @@
 
   body {
     @apply font-body min-h-screen;
-    background-color: rgb(var(--color-surface));
-    background-image: 
-      radial-gradient(ellipse at top, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
-      radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
+    background-color: var(--void);
+    background-image:
+      radial-gradient(circle at 50% -20%, rgba(0, 212, 255, 0.11) 0%, transparent 34%),
+      radial-gradient(circle at 82% 12%, rgba(61, 220, 132, 0.055) 0%, transparent 24%),
+      linear-gradient(rgba(0, 212, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.025) 1px, transparent 1px);
+    background-size: auto, auto, 56px 56px, 56px 56px;
     background-attachment: fixed;
   }
 
@@ -130,12 +151,121 @@
 
 @layer components {
   /* ============================================
+     Deep Space HUD primitives
+     ============================================ */
+  .deep-space-void {
+    background:
+      radial-gradient(circle at 42% 38%, rgba(0, 212, 255, 0.08), transparent 28%),
+      radial-gradient(circle at 66% 20%, rgba(240, 192, 96, 0.055), transparent 18%),
+      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      var(--void);
+    background-size: auto, auto, 64px 64px, 64px 64px, auto;
+  }
+
+  .hud-panel {
+    background: rgba(10, 22, 40, 0.72);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(0, 212, 255, 0.12);
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 1px rgba(0, 212, 255, 0.06),
+      0 8px 32px rgba(0, 0, 0, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .hud-label {
+    font-family: JetBrains Mono, Menlo, monospace;
+    font-size: 0.625rem;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .hud-value {
+    font-family: JetBrains Mono, Menlo, monospace;
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    color: var(--telemetry);
+  }
+
+  .method-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    background: rgba(0, 212, 255, 0.1);
+    padding: 2px 8px;
+    font-family: JetBrains Mono, Menlo, monospace;
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    color: var(--signal);
+  }
+
+  .protocol-node {
+    border-radius: 9999px;
+    border: 2px solid var(--signal);
+    background: rgba(0, 212, 255, 0.08);
+    box-shadow:
+      0 0 16px rgba(0, 212, 255, 0.18),
+      0 0 40px rgba(0, 212, 255, 0.08);
+  }
+
+  .packet-dot {
+    border-radius: 9999px;
+    background: var(--signal);
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.82);
+  }
+
+  .mcp-hud-button {
+    display: inline-flex;
+    height: 36px;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid rgba(0, 212, 255, 0.22);
+    background: rgba(2, 8, 16, 0.5);
+    padding: 0 0.8rem;
+    font-family: JetBrains Mono, Menlo, monospace;
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    color: var(--signal);
+    transition:
+      border-color 180ms ease,
+      background 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .mcp-hud-button:hover {
+    border-color: rgba(0, 212, 255, 0.58);
+    background: rgba(0, 212, 255, 0.1);
+    box-shadow: 0 0 22px rgba(0, 212, 255, 0.14);
+  }
+
+  .mcp-hud-button:disabled {
+    cursor: wait;
+    opacity: 0.72;
+  }
+
+  .mcp-flow-route {
+    animation: mcp-flow-dash 900ms linear infinite;
+  }
+
+  /* ============================================
      Card Components
      ============================================ */
   .card {
-    @apply bg-surface-elevated/80 backdrop-blur-sm 
-           border border-surface-muted/50 rounded-xl
-           shadow-lg transition-all duration-300;
+    @apply transition-all duration-300;
+    background: rgba(10, 22, 40, 0.72);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(0, 212, 255, 0.12);
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 1px rgba(0, 212, 255, 0.06),
+      0 8px 32px rgba(0, 0, 0, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
   .card-hover {
@@ -151,26 +281,28 @@
      ============================================ */
   .btn {
     @apply inline-flex items-center justify-center gap-2
-           px-4 py-2 rounded-lg font-medium
+           px-4 py-2 rounded-md font-medium
            transition-all duration-200
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-primary {
-    @apply btn bg-brand-500 text-white
-           hover:bg-brand-600 active:bg-brand-700
-           shadow-md hover:shadow-glow-sm;
+    @apply btn text-content;
+    background: rgba(0, 212, 255, 0.12);
+    border: 1px solid rgba(0, 212, 255, 0.32);
+    box-shadow: 0 0 18px rgba(0, 212, 255, 0.14);
   }
 
   .btn-secondary {
-    @apply btn bg-surface-muted text-content
-           hover:bg-surface-bright active:bg-surface-muted
-           border border-surface-bright;
+    @apply btn text-content;
+    background: rgba(10, 22, 40, 0.56);
+    border: 1px solid rgba(0, 212, 255, 0.16);
   }
 
   .btn-ghost {
     @apply btn text-content-muted
-           hover:text-content hover:bg-surface-muted/50;
+           hover:text-content;
+    background: transparent;
   }
 
   .btn-icon {
@@ -199,7 +331,11 @@
      ============================================ */
   .badge {
     @apply inline-flex items-center px-2.5 py-0.5
-           text-xs font-medium rounded-full;
+           text-xs font-medium rounded;
+    font-family: JetBrains Mono, Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
   .badge-cyan {
@@ -435,6 +571,12 @@
   }
   100% {
     background-position: 200% 0;
+  }
+}
+
+@keyframes mcp-flow-dash {
+  to {
+    stroke-dashoffset: -22;
   }
 }
 
