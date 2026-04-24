@@ -21,7 +21,6 @@ import {
   RadioTower,
   ScrollText,
   Shield,
-  Workflow,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore, useModeStore } from '@/lib/store';
@@ -250,12 +249,12 @@ const advancedModeNavItems = [
     description: 'Spawn tree and costs',
   },
   {
-    id: 'agui-stream',
-    label: 'AG-UI Stream',
-    icon: Workflow,
-    path: '/advanced/agui-stream',
-    color: 'text-brand-300',
-    description: 'Event stream protocol',
+    id: 'agent-runtime',
+    label: 'Agent Runtime',
+    icon: Bot,
+    path: '/advanced/agent-runtime',
+    color: 'text-accent-cyan',
+    description: 'MCP, tools, skills',
   },
   {
     id: 'a2a-protocol',
@@ -400,7 +399,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const isImmersiveCockpit =
     location.pathname.includes('/advanced/mcp-inspector') ||
     location.pathname.includes('/advanced/multi-agent') ||
-    location.pathname.includes('/advanced/subagent-dispatch');
+    location.pathname.includes('/advanced/subagent-dispatch') ||
+    location.pathname.includes('/advanced/agent-runtime') ||
+    location.pathname.includes('/advanced/a2a-protocol');
 
   return (
     <div className="min-h-screen bg-surface">

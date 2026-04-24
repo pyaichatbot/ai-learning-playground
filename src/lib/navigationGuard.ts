@@ -16,6 +16,7 @@ export type CockpitType =
   | 'mcp-inspector'
   | 'multi-agent'
   | 'subagent-dispatch'
+  | 'agent-runtime'
   | 'agui-stream'
   | 'a2a-protocol'
   | 'llm-finetuning'
@@ -48,6 +49,7 @@ export const getCockpitFromPath = (path: string): CockpitType | null => {
     'mcp-inspector',
     'multi-agent',
     'subagent-dispatch',
+    'agent-runtime',
     'agui-stream',
     'a2a-protocol',
     'llm-finetuning',

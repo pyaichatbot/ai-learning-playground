@@ -11,6 +11,7 @@ export { LLMTrainingPage } from './LLMTrainingPage';
 export { AdvancedModeLandingPage } from './AdvancedModeLandingPage';
 export { CockpitSelectionPage } from './CockpitSelectionPage';
 export { AGUIEventStreamPage } from './AGUIEventStreamPage';
+export { AgentRuntimePage } from './AgentRuntimePage';
 export { A2AProtocolVisualizerPage } from './A2AProtocolVisualizerPage';
 export { MCPInspectorPage } from './MCPInspectorPage';
 export { MultiAgentOrchestrationPage } from './MultiAgentOrchestrationPage';

@@ -20,6 +20,7 @@ export type CockpitType =
   | 'mcp-inspector'
   | 'multi-agent'
   | 'subagent-dispatch'
+  | 'agent-runtime'
   | 'agui-stream'
   | 'a2a-protocol'
   | 'llm-finetuning'

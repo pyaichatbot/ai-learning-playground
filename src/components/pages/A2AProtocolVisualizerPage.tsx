@@ -12,7 +12,7 @@ export const A2AProtocolVisualizerPage: React.FC = () => {
   }, [setCompletion]);
 
   return (
-    <div className="h-screen overflow-hidden bg-surface text-content">
+    <div className="h-screen overflow-hidden bg-[#020810] text-[#e8f4ff]">
       <A2AProtocolVisualizerCockpit />
     </div>
   );

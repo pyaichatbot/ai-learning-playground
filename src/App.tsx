@@ -16,6 +16,7 @@ import {
   LLMTrainingPage,
   AdvancedModeLandingPage,
   AGUIEventStreamPage,
+  AgentRuntimePage,
   A2AProtocolVisualizerPage,
   CockpitSelectionPage,
   MCPInspectorPage,
@@ -62,6 +63,7 @@ export const App: React.FC = () => {
               <Route path="prompt-reality" element={<PromptRealityCockpitPage />} />
               <Route path="mcp-inspector" element={<MCPInspectorPage />} />
               <Route path="agui-stream" element={<AGUIEventStreamPage />} />
+              <Route path="agent-runtime" element={<AgentRuntimePage />} />
               <Route path="a2a-protocol" element={<A2AProtocolVisualizerPage />} />
               <Route path="multi-agent" element={<MultiAgentOrchestrationPage />} />
               <Route path="subagent-dispatch" element={<SubagentDispatchPage />} />

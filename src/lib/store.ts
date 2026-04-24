@@ -34,6 +34,7 @@ import type {
   MCPResource,
   MCPPrompt,
 } from './simulation/mcp/types';
+import type { A2AStoreState } from './simulation/a2a/types';
 import type {
   FocusTarget,
   SessionSnapshot,
@@ -1990,6 +1991,55 @@ export const useMCPStore = create<MCPStoreState>()(
         }),
     }),
     { name: 'mcp-store' }
+  )
+);
+
+export const useA2AStore = create<A2AStoreState>()(
+  devtools(
+    (set) => ({
+      activeScenario: null,
+      connectionState: 'idle',
+      taskState: null,
+      messageLog: [],
+      activeTab: 'cards',
+      selectedCardAgent: null,
+      isReplaying: false,
+      replayStep: 0,
+      setActiveScenario: (activeScenario) =>
+        set({
+          activeScenario,
+          connectionState: 'idle',
+          taskState: null,
+          messageLog: [],
+          isReplaying: false,
+          replayStep: 0,
+          selectedCardAgent: null,
+        }),
+      setConnectionState: (connectionState) => set({ connectionState }),
+      setTaskState: (taskState) => set({ taskState }),
+      appendMessage: (message) =>
+        set((state) => ({
+          messageLog: [...state.messageLog, message],
+          replayStep: state.replayStep + 1,
+        })),
+      clearMessages: () => set({ messageLog: [], replayStep: 0 }),
+      setActiveTab: (activeTab) => set({ activeTab }),
+      setSelectedCardAgent: (selectedCardAgent) => set({ selectedCardAgent }),
+      setIsReplaying: (isReplaying) => set({ isReplaying }),
+      setReplayStep: (replayStep) => set({ replayStep }),
+      resetSession: () =>
+        set((state) => ({
+          activeScenario: state.activeScenario,
+          connectionState: 'idle',
+          taskState: null,
+          messageLog: [],
+          activeTab: state.activeTab,
+          selectedCardAgent: null,
+          isReplaying: false,
+          replayStep: 0,
+        })),
+    }),
+    { name: 'a2a-store' }
   )
 );
 

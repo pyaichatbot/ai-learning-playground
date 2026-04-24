@@ -20,6 +20,7 @@ describe('Navigation Guard', () => {
       expect(isCockpitRoute('/advanced/mcp-inspector')).toBe(true);
       expect(isCockpitRoute('/advanced/agui-stream')).toBe(true);
       expect(isCockpitRoute('/advanced/a2a-protocol')).toBe(true);
+      expect(isCockpitRoute('/advanced/agent-runtime')).toBe(true);
       expect(isCockpitRoute('/advanced/multi-agent')).toBe(true);
       expect(isCockpitRoute('/advanced/subagent-dispatch')).toBe(true);
     });
@@ -47,6 +48,7 @@ describe('Navigation Guard', () => {
       expect(getCockpitFromPath('/advanced/mcp-inspector')).toBe('mcp-inspector');
       expect(getCockpitFromPath('/advanced/agui-stream')).toBe('agui-stream');
       expect(getCockpitFromPath('/advanced/a2a-protocol')).toBe('a2a-protocol');
+      expect(getCockpitFromPath('/advanced/agent-runtime')).toBe('agent-runtime');
       expect(getCockpitFromPath('/advanced/multi-agent')).toBe('multi-agent');
       expect(getCockpitFromPath('/advanced/subagent-dispatch')).toBe('subagent-dispatch');
     });
@@ -65,6 +67,7 @@ describe('Navigation Guard', () => {
       expect(hasNestedRoutes('/advanced/mcp-inspector')).toBe(false);
       expect(hasNestedRoutes('/advanced/agui-stream')).toBe(false);
       expect(hasNestedRoutes('/advanced/a2a-protocol')).toBe(false);
+      expect(hasNestedRoutes('/advanced/agent-runtime')).toBe(false);
       expect(hasNestedRoutes('/advanced/multi-agent')).toBe(false);
       expect(hasNestedRoutes('/advanced/subagent-dispatch')).toBe(false);
     });
@@ -128,8 +131,10 @@ describe('Navigation Guard', () => {
     it('should allow direct Tranche C cockpit navigation in Advanced Mode', () => {
       const agui = validateAdvancedModeNavigation('/advanced/landing', '/advanced/agui-stream', 'advanced');
       const a2a = validateAdvancedModeNavigation('/advanced/landing', '/advanced/a2a-protocol', 'advanced');
+      const runtime = validateAdvancedModeNavigation('/advanced/landing', '/advanced/agent-runtime', 'advanced');
       expect(agui.allowed).toBe(true);
       expect(a2a.allowed).toBe(true);
+      expect(runtime.allowed).toBe(true);
     });
 
     it('should allow direct Phase 4 cockpit navigation in Advanced Mode', () => {

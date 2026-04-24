@@ -58,11 +58,11 @@ const cockpitCatalog: Array<{
     status: 'available' as const,
   },
   {
-    id: 'agui-stream',
-    name: 'AG-UI Event Stream',
-    question: 'What events flow between an agent backend and a user-facing app?',
-    description: 'Follow simulated SSE event streams, payloads, and guided protocol walkthroughs.',
-    group: 'Protocols',
+    id: 'agent-runtime',
+    name: 'Agent Runtime Cockpit',
+    question: 'How does a real agent use MCP, built-in tools, web search, and skills end to end?',
+    description: 'Watch an agent plan, select capabilities, call tools, ingest observations, and synthesize an answer.',
+    group: 'Orchestration',
     status: 'available' as const,
   },
   {

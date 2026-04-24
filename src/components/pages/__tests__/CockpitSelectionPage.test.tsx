@@ -34,7 +34,8 @@ describe('CockpitSelectionPage', () => {
     expect(screen.getAllByText('MCP Protocol Inspector').length).toBeGreaterThan(0);
     expect(screen.getByText('Multi-Agent Orchestration')).toBeInTheDocument();
     expect(screen.getByText('Subagent Dispatch Tree')).toBeInTheDocument();
-    expect(screen.getByText('AG-UI Event Stream')).toBeInTheDocument();
+    expect(screen.getByText('Agent Runtime Cockpit')).toBeInTheDocument();
+    expect(screen.queryByText('AG-UI Event Stream')).not.toBeInTheDocument();
     expect(screen.getByText('Workflow & DAG Visualizer')).toBeInTheDocument();
   });
 
@@ -78,17 +79,17 @@ describe('CockpitSelectionPage', () => {
     expect(useCockpitStore.getState().activeCockpit).toBe('multi-agent');
   });
 
-  it('should navigate to available AG-UI cockpit', () => {
+  it('should navigate to available Agent Runtime cockpit', () => {
     render(
       <MemoryRouter>
         <CockpitSelectionPage />
       </MemoryRouter>
     );
 
-    fireEvent.click(screen.getByText('AG-UI Event Stream'));
+    fireEvent.click(screen.getByText('Agent Runtime Cockpit'));
 
-    expect(mockNavigate).toHaveBeenCalledWith('/advanced/agui-stream');
-    expect(useCockpitStore.getState().activeCockpit).toBe('agui-stream');
+    expect(mockNavigate).toHaveBeenCalledWith('/advanced/agent-runtime');
+    expect(useCockpitStore.getState().activeCockpit).toBe('agent-runtime');
   });
 
   it('should not navigate to coming soon cockpits', () => {
