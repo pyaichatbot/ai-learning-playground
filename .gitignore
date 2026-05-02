@@ -74,3 +74,6 @@ public/
 docs/superpowers/*
 
 docs/superpowers/specs/*.md
+
+comic_build/
+comic/old/
