@@ -1,0 +1,7 @@
+interface:
+  display_name: "EU AI Act Assessor"
+  short_description: "Codebase-grounded AI Act risk assessment"
+  default_prompt: "Use $eu-ai-act-codebase-assessor to assess this repository for EU AI Act risk classification and compliance evidence gaps."
+
+policy:
+  allow_implicit_invocation: true
