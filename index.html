@@ -28,6 +28,23 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function () {
+        var search = window.location.search;
+        if (!search || search.indexOf("?/") !== 0) return;
+
+        var decodedPath = search
+          .slice(2)
+          .replace(/~and~/g, "&");
+
+        var newUrl =
+          window.location.pathname +
+          decodedPath +
+          window.location.hash;
+
+        window.history.replaceState(null, "", newUrl);
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
