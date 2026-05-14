@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>Redirecting...</title>
     <script>
-      var pathSegmentsToKeep = 1;
+      (function () {
+        var base = '/ai-learning-playground';
+        var path = window.location.pathname;
 
-      var l = window.location;
-      l.replace(
-        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-        l.hash
-      );
+        // Stop index.html duplication loops immediately.
+        if (path.indexOf('/index.html') !== -1) {
+          window.location.replace(base + '/');
+          return;
+        }
+
+        var route = path.startsWith(base) ? path.slice(base.length) : '/';
+        if (!route.startsWith('/')) {
+          route = '/' + route;
+        }
+
+        window.location.replace(base + '/?route=' + encodeURIComponent(route));
+      })();
     </script>
   </head>
-  <body>
-  </body>
+  <body></body>
 </html>
