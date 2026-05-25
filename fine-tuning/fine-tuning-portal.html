@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fine-Tuning Mastery — Interactive Learning Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=Barlow+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<style>
+:root {
+  --acc: #6366f1; --acc-h: #818cf8;
+  --bg: #0f0f1a; --bg2: #14142a; --bg3: #1a1a35;
+  --surf: #1e1e3a; --border: #2a2a50;
+  --text: #e2e8f0; --muted: #94a3b8; --dim: #64748b;
+  --green: #10b981; --yellow: #f59e0b; --red: #ef4444; --orange: #f97316;
+  --fd: 'Oxanium',sans-serif; --fb: 'Barlow',sans-serif; --fm: 'Barlow Mono',monospace;
+  --sw: 264px;
+}
+[data-theme="light"] {
+  --bg:#f8fafc; --bg2:#f1f5f9; --bg3:#e8edf5;
+  --surf:#fff; --border:#cbd5e1;
+  --text:#1e293b; --muted:#475569; --dim:#94a3b8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
+/* SIDEBAR */
+#sb{width:var(--sw);min-width:var(--sw);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+#sb-head{padding:18px 14px 12px;border-bottom:1px solid var(--border)}
+#sb-head h1{font-family:var(--fd);font-size:.85rem;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:.07em;line-height:1.3}
+#sb-head p{font-size:.68rem;color:var(--dim);margin-top:3px}
+#srch-wrap{padding:9px 11px;border-bottom:1px solid var(--border)}
+#srch{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--fb);font-size:.78rem;padding:6px 10px;outline:none;transition:border-color .15s}
+#srch:focus{border-color:var(--acc)}
+#pb-wrap{padding:7px 12px;border-bottom:1px solid var(--border)}
+.pb-lbl{display:flex;justify-content:space-between;font-size:.67rem;color:var(--dim);margin-bottom:4px}
+.pb{height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.pb-fill{height:100%;background:var(--acc);border-radius:2px;transition:width .4s}
+#nav{flex:1;overflow-y:auto;padding:6px 0}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 13px;cursor:pointer;border-left:3px solid transparent;transition:all .15s}
+.ni:hover{background:var(--surf)}
+.ni.active{background:var(--surf);border-left-color:var(--acc)}
+.ni-num{font-family:var(--fd);font-size:.63rem;font-weight:700;color:var(--dim);min-width:20px}
+.ni.active .ni-num{color:var(--acc)}
+.ni-txt{flex:1}
+.ni-title{font-size:.76rem;font-weight:500;color:var(--text);line-height:1.3}
+.ni-lvl{font-size:.63rem;color:var(--dim);margin-top:1px}
+.ni-chk{width:15px;height:15px;min-width:15px;border:1.5px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:transparent;transition:all .2s}
+.ni.done .ni-chk{background:var(--green);border-color:var(--green);color:#fff}
+#tools-nav{border-top:1px solid var(--border);padding:6px 0}
+.tb{display:flex;align-items:center;gap:8px;padding:8px 13px;cursor:pointer;font-size:.76rem;color:var(--muted);transition:all .15s;width:100%;background:none;border:none;text-align:left;font-family:var(--fb)}
+.tb:hover,.tb.active{color:var(--acc);background:var(--surf)}
+#ctrls{padding:8px 11px;border-top:1px solid var(--border);display:flex;gap:6px}
+.cb{flex:1;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--muted);cursor:pointer;font-size:.69rem;font-family:var(--fb);transition:all .15s}
+.cb:hover{border-color:var(--acc);color:var(--acc)}
+/* MAIN */
+#main{flex:1;overflow-y:auto;padding:36px 52px}
+@media(max-width:900px){#main{padding:20px 24px}}
+/* MODULE */
+.mh{margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.mh-num{font-family:var(--fd);font-size:.72rem;color:var(--acc);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.mh-title{font-family:var(--fd);font-size:1.85rem;font-weight:700;color:var(--text);line-height:1.2;margin:7px 0 6px}
+.mh-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.lbadge{padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.lb-b{background:rgba(16,185,129,.12);color:var(--green)}
+.lb-i{background:rgba(245,158,11,.12);color:var(--yellow)}
+.lb-a{background:rgba(239,68,68,.12);color:var(--red)}
+.lb-e{background:rgba(99,102,241,.12);color:var(--acc)}
+/* Content */
+.cb h2{font-family:var(--fd);font-size:1.15rem;font-weight:600;color:var(--text);margin:26px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.cb h3{font-size:.97rem;font-weight:600;color:var(--text);margin:18px 0 7px}
+.cb p{line-height:1.72;color:var(--muted);margin-bottom:11px;font-size:.9rem}
+.cb ul,.cb ol{padding-left:18px;margin-bottom:11px}
+.cb li{color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:3px}
+.cb strong{color:var(--text)}
+.cb code:not([class]){background:var(--surf);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:.83em;font-family:var(--fm);color:var(--acc-h)}
+.cb pre{margin:14px 0;border-radius:8px;overflow:auto;border:1px solid var(--border)}
+.cb pre code{font-size:.81rem;font-family:var(--fm)}
+.cb table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.83rem}
+.cb th{background:var(--surf);color:var(--text);font-weight:600;padding:8px 11px;text-align:left;border:1px solid var(--border)}
+.cb td{padding:7px 11px;border:1px solid var(--border);color:var(--muted);vertical-align:top}
+.cb tr:hover td{background:var(--surf)}
+/* Callouts */
+.co{padding:13px 15px;border-radius:8px;margin:14px 0;border-left:3px solid;font-size:.87rem;line-height:1.65}
+.co-k{background:rgba(99,102,241,.07);border-color:var(--acc);color:var(--muted)}
+.co-w{background:rgba(245,158,11,.07);border-color:var(--yellow);color:var(--muted)}
+.co-d{background:rgba(239,68,68,.07);border-color:var(--red);color:var(--muted)}
+.co-t{background:rgba(16,185,129,.07);border-color:var(--green);color:var(--muted)}
+/* Mark read */
+.mr-btn{display:inline-flex;align-items:center;gap:8px;margin-top:30px;padding:10px 20px;background:var(--acc);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:var(--fb);font-size:.87rem;font-weight:600;transition:all .2s}
+.mr-btn:hover{background:var(--acc-h)}
+.mr-btn.done{background:var(--green)}
+/* QUIZ */
+.qz{margin-top:38px;padding:22px;background:var(--surf);border-radius:12px;border:1px solid var(--border)}
+.qz-hd{font-family:var(--fd);font-size:.97rem;font-weight:600;color:var(--text);margin-bottom:18px}
+.qq{margin-bottom:22px}
+.qq-txt{font-size:.9rem;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.5}
+.q-opts{display:flex;flex-direction:column;gap:7px}
+.q-opt{padding:9px 13px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:.85rem;color:var(--muted);transition:all .15s;background:var(--bg2);text-align:left;width:100%;font-family:var(--fb)}
+.q-opt:hover:not([disabled]){border-color:var(--acc);color:var(--text)}
+.q-opt.correct{background:rgba(16,185,129,.1);border-color:var(--green);color:var(--green)}
+.q-opt.wrong{background:rgba(239,68,68,.1);border-color:var(--red);color:var(--red)}
+.q-opt.reveal{border-color:var(--green);background:rgba(16,185,129,.05)}
+.q-exp{margin-top:8px;padding:9px 11px;background:var(--bg3);border-radius:6px;font-size:.8rem;color:var(--muted);display:none;line-height:1.5}
+/* TOOLS */
+.th{margin-bottom:26px}
+.th h2{font-family:var(--fd);font-size:1.65rem;font-weight:700;color:var(--text);margin-bottom:5px}
+.th p{color:var(--muted);font-size:.88rem}
+/* GPU Calc */
+.calc-g{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
+@media(max-width:700px){.calc-g{grid-template-columns:1fr}}
+.cf label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:5px;font-weight:500}
+.cf input[type=range]{width:100%;accent-color:var(--acc);margin-top:4px}
+.cf select,.cf-val{width:100%;background:var(--surf);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-family:var(--fb);font-size:.83rem}
+.cf-val{background:var(--bg3);cursor:default;font-family:var(--fm)}
+.cr{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:22px}
+.cr h3{font-family:var(--fd);font-size:.78rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.vd{font-family:var(--fd);font-size:2.8rem;font-weight:700;color:var(--acc);line-height:1;margin-bottom:6px}
+.vb{font-size:.78rem;color:var(--dim);margin-bottom:18px;line-height:1.9;font-family:var(--fm)}
+.gpu-recs{display:flex;flex-direction:column;gap:7px}
+.gr{display:flex;align-items:center;gap:10px;padding:8px 11px;border-radius:7px;font-size:.8rem}
+.gr-ok{background:rgba(16,185,129,.1);color:var(--green)}
+.gr-w{background:rgba(245,158,11,.1);color:var(--yellow)}
+.gr-no{background:rgba(239,68,68,.08);color:var(--red)}
+/* Checklist */
+.hs{text-align:center;padding:22px;background:var(--surf);border:1px solid var(--border);border-radius:12px;margin-bottom:22px}
+.hs-n{font-family:var(--fd);font-size:3.2rem;font-weight:700;line-height:1;margin-bottom:4px}
+.hs-l{font-size:.83rem;color:var(--muted)}
+.apl{display:flex;flex-direction:column;gap:9px}
+.api{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;background:var(--surf);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s}
+.api:hover{border-color:var(--acc)}
+.api.chk{border-color:var(--green);opacity:.65}
+.ap-cb{width:17px;height:17px;min-width:17px;border:2px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.65rem;transition:all .2s;margin-top:2px}
+.api.chk .ap-cb{background:var(--green);border-color:var(--green);color:#fff}
+.ap-n{font-size:.86rem;font-weight:600;color:var(--text)}
+.ap-d{font-size:.76rem;color:var(--muted);margin-top:2px;line-height:1.4}
+/* Wizard */
+.wz-steps{display:flex;margin-bottom:26px;border-bottom:2px solid var(--border)}
+.wz-s{flex:1;text-align:center;padding:9px 6px;font-size:.72rem;color:var(--dim);cursor:default;transition:all .2s;border-bottom:2px solid transparent;margin-bottom:-2px}
+.wz-s.active{color:var(--acc);border-bottom-color:var(--acc);font-weight:600}
+.wz-s.done{color:var(--green);border-bottom-color:var(--green)}
+.wp{display:none}
+.wp.active{display:block}
+.wq{font-size:1rem;font-weight:600;color:var(--text);margin-bottom:14px}
+.wopts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(max-width:600px){.wopts{grid-template-columns:1fr}}
+.wo{padding:13px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;background:var(--surf)}
+.wo:hover{border-color:var(--acc)}
+.wo.sel{border-color:var(--acc);background:rgba(99,102,241,.1)}
+.wo-t{font-size:.86rem;font-weight:600;color:var(--text);margin-bottom:3px}
+.wo-d{font-size:.76rem;color:var(--muted)}
+.wz-nav{display:flex;gap:9px;margin-top:18px;justify-content:flex-end}
+.btn-p{padding:9px 20px;background:var(--acc);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:var(--fb);font-size:.83rem;font-weight:600;transition:background .15s}
+.btn-p:hover{background:var(--acc-h)}
+.btn-p:disabled{opacity:.4;cursor:default}
+.btn-s{padding:9px 20px;background:var(--surf);color:var(--muted);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:var(--fb);font-size:.83rem}
+.wres{padding:22px;background:var(--surf);border:1px solid var(--acc);border-radius:12px}
+.wres h3{font-family:var(--fd);font-size:1.15rem;color:var(--acc);margin-bottom:10px}
+.wres p{font-size:.88rem;color:var(--muted);line-height:1.65;margin-bottom:8px}
+.rtag{display:inline-block;padding:3px 9px;background:rgba(99,102,241,.15);color:var(--acc);border-radius:20px;font-size:.73rem;font-weight:600;margin:3px 3px 3px 0}
+/* SVG */
+.diagram svg{max-width:100%;height:auto}
+/* scrollbar */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<div id="sb">
+  <div id="sb-head">
+    <h1>Fine-Tuning Mastery</h1>
+    <p>Beginner → SME Curriculum</p>
+  </div>
+  <div id="srch-wrap">
+    <input id="srch" type="text" placeholder="Search modules…" autocomplete="off" oninput="doSearch(this.value)">
+  </div>
+  <div id="pb-wrap">
+    <div class="pb-lbl"><span>Progress</span><span id="pb-txt">0 / 10</span></div>
+    <div class="pb"><div class="pb-fill" id="pb-fill" style="width:0%"></div></div>
+  </div>
+  <div id="nav"></div>
+  <div id="tools-nav">
+    <button class="tb" id="tb-calc" onclick="showTool('calc')">⚡ GPU Memory Calculator</button>
+    <button class="tb" id="tb-wiz" onclick="showTool('wiz')">🧭 Decision Wizard</button>
+    <button class="tb" id="tb-ap" onclick="showTool('ap')">✓ Anti-Pattern Checklist</button>
+  </div>
+  <div id="ctrls">
+    <button class="cb" onclick="toggleTheme()">☀ Theme</button>
+    <button class="cb" onclick="resetProgress()">↺ Reset</button>
+  </div>
+</div>
+
+<div id="main">
+  <div id="mv"></div>
+  <div id="tv" style="display:none"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script>
+const MODULES = [
+{id:'00',title:'Foundations & Decision Framework',level:'Beginner',lc:'b',
+summary:'Decide whether fine-tuning is the right tool. Understand the full taxonomy.',
+content:`
+<h2>The Fine-Tuning Taxonomy</h2>
+<p>Fine-tuning continues training a pre-trained model on task-specific data, updating some or all weights. Four techniques — each for a different problem:</p>
+<table><tr><th>Technique</th><th>What It Does</th><th>When to Use</th></tr>
+<tr><td><strong>SFT</strong></td><td>Train on labeled (input, output) pairs</td><td>You have task examples; default choice</td></tr>
+<tr><td><strong>DAPT</strong></td><td>Continue pre-training on domain text (unlabeled)</td><td>Model lacks domain vocabulary (medical, legal, fintech)</td></tr>
+<tr><td><strong>RLHF / DPO</strong></td><td>Optimize for human preference signals</td><td>Style, tone, safety alignment</td></tr>
+<tr><td><strong>PEFT</strong></td><td>Adapt with minimal trainable parameters</td><td>Limited GPU; runtime adapter swapping</td></tr>
+</table>
+<h2>Decision Framework: Is Fine-Tuning Right?</h2>
+<div class="diagram">
+<svg viewBox="0 0 700 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a0" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#6366f1"/></marker>
+    <marker id="ag" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#10b981"/></marker>
+    <marker id="ar" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#ef4444"/></marker>
+    <marker id="ao" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#f97316"/></marker>
+  </defs>
+
+  <!-- START -->
+  <rect x="210" y="14" width="280" height="52" rx="10" fill="rgba(99,102,241,0.18)" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="350" y="36" text-anchor="middle" fill="#818cf8" font-size="13" font-weight="700" font-family="Barlow,sans-serif">Do you have a task</text>
+  <text x="350" y="55" text-anchor="middle" fill="#818cf8" font-size="13" font-weight="700" font-family="Barlow,sans-serif">that needs adaptation?</text>
+
+  <!-- START → Q1 -->
+  <line x1="350" y1="66" x2="350" y2="102" stroke="#6366f1" stroke-width="1.5" marker-end="url(#a0)"/>
+
+  <!-- Q1: Prompt engineering? -->
+  <rect x="175" y="102" width="350" height="52" rx="9" fill="rgba(26,26,52,0.95)" stroke="#2a2a50" stroke-width="1.5"/>
+  <text x="350" y="124" text-anchor="middle" fill="#e2e8f0" font-size="12" font-family="Barlow,sans-serif">Try prompt engineering first.</text>
+  <text x="350" y="142" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="Barlow,sans-serif">Is it sufficient for your task?</text>
+
+  <!-- Q1 YES → STOP (right) -->
+  <line x1="525" y1="128" x2="567" y2="128" stroke="#10b981" stroke-width="1.8" marker-end="url(#ag)"/>
+  <text x="545" y="121" text-anchor="middle" fill="#10b981" font-size="11" font-weight="700" font-family="Barlow,sans-serif">YES</text>
+  <rect x="568" y="108" width="124" height="44" rx="8" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="630" y="127" text-anchor="middle" fill="#10b981" font-size="12" font-weight="700" font-family="Barlow,sans-serif">STOP</text>
+  <text x="630" y="143" text-anchor="middle" fill="#10b981" font-size="11" font-family="Barlow,sans-serif">Use Prompting ✓</text>
+
+  <!-- Q1 NO → Q2 (down) -->
+  <line x1="350" y1="154" x2="350" y2="193" stroke="#ef4444" stroke-width="1.8" marker-end="url(#ar)"/>
+  <text x="363" y="178" fill="#ef4444" font-size="11" font-weight="700" font-family="Barlow,sans-serif">NO</text>
+
+  <!-- Q2: RAG sufficient? -->
+  <rect x="175" y="193" width="350" height="52" rx="9" fill="rgba(26,26,52,0.95)" stroke="#2a2a50" stroke-width="1.5"/>
+  <text x="350" y="215" text-anchor="middle" fill="#e2e8f0" font-size="12" font-family="Barlow,sans-serif">Is RAG sufficient?</text>
+  <text x="350" y="233" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="Barlow,sans-serif">(frequently updated facts or docs)</text>
+
+  <!-- Q2 YES → Use RAG (right) -->
+  <line x1="525" y1="219" x2="567" y2="219" stroke="#10b981" stroke-width="1.8" marker-end="url(#ag)"/>
+  <text x="545" y="212" text-anchor="middle" fill="#10b981" font-size="11" font-weight="700" font-family="Barlow,sans-serif">YES</text>
+  <rect x="568" y="199" width="124" height="44" rx="8" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="630" y="218" text-anchor="middle" fill="#10b981" font-size="12" font-weight="700" font-family="Barlow,sans-serif">Use RAG</text>
+  <text x="630" y="234" text-anchor="middle" fill="#64748b" font-size="11" font-family="Barlow,sans-serif">index + retrieve ✓</text>
+
+  <!-- Q2 NO → Fine-Tune (down) -->
+  <line x1="350" y1="245" x2="350" y2="284" stroke="#ef4444" stroke-width="1.8" marker-end="url(#ar)"/>
+  <text x="363" y="269" fill="#ef4444" font-size="11" font-weight="700" font-family="Barlow,sans-serif">NO</text>
+
+  <!-- FINE-TUNE box -->
+  <rect x="220" y="284" width="260" height="52" rx="10" fill="rgba(99,102,241,0.25)" stroke="#6366f1" stroke-width="2"/>
+  <text x="350" y="306" text-anchor="middle" fill="#818cf8" font-size="15" font-weight="700" font-family="Barlow,sans-serif">Fine-Tune</text>
+  <text x="350" y="324" text-anchor="middle" fill="#6366f1" font-size="11" font-family="Barlow,sans-serif">format · style · domain · reasoning</text>
+
+  <!-- Fine-Tune → GPU Q (down) -->
+  <line x1="350" y1="336" x2="350" y2="375" stroke="#6366f1" stroke-width="1.5" marker-end="url(#a0)"/>
+
+  <!-- GPU Q -->
+  <rect x="185" y="375" width="330" height="52" rx="9" fill="rgba(26,26,52,0.95)" stroke="#2a2a50" stroke-width="1.5"/>
+  <text x="350" y="397" text-anchor="middle" fill="#e2e8f0" font-size="12" font-family="Barlow,sans-serif">What is your GPU budget?</text>
+  <text x="350" y="415" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Barlow,sans-serif">(VRAM determines technique)</text>
+
+  <!-- LOW: left from left edge of GPU box → down → QLoRA -->
+  <line x1="185" y1="401" x2="142" y2="401" stroke="#f97316" stroke-width="1.8"/>
+  <line x1="142" y1="401" x2="142" y2="443" stroke="#f97316" stroke-width="1.8" marker-end="url(#ao)"/>
+  <text x="162" y="394" text-anchor="middle" fill="#f97316" font-size="11" font-weight="700" font-family="Barlow,sans-serif">LOW</text>
+  <rect x="46" y="443" width="194" height="46" rx="8" fill="rgba(249,115,22,0.12)" stroke="#f97316" stroke-width="1.5"/>
+  <text x="143" y="463" text-anchor="middle" fill="#f97316" font-size="13" font-weight="700" font-family="Barlow,sans-serif">QLoRA</text>
+  <text x="143" y="479" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Barlow,sans-serif">4-bit NF4 + adapters</text>
+
+  <!-- HIGH: right from right edge of GPU box → down → Full SFT -->
+  <line x1="515" y1="401" x2="558" y2="401" stroke="#6366f1" stroke-width="1.8"/>
+  <line x1="558" y1="401" x2="558" y2="443" stroke="#6366f1" stroke-width="1.8" marker-end="url(#a0)"/>
+  <text x="535" y="394" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="700" font-family="Barlow,sans-serif">HIGH</text>
+  <rect x="461" y="443" width="194" height="46" rx="8" fill="rgba(99,102,241,0.12)" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="558" y="463" text-anchor="middle" fill="#818cf8" font-size="13" font-weight="700" font-family="Barlow,sans-serif">Full SFT + FSDP</text>
+  <text x="558" y="479" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Barlow,sans-serif">bf16 · multi-GPU</text>
+</svg>
+</div>
+<h2>When NOT to Fine-Tune</h2>
+<div class="co co-d"><strong>Stop. Don't fine-tune when:</strong><br>
+• Knowledge retrieval is the problem → use RAG<br>
+• You have fewer than 50 high-quality examples<br>
+• Prompt engineering hasn't been tried seriously<br>
+• The base model genuinely can't do the task (wrong model family)<br>
+• Data contains PII/PCI that can't be cleared for training
+</div>
+<h2>The Hierarchy</h2>
+<div class="co co-k"><strong>DATA → TECHNIQUE → EVALUATION → GOVERNANCE</strong><br>
+Each layer bounds the next. Perfect LoRA on bad data = bad model. Perfect model with no evaluation = undeployable. No technique compensates for bad data.
+</div>`,
+quiz:[
+{q:'A team wants a chatbot that answers questions about their internal product documentation, which updates weekly. What should they build?',
+opts:['Fine-tune a model on the documentation','RAG system with the documentation as knowledge base','Prompt-engineer GPT-4 with the docs in context','Domain-adaptive pre-training on the documentation'],
+ans:1,exp:'Documentation updates weekly — embedding new weights every week is expensive and slow. RAG retrieves current facts at inference time. Fine-tuning is for behavior/format, not dynamic facts.'},
+{q:'What does DAPT stand for and when should you use it?',
+opts:['Domain-Adaptive Pre-Training — inject domain vocabulary before SFT','Data-Augmented Pre-Training — increase training set size','Differential Attention Pre-Training — improve long-context recall','Dynamic Adapter Pre-Training — train LoRA adapters from scratch'],
+ans:0,exp:'DAPT continues pre-training on unlabeled domain text (medical papers, legal filings, financial reports) to give the model the vocabulary and statistical patterns of a domain before supervised fine-tuning.'}
+]},
+
+{id:'01',title:'Data Engineering for Fine-Tuning',level:'Beginner–Intermediate',lc:'i',
+summary:'Design a data pipeline. Audit datasets. Prevent the #1 cause of fine-tuning failures.',
+content:`
+<h2>Quality Formula</h2>
+<div class="co co-k"><strong>Model quality = f(data quality, data quantity, technique)</strong><br>
+Data dominates. A 10x improvement in data quality beats a 10x improvement in technique every time.</div>
+<h2>Data Pipeline Stages</h2>
+<ol>
+<li><strong>Collection</strong> — source, license, and rights documentation first</li>
+<li><strong>Deduplication</strong> — exact hash → fuzzy MinHash → semantic similarity</li>
+<li><strong>Quality filtering</strong> — perplexity filter, length filter, classifier-based</li>
+<li><strong>PII/PCI detection</strong> — presidio, spaCy NER, regex patterns</li>
+<li><strong>Formatting</strong> — apply chat template, tokenize, verify lengths</li>
+<li><strong>Versioning</strong> — DVC or HuggingFace datasets with commit hash</li>
+</ol>
+<h2>Deduplication — The Critical Step</h2>
+<p>Duplicate examples cause the model to memorize rather than generalize. Three levels:</p>
+<table><tr><th>Level</th><th>Method</th><th>Cost</th><th>Catches</th></tr>
+<tr><td>Exact</td><td>SHA-256 hash</td><td>~0</td><td>Identical strings</td></tr>
+<tr><td>Fuzzy</td><td>MinHash LSH (Jaccard ~0.7)</td><td>Low</td><td>Near-duplicates, paraphrases</td></tr>
+<tr><td>Semantic</td><td>Embedding cosine sim &gt;0.95</td><td>High</td><td>Same meaning, different words</td></tr>
+</table>
+<pre><code class="language-python">from datasketch import MinHash, MinHashLSH
+
+def build_minhash(text: str, num_perm: int = 128, n: int = 5) -> MinHash:
+    m = MinHash(num_perm=num_perm)
+    text_lower = text.lower()
+    # Character n-grams (not word split) — more robust to minor edits
+    for i in range(len(text_lower) - n + 1):
+        ngram = text_lower[i:i + n]
+        m.update(ngram.encode('utf8'))
+    return m
+
+lsh = MinHashLSH(threshold=0.7, num_perm=128)
+seen, deduped = set(), []
+for i, ex in enumerate(dataset):
+    mh = build_minhash(ex['text'])
+    candidates = lsh.query(mh)
+    if not candidates:
+        lsh.insert(f'doc_{i}', mh)
+        deduped.append(ex)
+</code></pre>
+<div class="co co-w"><strong>Common bug:</strong> word-level splitting doesn't build character n-grams. The loop above uses a sliding window over characters — that's intentional.</div>
+<h2>PII Detection</h2>
+<pre><code class="language-python">from presidio_analyzer import AnalyzerEngine
+from presidio_anonymizer import AnonymizerEngine
+
+analyzer = AnalyzerEngine()
+anonymizer = AnonymizerEngine()
+
+def scrub_pii(text: str) -> str:
+    results = analyzer.analyze(text=text, language='en',
+        entities=['PERSON','EMAIL_ADDRESS','PHONE_NUMBER',
+                  'CREDIT_CARD','US_SSN','IBAN_CODE'])
+    return anonymizer.anonymize(text=text, analyzer_results=results).text
+</code></pre>
+<h2>Data Quality Checklist</h2>
+<div class="co co-t">
+✓ License documented for every source<br>
+✓ Dedup run at all three levels<br>
+✓ PII scan with &lt;0.1% false-negative rate<br>
+✓ Length distribution checked (no token overflow)<br>
+✓ Frozen eval set created BEFORE training<br>
+✓ Dataset hash committed to version control
+</div>`,
+quiz:[
+{q:'Your MinHash deduplication uses word-level tokenization: mh.update(word.encode()). What does this miss?',
+opts:['Nothing — word-level is more semantically meaningful','Near-duplicates with minor character edits (typos, spacing differences)','Exact duplicates — MinHash can\'t catch those','Long documents — MinHash only works on short texts'],
+ans:1,exp:'Word-level MinHash misses near-duplicates that differ by typos, extra spaces, punctuation, or minor character changes. Character n-grams (n=5) are more sensitive to these minor variations.'},
+{q:'When should you create your frozen evaluation set?',
+opts:['After training, to measure the final model','During training, using a validation split','Before training starts, from the original dataset','After the first epoch, once you know the model is learning'],
+ans:2,exp:'The evaluation set must be frozen before any training decision is made. If you create it after training or use it to tune hyperparameters, you have data leakage and your metrics are optimistic. Enterprise non-negotiable: create the eval set first.'}
+]},
+
+{id:'02',title:'PEFT Deep Dive: LoRA, QLoRA, DoRA & Beyond',level:'Intermediate–Advanced',lc:'a',
+summary:'Configure any PEFT technique correctly. Explain every hyperparameter. Know when to deviate.',
+content:`
+<h2>Why PEFT?</h2>
+<p>A 70B model in fp32 needs ~280 GB just for weights — before gradients or optimizer state. PEFT makes fine-tuning tractable by training only a tiny fraction of parameters while keeping base weights frozen.</p>
+<h2>LoRA: The Math</h2>
+<p>LoRA decomposes the weight update ΔW into two low-rank matrices: <code>ΔW = BA</code> where B ∈ R<sup>d×r</sup> and A ∈ R<sup>r×k</sup>. Instead of updating all d×k weights, you update d·r + r·k parameters. For r=8, d=4096, k=4096: 65,536 vs 16,777,216 parameters — 256× fewer.</p>
+<table><tr><th>Hyperparameter</th><th>Meaning</th><th>Starting Point</th><th>Effect of Increasing</th></tr>
+<tr><td><code>r</code></td><td>Rank — capacity of update</td><td>8–16</td><td>More parameters, more expressive, more overfitting risk</td></tr>
+<tr><td><code>lora_alpha</code></td><td>Scaling factor (effective LR = α/r)</td><td>2× rank</td><td>Larger updates; keep ratio α/r ≈ 1–2</td></tr>
+<tr><td><code>lora_dropout</code></td><td>Regularization</td><td>0.05</td><td>More regularization; helps small datasets</td></tr>
+<tr><td><code>target_modules</code></td><td>Which layers to adapt</td><td>q_proj, v_proj</td><td>Add k_proj, o_proj, gate_proj for stronger adaptation</td></tr>
+</table>
+<pre><code class="language-python">from peft import LoraConfig, get_peft_model
+
+config = LoraConfig(
+    r=16,
+    lora_alpha=32,       # alpha/r = 2.0 — standard starting point
+    lora_dropout=0.05,
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
+    bias="none",
+    task_type="CAUSAL_LM",
+)
+model = get_peft_model(model, config)
+model.print_trainable_parameters()
+# trainable params: 83,886,080 || all params: 6,738,415,616 || trainable%: 1.25
+</code></pre>
+<h2>QLoRA: 4-bit Quantization + LoRA</h2>
+<p>QLoRA quantizes the base model to NF4 (4-bit NormalFloat), loads it in 4-bit, but trains LoRA adapters in bf16. The base weights are frozen and dequantized on-the-fly during the forward pass.</p>
+<pre><code class="language-python">from transformers import BitsAndBytesConfig
+import torch
+
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",       # NF4 outperforms int4 for LLMs
+    bnb_4bit_use_double_quant=True,  # Nested quantization: saves ~0.4 bits/param
+    bnb_4bit_compute_dtype=torch.bfloat16,
+)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id, quantization_config=bnb_config, device_map="auto"
+)
+</code></pre>
+<h2>Technique Comparison</h2>
+<table><tr><th>Technique</th><th>VRAM (7B)</th><th>Quality vs Full FT</th><th>When to Use</th></tr>
+<tr><td>Full SFT (bf16)</td><td>~60 GB</td><td>100% (baseline)</td><td>High GPU budget, critical tasks</td></tr>
+<tr><td>LoRA (bf16)</td><td>~16 GB</td><td>95–99%</td><td>Good GPU, single task</td></tr>
+<tr><td>QLoRA (4-bit)</td><td>~6 GB</td><td>90–97%</td><td>Consumer GPU, budget-constrained</td></tr>
+<tr><td>DoRA</td><td>~16 GB</td><td>≥ LoRA</td><td>Tasks needing directional updates</td></tr>
+<tr><td>RSLoRA</td><td>~16 GB</td><td>≥ LoRA at high r</td><td>Higher rank experiments</td></tr>
+</table>
+<div class="co co-w"><strong>DoRA</strong> decomposes the weight update into magnitude and direction (W = m × V/||V||). More stable at high rank. Use when standard LoRA plateaus.</div>`,
+quiz:[
+{q:'You set r=8, lora_alpha=64 in a LoRA config. What is the effective scaling of the weight update?',
+opts:['8 (r value)','64 (alpha value)','8 (alpha/r = 64/8 = 8)','0.125 (r/alpha = 8/64)'],
+ans:2,exp:'The LoRA scaling factor is alpha/r. With alpha=64, r=8: scaling = 64/8 = 8. This is unusually high — most practitioners keep alpha/r between 1 and 2. A ratio of 8 means very aggressive weight updates that can destabilize training.'},
+{q:'What is the key difference between QLoRA and LoRA?',
+opts:['QLoRA uses a higher rank (r) for better quality','QLoRA quantizes the base model to 4-bit NF4 while training adapters in bf16','QLoRA trains all layers; LoRA trains only attention layers','QLoRA requires multiple GPUs; LoRA works on single GPU'],
+ans:1,exp:'QLoRA freezes the base model in 4-bit NF4 quantization (reducing VRAM dramatically) while training LoRA adapters in full bf16 precision. The base weights are never updated — only the adapters. This is what makes 65B models trainable on a single 48GB GPU.'}
+]},
+
+{id:'03',title:'Alignment & Preference Tuning: SFT → DPO → GRPO',level:'Intermediate–Advanced',lc:'a',
+summary:'Choose the right alignment method. Implement SFT, DPO, ORPO, or GRPO. Explain why each was invented.',
+content:`
+<h2>The Alignment Progression</h2>
+<p>Each method was invented to fix a problem with the one before it:</p>
+<table><tr><th>Method</th><th>Problem It Solved</th><th>Training Signal</th><th>Requires Reward Model?</th></tr>
+<tr><td>SFT</td><td>Baseline — teach format and behavior</td><td>Next-token prediction on demonstrations</td><td>No</td></tr>
+<tr><td>RLHF + PPO</td><td>SFT doesn't capture preferences</td><td>Reward model score → PPO policy update</td><td>Yes (expensive)</td></tr>
+<tr><td>DPO</td><td>PPO is unstable, reward model is expensive</td><td>Relative preference pairs (chosen vs rejected)</td><td>No (implicit RM)</td></tr>
+<tr><td>ORPO</td><td>DPO needs a separate SFT warm-up stage</td><td>Likelihood ratio penalty in one stage</td><td>No</td></tr>
+<tr><td>GRPO</td><td>DPO struggles with reasoning tasks</td><td>Group-relative reward (verifiable outcomes)</td><td>Yes (rule-based OK)</td></tr>
+</table>
+<h2>DPO: How It Works</h2>
+<p>DPO treats the fine-tuned model itself as an implicit reward model. Given a preference pair (y_w chosen, y_l rejected), the loss pushes the model to assign higher probability to y_w relative to a frozen reference model:</p>
+<pre><code class="language-python">from trl import DPOConfig, DPOTrainer
+
+training_args = DPOConfig(
+    beta=0.1,              # KL penalty weight; higher = stay closer to reference
+    max_length=1024,
+    max_prompt_length=512,
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=4,
+    learning_rate=5e-5,
+    num_train_epochs=3,
+)
+
+# Dataset format required:
+# {"prompt": "...", "chosen": "...", "rejected": "..."}
+
+trainer = DPOTrainer(
+    model=model,
+    ref_model=ref_model,   # Frozen SFT model
+    args=training_args,
+    train_dataset=dataset,
+    tokenizer=tokenizer,
+)
+trainer.train()
+</code></pre>
+<h2>GRPO: For Reasoning Tasks</h2>
+<p>GRPO (Group Relative Policy Optimization) generates a group of responses for each prompt, scores them with a verifiable reward (math answer correctness, code execution, format check), then uses the group mean as baseline:</p>
+<pre><code class="language-python">from trl import GRPOConfig, GRPOTrainer
+
+def reward_fn(prompts, outputs, **kwargs):
+    rewards = []
+    for prompt, output in zip(prompts, outputs):
+        # Verifiable reward: does the final answer match?
+        correct = check_answer(prompt, output)
+        format_ok = output.strip().endswith('</answer>')
+        rewards.append(1.0 if correct else 0.0 + 0.2 if format_ok else 0.0)
+    return rewards
+
+trainer = GRPOTrainer(
+    model=model,
+    reward_funcs=reward_fn,
+    args=GRPOConfig(num_generations=8, ...),
+)
+</code></pre>
+<h2>Decision Guide</h2>
+<div class="co co-k">
+<strong>Use SFT when:</strong> you have quality demonstrations and no preference data.<br>
+<strong>Use DPO when:</strong> you have (chosen, rejected) pairs and the task is style/safety/format.<br>
+<strong>Use ORPO when:</strong> you want one-stage training without a separate SFT warm-up.<br>
+<strong>Use GRPO when:</strong> the task has verifiable correctness (math, code, structured output).
+</div>`,
+quiz:[
+{q:'Why was DPO invented as an alternative to RLHF + PPO?',
+opts:['DPO is faster because it uses a smaller model','PPO requires a separate reward model and is unstable; DPO uses preference pairs without an explicit RM','DPO works without any human preference data','DPO supports multi-GPU training; PPO does not'],
+ans:1,exp:'RLHF with PPO requires: (1) a separate reward model trained on human preferences, (2) PPO policy optimization which is notoriously unstable and sensitive to hyperparameters. DPO reformulates the RLHF objective to work directly with preference pairs, eliminating the reward model and simplifying training significantly.'},
+{q:'A team is fine-tuning a model to solve math competition problems. Which alignment method fits best?',
+opts:['SFT on worked solutions','DPO with (correct answer, wrong answer) pairs','GRPO with a reward function that checks final answer correctness','ORPO for single-stage training efficiency'],
+ans:2,exp:'Math has verifiable correctness — you can programmatically check if the final answer is right. GRPO is designed exactly for this: generate multiple reasoning traces per problem, score with a rule-based reward (answer correct = 1, wrong = 0), and optimize relative to the group mean. This is how DeepSeek-R1 and similar reasoning models are trained.'}
+]},
+
+{id:'04',title:'Training Infrastructure: Multi-GPU, FSDP, DeepSpeed',level:'Advanced',lc:'a',
+summary:'Estimate memory requirements exactly. Configure distributed training. Debug OOM errors.',
+content:`
+<h2>Memory Math — The Full Formula</h2>
+<div class="co co-k"><strong>Total VRAM for full fine-tuning (fp32 Adam):</strong><br>
+Per parameter: 2 (weights fp16) + 2 (grad fp16) + 4 (grad copy fp32) + 4 (Adam m) + 4 (Adam v) = <strong>16 bytes/param</strong><br><br>
+<strong>Total VRAM ≈ 16 × model_size_in_B (GB)</strong> — this is TOTAL across all GPUs, not per-GPU.<br>
+Example: 7B model → ~112 GB total. With 2× 80GB A100s → fits with FSDP sharding.
+</div>
+<table><tr><th>Model Size</th><th>Full FT Total</th><th>LoRA (bf16) Total</th><th>QLoRA (4-bit) Total</th></tr>
+<tr><td>7B</td><td>~112 GB</td><td>~16 GB</td><td>~6 GB</td></tr>
+<tr><td>13B</td><td>~208 GB</td><td>~28 GB</td><td>~10 GB</td></tr>
+<tr><td>70B</td><td>~1.1 TB</td><td>~140 GB</td><td>~40 GB</td></tr>
+</table>
+<h2>FSDP vs DeepSpeed ZeRO</h2>
+<table><tr><th></th><th>FSDP</th><th>DeepSpeed ZeRO-3</th></tr>
+<tr><td>Integration</td><td>Native PyTorch / HF Trainer</td><td>deepspeed library</td></tr>
+<tr><td>Config</td><td>Python FSDPConfig</td><td>JSON config file</td></tr>
+<tr><td>CPU Offload</td><td>Limited</td><td>Excellent (ZeRO-3 + offload)</td></tr>
+<tr><td>When to use</td><td>PyTorch-native, standard clusters</td><td>Very large models, CPU offload needed</td></tr>
+</table>
+<pre><code class="language-python">from transformers import TrainingArguments
+
+args = TrainingArguments(
+    output_dir="./out",
+    per_device_train_batch_size=2,
+    gradient_accumulation_steps=8,   # effective batch = 2 * N_GPUs * 8
+    gradient_checkpointing=True,     # ~30% VRAM reduction, ~20% slower
+    max_grad_norm=1.0,               # gradient clipping — required for stability
+    bf16=True,
+    fsdp="full_shard auto_wrap",
+    fsdp_config={"fsdp_transformer_layer_cls_to_wrap": "LlamaDecoderLayer"},
+    learning_rate=2e-4,
+    warmup_ratio=0.03,
+    lr_scheduler_type="cosine",
+)
+</code></pre>
+<h2>OOM Debugging Checklist</h2>
+<ol>
+<li>Enable <code>gradient_checkpointing=True</code> — trades compute for memory</li>
+<li>Reduce <code>per_device_train_batch_size</code> to 1, increase <code>gradient_accumulation_steps</code></li>
+<li>Use <code>bf16=True</code> instead of fp32</li>
+<li>For QLoRA: verify <code>prepare_model_for_kbit_training()</code> was called</li>
+<li>Check for accidental gradient accumulation on frozen layers</li>
+</ol>
+<h2>Cloud GPU Quick Reference</h2>
+<table><tr><th>Instance</th><th>GPU</th><th>VRAM</th><th>Best For</th></tr>
+<tr><td>AWS p4de.24xl</td><td>8× A100 80GB</td><td>640 GB</td><td>70B full FT</td></tr>
+<tr><td>AWS p5.48xl</td><td>8× H100 80GB</td><td>640 GB</td><td>Fastest throughput</td></tr>
+<tr><td>GCP a2-ultragpu-8g</td><td>8× A100 80GB</td><td>640 GB</td><td>GCP preferred</td></tr>
+<tr><td>AWS p3.8xl</td><td>4× V100 16GB</td><td>64 GB</td><td>QLoRA on 7–13B</td></tr>
+</table>`,
+quiz:[
+{q:'A 13B model requires how much total VRAM for full fine-tuning with fp32 Adam optimizer?',
+opts:['~26 GB (2 bytes/param for fp16 weights)','~52 GB (4 bytes/param)','~104 GB (8 bytes/param)','~208 GB (16 bytes/param)'],
+ans:3,exp:'Full fine-tuning with fp32 Adam requires 16 bytes per parameter: 2 (fp16 weights) + 2 (fp16 gradients) + 4 (fp32 gradient copy) + 4 (Adam first moment m) + 4 (Adam second moment v) = 16 bytes. 13B × 16 = 208 GB total across all GPUs.'},
+{q:'What does gradient_checkpointing=True do?',
+opts:['Saves a checkpoint every N gradient steps','Clears the GPU cache after each backward pass','Recomputes activations during backward pass instead of storing them, reducing VRAM by ~30%','Enables gradient clipping to prevent exploding gradients'],
+ans:2,exp:'Gradient checkpointing recomputes forward-pass activations during the backward pass rather than storing them all in VRAM. This reduces activation memory by ~30% at the cost of ~20% additional compute. It\'s the first knob to turn when hitting OOM.'}
+]},
+
+{id:'05',title:'Evaluation Framework: Proving Your Model Works',level:'Advanced',lc:'a',
+summary:'Build evaluation suites that survive scrutiny. Set enterprise pass/fail gates. Detect hallucination.',
+content:`
+<h2>The Evaluation Hierarchy</h2>
+<table><tr><th>Level</th><th>What It Measures</th><th>Tools</th></tr>
+<tr><td>Automated</td><td>Task accuracy, ROUGE/BERTScore, perplexity</td><td>evaluate, lm-eval-harness</td></tr>
+<tr><td>Behavioral</td><td>Prompt robustness, adversarial inputs, edge cases</td><td>Custom test suites, Promptbench</td></tr>
+<tr><td>LLM-as-judge</td><td>Quality, coherence, helpfulness at scale</td><td>GPT-4-judge, Claude-judge</td></tr>
+<tr><td>Human eval</td><td>Production quality gate</td><td>Label Studio, Scale AI</td></tr>
+</table>
+<h2>Enterprise Metric Categories</h2>
+<div class="co co-k">
+<strong>Task-specific:</strong> F1, exact match, BLEU/ROUGE (extraction, translation, summarization)<br>
+<strong>Safety:</strong> Harmful output rate, policy compliance rate, PII leakage rate<br>
+<strong>Regression:</strong> Performance on a frozen base capability benchmark (MMLU, HellaSwag)<br>
+<strong>Calibration:</strong> Expected Calibration Error (ECE) — do confidence scores reflect accuracy?
+</div>
+<h2>Hallucination Detection</h2>
+<pre><code class="language-python">from sentence_transformers import SentenceTransformer, util
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+def faithfulness_score(context: str, generation: str) -> float:
+    """Check if generation is entailed by context (0=hallucinated, 1=faithful)."""
+    ctx_emb = model.encode(context)
+    gen_emb = model.encode(generation)
+    return float(util.cos_sim(ctx_emb, gen_emb)[0][0])
+
+# Enterprise threshold: faithfulness_score >= 0.75 required for deployment
+</code></pre>
+<h2>Pass/Fail Gates for Enterprise</h2>
+<div class="co co-d"><strong>Hard gates — model CANNOT deploy if:</strong><br>
+• Task F1 &lt; baseline F1 on frozen eval set<br>
+• Harmful output rate &gt; 0.1% on red-team suite<br>
+• MMLU regression &gt; 5 points from base model<br>
+• Faithfulness score &lt; 0.75 on RAG eval<br>
+• Any PII leakage in held-out test
+</div>
+<h2>Evaluation Anti-Patterns</h2>
+<ul>
+<li><strong>Using test data during training</strong> — even once contaminates the benchmark</li>
+<li><strong>Single metric reporting</strong> — F1 alone hides hallucination, calibration, and safety</li>
+<li><strong>Benchmark contamination</strong> — model has seen test questions in pretraining data</li>
+<li><strong>Overfitting to benchmark</strong> — tuning hyperparameters on the eval set</li>
+</ul>`,
+quiz:[
+{q:'Your fine-tuned model achieves 94% accuracy on your eval set. What else must you check before declaring success?',
+opts:['Nothing — 94% is high enough for production','Regression on base capability benchmarks (MMLU) and safety/harmful output rate','Only the training loss curve to confirm convergence','Response latency and token throughput'],
+ans:1,exp:'Task accuracy measures one dimension. Enterprise deployment requires: (1) regression check — did the fine-tuning degrade general capabilities? (2) safety check — does the model produce harmful outputs on a red-team suite? A model that is 94% accurate but has regressed 15 MMLU points or leaks PII is not deployable.'},
+{q:'What is benchmark contamination and why does it matter?',
+opts:['The benchmark dataset is too large, causing overfitting','The model\'s pretraining data included the benchmark\'s test questions, making scores artificially inflated','The evaluation metric doesn\'t match the task objective','The benchmark was created by the same team that built the model'],
+ans:1,exp:'Benchmark contamination occurs when a model\'s pretraining corpus includes the exact test prompts from standard benchmarks (MMLU, HumanEval, etc.). The model has "seen" the answers. Published benchmark scores become meaningless. This is why enterprises build private held-out evals from real production data rather than relying solely on public benchmarks.'}
+]},
+
+{id:'06',title:'Enterprise Architecture Patterns',level:'Expert',lc:'e',
+summary:'Design fine-tune + RAG + tooling architectures. Present a model risk framework.',
+content:`
+<h2>Architecture Pattern 1: Fine-Tune + RAG (Hybrid)</h2>
+<p>The most common enterprise pattern. Fine-tune for behavior, tone, and task format. Use RAG for facts, documents, and frequently-updated knowledge.</p>
+<div class="co co-k"><strong>Division of responsibility:</strong><br>
+• Fine-tuned model: knows how to respond (format, style, domain vocabulary, task logic)<br>
+• RAG retriever: knows what to respond with (current facts, policies, product docs)</div>
+<h2>Architecture Pattern 2: Multi-LoRA Serving</h2>
+<p>One base model, N LoRA adapters loaded at runtime. Serve multiple specialized models on the same GPU hardware:</p>
+<pre><code class="language-python">from vllm import LLM
+
+llm = LLM(
+    model="meta-llama/Llama-3.1-8B-Instruct",
+    enable_lora=True,
+    max_lora_rank=64,
+    max_loras=4,          # Up to 4 adapters in memory simultaneously
+)
+
+# Route requests to the right adapter:
+# adapter_map = {"legal": "adapters/legal", "medical": "adapters/medical"}
+from vllm import SamplingParams, LoRARequest
+
+output = llm.generate(
+    "Summarize this clause:",
+    SamplingParams(temperature=0.1),
+    lora_request=LoRARequest("legal", 1, "adapters/legal")
+)
+</code></pre>
+<h2>Safety Stack</h2>
+<table><tr><th>Layer</th><th>Tool</th><th>What It Catches</th></tr>
+<tr><td>Input guard</td><td>LlamaGuard 3 / Prompt Shield</td><td>Jailbreaks, injections, policy violations</td></tr>
+<tr><td>Output guard</td><td>LlamaGuard 3 / NeMo Guardrails</td><td>Harmful content, PII leakage</td></tr>
+<tr><td>PII filter</td><td>Presidio</td><td>SSN, credit card, names in output</td></tr>
+<tr><td>Faithfulness</td><td>Embedding cosine sim</td><td>Hallucinated claims not in context</td></tr>
+</table>
+<h2>Model Compression for Deployment</h2>
+<table><tr><th>Format</th><th>Size Reduction</th><th>Quality</th><th>Use Case</th></tr>
+<tr><td>GGUF (Q4_K_M)</td><td>~4× from fp16</td><td>~95% of fp16</td><td>CPU inference, edge, local dev</td></tr>
+<tr><td>AWQ</td><td>~4× from fp16</td><td>&gt;95% of fp16</td><td>GPU inference, Transformers/vLLM</td></tr>
+<tr><td>GPTQ</td><td>~4× from fp16</td><td>93–97% of fp16</td><td>GPU inference, AutoGPTQ</td></tr>
+<tr><td>FP8 (H100)</td><td>~2× from fp16</td><td>&gt;98% of fp16</td><td>H100 native, near-lossless</td></tr>
+</table>
+<h2>The 8 Enterprise Readiness Gates</h2>
+<ol>
+<li>Data eligibility — written approval, PII classified</li>
+<li>Frozen eval set — created before training</li>
+<li>Model risk registration — intended use, limitations, owner</li>
+<li>All hard eval gates pass (see doc 05)</li>
+<li>Safety layer integrated and tested</li>
+<li>Human oversight workflow defined</li>
+<li>Rollback plan documented and tested</li>
+<li>Monitoring + drift detection running in production</li>
+</ol>`,
+quiz:[
+{q:'Why use RAG alongside a fine-tuned model instead of fine-tuning the model on all facts?',
+opts:['RAG is always cheaper to implement than fine-tuning','Facts change frequently; fine-tuning embeds them in weights which are expensive to update, while RAG retrieves current information at inference time','RAG produces better natural language quality than fine-tuned models','Fine-tuned models cannot answer factual questions'],
+ans:1,exp:'Fine-tuning bakes knowledge into weights. When facts change (product updates, policy changes, market data), you must retrain and redeploy. RAG indexes a document store and retrieves at inference time — update the documents, no model change needed. The hybrid pattern uses fine-tuning for behavior and RAG for facts.'},
+{q:'What is the primary advantage of multi-LoRA serving with vLLM?',
+opts:['It increases the maximum context length for all requests','Multiple specialized models (legal, medical, etc.) can share a single base model on the same hardware, reducing infrastructure cost','It allows fine-tuning and inference on the same GPU simultaneously','Adapter weights are shared between requests to reduce latency'],
+ans:1,exp:'Multi-LoRA serving loads one base model onto the GPU and swaps lightweight adapter weights per request. Instead of running N separate model deployments (one per specialization), you run one — reducing GPU count, cost, and operational complexity. vLLM supports this natively with PagedAttention for efficient memory management.'}
+]},
+
+{id:'07',title:'Anti-Patterns and Failure Modes',level:'Expert–SME',lc:'e',
+summary:'Recognize the 18 ways fine-tuning projects die. Fix them before they happen.',
+content:`
+<h2>The 4 Root Cause Categories</h2>
+<div class="co co-d">
+<strong>Data anti-patterns (AP01–AP05):</strong> Bad data, poor splits, PII leakage, no dedup, wrong format<br>
+<strong>Training anti-patterns (AP06–AP10):</strong> Wrong LR, catastrophic forgetting, bad batch size, no checkpoints, wrong scheduler<br>
+<strong>Evaluation anti-patterns (AP11–AP14):</strong> Test contamination, single metric, overfitting to eval, no regression check<br>
+<strong>Deployment anti-patterns (AP15–AP18):</strong> No monitoring, no rollback, vague task definition, wrong base model type, benchmark contamination
+</div>
+<h2>The 5 Most Critical Anti-Patterns</h2>
+<h3>AP01 — Insufficient Data Volume</h3>
+<p>Training with &lt;50 examples. Model memorizes, doesn't generalize. Fix: minimum 500 examples for SFT; 1,000+ preferred. Use data augmentation if needed.</p>
+<h3>AP03 — No Deduplication</h3>
+<p>Duplicate examples cause memorization. The model "knows" test answers because they were in training. Fix: run all three dedup levels before splitting.</p>
+<h3>AP06 — Catastrophic Forgetting</h3>
+<p>Fine-tuning on narrow data causes the model to forget general capabilities. Fix: monitor MMLU/HellaSwag during training; use LoRA (frozen base weights never forget); add general data to mixture (5–10%).</p>
+<h3>AP11 — Eval Set Contamination</h3>
+<p>Evaluation examples appear in training data. Scores are optimistic. Model doesn't generalize. Fix: freeze eval set before any data work. Use hash verification.</p>
+<h3>AP16 — Vague Task Definition</h3>
+<p>Starting training without a precise input/output specification. Leads to inconsistent training data, unclear eval metrics, and a model that does something — just not the thing you needed. Fix: write 10 concrete (input, expected output) examples before collecting data.</p>
+<h2>Patterns That Predict Project Failure</h2>
+<table><tr><th>AP</th><th>Warning Sign</th><th>Fix</th></tr>
+<tr><td>AP01</td><td>&lt;500 training examples</td><td>Collect more or augment</td></tr>
+<tr><td>AP04</td><td>PII in training data</td><td>Presidio + legal review</td></tr>
+<tr><td>AP06</td><td>MMLU drops &gt;5 pts</td><td>LoRA, add general mix</td></tr>
+<tr><td>AP09</td><td>Loss plateaus early</td><td>Check LR, batch size</td></tr>
+<tr><td>AP11</td><td>No frozen eval set</td><td>Create before any training</td></tr>
+<tr><td>AP15</td><td>No production monitoring</td><td>Perplexity + output drift alerts</td></tr>
+<tr><td>AP17</td><td>Wrong model family</td><td>Verify on 10 examples first</td></tr>
+<tr><td>AP18</td><td>Only public benchmarks</td><td>Private held-out eval set</td></tr>
+</table>`,
+quiz:[
+{q:'A model achieves 97% accuracy on the evaluation set but fails completely on new production inputs. What anti-pattern does this indicate?',
+opts:['AP06 — Catastrophic forgetting degraded general capabilities','AP11 — Eval set contamination made scores artificially high','AP09 — Wrong learning rate caused overfitting to training data','AP15 — No production monitoring prevented catching drift'],
+ans:1,exp:'97% eval accuracy that doesn\'t transfer to production is the signature of eval set contamination (AP11) — evaluation examples leaked into training data. The model "memorized" test answers rather than learning to generalize. Secondary cause: AP16 (vague task definition) leading to train/test distribution mismatch.'},
+{q:'Your fine-tuned LLM is suddenly generating outputs in a different format than it did during evaluation. Which anti-pattern does this most likely indicate?',
+opts:['AP06 — Catastrophic forgetting','AP15 — No production monitoring or drift detection','AP01 — Insufficient training data','AP18 — Benchmark contamination'],
+ans:1,exp:'Format drift in production without any change to the model is a classic AP15 symptom — no monitoring means you don\'t know when input distribution shifted. Production inputs changed (different prompts, different user population), causing the model to exhibit different behavior. The fix is perplexity monitoring on production inputs and output distribution tracking.'}
+]},
+
+{id:'08',title:'Base Model Selection Guide',level:'Intermediate–Advanced',lc:'a',
+summary:'Pick the right base model. Evaluate capability, license, and quantization-friendliness.',
+content:`
+<h2>Why This Decision Is Irreversible</h2>
+<p>The base model is the foundation everything else rests on. Switching after data collection, training, and evaluation wastes weeks. Make the decision with evidence before writing a single training example.</p>
+<h2>Key Selection Criteria</h2>
+<table><tr><th>Dimension</th><th>What to Evaluate</th><th>Minimum Bar</th></tr>
+<tr><td>Task capability</td><td>Zero-shot performance on your task</td><td>&gt;60% before fine-tuning</td></tr>
+<tr><td>Domain vocabulary</td><td>Perplexity on domain text</td><td>Lower is better; compare models</td></tr>
+<tr><td>License</td><td>Commercial use, derivatives allowed</td><td>Verify for production use</td></tr>
+<tr><td>Quantization</td><td>Quality at 4-bit (QLoRA target)</td><td>&lt;5% quality loss at Q4_K_M</td></tr>
+<tr><td>Context length</td><td>Max native context</td><td>Must exceed your input length</td></tr>
+<tr><td>Community support</td><td>Active fine-tuning community, PEFT support</td><td>HF PEFT integration confirmed</td></tr>
+</table>
+<h2>Model Family Quick Reference (2025)</h2>
+<table><tr><th>Family</th><th>Sizes</th><th>Strengths</th><th>License</th></tr>
+<tr><td>Llama 3.1/3.2/3.3</td><td>1B–405B</td><td>Best general baseline; wide ecosystem</td><td>Llama Community (commercial OK)</td></tr>
+<tr><td>Mistral / Mixtral</td><td>7B, 8×7B, 8×22B</td><td>Fast, efficient; MoE at scale</td><td>Apache 2.0</td></tr>
+<tr><td>Phi-3 / Phi-4</td><td>3.8B–14B</td><td>Best small-model reasoning</td><td>MIT</td></tr>
+<tr><td>Gemma 2</td><td>2B–27B</td><td>Google quality; long context</td><td>Gemma ToS</td></tr>
+<tr><td>Qwen 2.5</td><td>0.5B–72B</td><td>Strong multilingual + code</td><td>Apache 2.0</td></tr>
+<tr><td>DeepSeek-R1</td><td>7B–671B</td><td>Reasoning, math, STEM</td><td>MIT</td></tr>
+</table>
+<h2>Capability Verification Protocol</h2>
+<div class="co co-t"><strong>Before committing to a base model, run this:</strong><br>
+1. Take 10 examples from your task (not from your eval set)<br>
+2. Zero-shot prompt each candidate model<br>
+3. Score outputs manually<br>
+4. Any model below 50% zero-shot accuracy: eliminate immediately<br>
+5. Top candidates: run QLoRA fine-tune on 100 examples, compare
+</div>
+<h2>Base vs Instruction-Tuned</h2>
+<table><tr><th></th><th>Base Model</th><th>Instruct Model</th></tr>
+<tr><td>Fine-tune for format/behavior</td><td>Better — no prior instruction format to override</td><td>Can conflict with learned chat format</td></tr>
+<tr><td>Fine-tune for task accuracy</td><td>Needs SFT from scratch</td><td>Often faster — already follows instructions</td></tr>
+<tr><td>Domain-adaptive pre-training</td><td>Required — don't DAPT an instruct model</td><td>No</td></tr>
+<tr><td>DPO alignment</td><td>Requires SFT warm-up first</td><td>Can DPO directly</td></tr>
+</table>`,
+quiz:[
+{q:'You are fine-tuning for a medical note summarization task. A candidate model scores 30% zero-shot on 10 test examples. What should you do?',
+opts:['Proceed — fine-tuning will dramatically improve it','Eliminate this model — it likely lacks the medical domain capability needed','Try domain-adaptive pre-training first, then re-evaluate','Increase the fine-tuning dataset size to compensate'],
+ans:1,exp:'The capability verification protocol eliminates any model below 50% zero-shot. 30% suggests the model fundamentally cannot perform the task — possibly wrong model family, insufficient domain vocabulary, or wrong capability. No amount of fine-tuning will reliably recover a model that cannot do the task at zero-shot. Eliminate and try a model with stronger medical domain knowledge (BioMedLM, Meditron, or Llama with DAPT on medical literature).'},
+{q:'Should you do domain-adaptive pre-training (DAPT) on an instruction-tuned model?',
+opts:['Yes — DAPT works on any model','No — DAPT can overwrite the instruction-following alignment; always DAPT the base model first, then instruction-tune','Yes, but only with LoRA to protect the instruction-following weights','No — DAPT is only for models with fewer than 7B parameters'],
+ans:1,exp:'DAPT should always be applied to the BASE model, not the instruction-tuned variant. DAPT is continued pre-training (next-token prediction on domain text), which will interfere with and partially overwrite the instruction-following alignment. The correct pipeline is: base model → DAPT → SFT (instruction tuning) → DPO (if needed).'}
+]},
+
+{id:'09',title:'End-to-End Lab: Financial Entity Extraction',level:'Intermediate–SME',lc:'e',
+summary:'Build a complete fine-tuning pipeline. Every concept from the curriculum in one working project.',
+content:`
+<h2>Project: SWIFT Message → Structured JSON</h2>
+<p>Parse unstructured SWIFT MT103 messages and extract: beneficiary name, IBAN, BIC, amount, currency, value date. Output must be valid JSON for downstream systems.</p>
+<div class="co co-k"><strong>Why this task?</strong> It is format-sensitive (JSON output), domain-specific (SWIFT vocabulary), precision-critical (financial), and has verifiable correctness. Covers all curriculum concepts.</div>
+<h2>Phase 1: Data Engineering</h2>
+<pre><code class="language-python">import json
+from datasets import Dataset
+
+def build_training_example(swift_text: str, ground_truth: dict) -> dict:
+    """Format for Llama 3 instruction template."""
+    return {
+        "prompt": (
+            "Extract financial entities from this SWIFT message. "
+            "Return valid JSON with keys: beneficiary_name, iban, bic, "
+            "amount, currency, value_date. If a field is absent, use null.\n\n"
+            f"SWIFT Message:\n{swift_text}"
+        ),
+        "completion": json.dumps(ground_truth, indent=2)
+    }
+
+# Quality gates before training:
+# 1. All JSON completions parse without error
+# 2. No duplicate SWIFT messages (MinHash dedup)
+# 3. No PII beyond synthetic test data
+# 4. Length: 95th percentile &lt; 2048 tokens
+</code></pre>
+<h2>Phase 2: Model Selection</h2>
+<p>Zero-shot test on 10 real messages: Llama-3.1-8B-Instruct → 60% F1. Phi-3-mini → 35% F1. Decision: Llama-3.1-8B-Instruct as base (above 50% threshold, strong SWIFT vocabulary).</p>
+<h2>Phase 3: Training (QLoRA)</h2>
+<pre><code class="language-python">from transformers import TrainingArguments
+from trl import SFTTrainer
+from peft import LoraConfig
+
+lora_config = LoraConfig(
+    r=16, lora_alpha=32, lora_dropout=0.05,
+    target_modules=["q_proj","k_proj","v_proj","o_proj"],
+    task_type="CAUSAL_LM"
+)
+
+args = TrainingArguments(
+    output_dir="./swift-extractor",
+    num_train_epochs=3,
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=4,
+    learning_rate=2e-4,
+    warmup_ratio=0.03,
+    lr_scheduler_type="cosine",
+    max_grad_norm=1.0,          # Always set gradient clipping
+    bf16=True,
+    gradient_checkpointing=True,
+    logging_steps=10,
+    save_strategy="epoch",
+    eval_strategy="epoch",
+    load_best_model_at_end=True,
+)
+</code></pre>
+<h2>Phase 4: Evaluation</h2>
+<pre><code class="language-python">def evaluate_extraction(predictions, ground_truths):
+    results = {"field_f1": {}, "json_parse_rate": 0, "exact_match": 0}
+    fields = ["beneficiary_name","iban","bic","amount","currency","value_date"]
+
+    parse_ok = 0
+    for pred_str, gt in zip(predictions, ground_truths):
+        try:
+            pred = json.loads(pred_str)
+            parse_ok += 1
+            for field in fields:
+                # Token-level F1 per field
+                p_tokens = set(str(pred.get(field,'')).lower().split())
+                g_tokens = set(str(gt.get(field,'')).lower().split())
+                if p_tokens | g_tokens:
+                    precision = len(p_tokens & g_tokens) / len(p_tokens) if p_tokens else 0
+                    recall = len(p_tokens & g_tokens) / len(g_tokens) if g_tokens else 0
+                    f1 = 2*precision*recall/(precision+recall) if (precision+recall) else 0
+                    results["field_f1"].setdefault(field, []).append(f1)
+        except json.JSONDecodeError:
+            pass
+
+    results["json_parse_rate"] = parse_ok / len(predictions)
+    return results
+
+# Hard pass gates:
+# json_parse_rate >= 0.99
+# IBAN F1 >= 0.97 (critical financial field)
+# Overall F1 >= 0.92
+</code></pre>
+<h2>Phase 5: Deployment</h2>
+<p>Merge LoRA adapter to base weights for serving, or use vLLM with LoRA enabled for zero-copy serving. Add LlamaGuard on output for PII leakage detection. Monitor JSON parse rate in production — a drop signals distribution shift.</p>
+<div class="co co-t"><strong>Teach It Back:</strong> Explain to a peer why you chose Llama-3.1-8B-Instruct over Phi-3-mini, what the hard eval gates are and why those thresholds, and what you'd monitor in production to catch model drift.</div>`,
+quiz:[
+{q:'The JSON parse rate drops from 99% to 85% in production two weeks after deployment. What is the most likely cause and first diagnostic step?',
+opts:['Model weights corrupted — redeploy from the saved checkpoint','Input distribution shift — production SWIFT messages now have different formatting; check a sample of failed inputs','The LoRA adapter degraded over time — need to retrain','The evaluation set was contaminated — the 99% rate was always wrong'],
+ans:1,exp:'JSON parse rate drops without any model change = distribution shift. Production inputs changed (new SWIFT message formats, different banks, longer/shorter messages). The model encounters inputs it wasn\'t trained on and produces malformed JSON. First step: sample 20 failed inputs and compare structure to training data. Second step: add these new patterns to training data and retrain.'},
+{q:'During evaluation, IBAN F1 is 0.99 but beneficiary_name F1 is 0.71. What does this indicate and what should you do?',
+opts:['0.71 is acceptable — names are inherently harder to extract','The evaluation metric is wrong — use exact match instead','Training data has fewer or lower-quality beneficiary_name examples; audit the dataset for this field specifically','The model overfits on IBAN because it is a structured format; ignore the name field'],
+ans:2,exp:'Field-level F1 variance indicates uneven data quality or quantity across fields. IBAN is structured (checksum-validatable), so the model learns it easily. Free-text names are harder AND likely underrepresented or inconsistently labeled in training data. Diagnostic: check annotation consistency for beneficiary_name in training set, look for cases where the name appears in multiple formats (company vs. individual), and augment with more examples of ambiguous name formats.'}
+]}
+];
+
+const ANTI_PATTERNS = [
+  {name:'AP01 — Insufficient Data Volume',desc:'&lt;500 training examples causes memorization, not generalization. Minimum: 500 SFT pairs; 1,000+ preferred.'},
+  {name:'AP02 — Wrong Train/Val/Test Split',desc:'Random split leaks similar examples between sets. Split by source or time, not randomly.'},
+  {name:'AP03 — No Deduplication',desc:'Duplicate examples inflate eval scores. Run exact, fuzzy, and semantic dedup before splitting.'},
+  {name:'AP04 — PII in Training Data',desc:'Regulatory violation and model leakage risk. Run Presidio scan with &lt;0.1% false-negative rate.'},
+  {name:'AP05 — Wrong Chat Template',desc:'Wrong special tokens cause systematic prediction failures. Verify template matches model family exactly.'},
+  {name:'AP06 — Catastrophic Forgetting',desc:'Narrow fine-tuning degrades general capabilities. Monitor MMLU during training; use LoRA or add general data mix.'},
+  {name:'AP07 — Learning Rate Too High',desc:'Loss spikes, training diverges. Start at 2e-4 for LoRA, 5e-5 for full FT. Use warmup_ratio=0.03.'},
+  {name:'AP08 — Effective Batch Size Too Small',desc:'Noisy gradients, unstable training. Use gradient_accumulation to achieve effective batch ≥32.'},
+  {name:'AP09 — No Gradient Clipping',desc:'Gradient explosions corrupt weights silently. Always set max_grad_norm=1.0.'},
+  {name:'AP10 — No Checkpoint Saving',desc:'Training crash = total loss. Save every epoch at minimum; keep top-3 checkpoints.'},
+  {name:'AP11 — Eval Set Contamination',desc:'Test examples in training data. Create frozen eval BEFORE any data work. Use hash verification.'},
+  {name:'AP12 — Single Metric Reporting',desc:'F1 alone hides hallucination, safety failures, calibration issues. Report full metric suite.'},
+  {name:'AP13 — Overfitting to Eval Set',desc:'Tuning hyperparameters on eval set makes it a second training set. Use a separate validation set.'},
+  {name:'AP14 — No Regression Testing',desc:'Task accuracy up, general capability down. Always benchmark on MMLU/HellaSwag before and after.'},
+  {name:'AP15 — No Production Monitoring',desc:'Model drift goes undetected. Monitor: output perplexity, JSON parse rate, response length distribution.'},
+  {name:'AP16 — Vague Task Definition',desc:'No precise input/output spec before data collection. Write 10 concrete examples first. Non-negotiable.'},
+  {name:'AP17 — Wrong Base Model Family',desc:'Model family that cannot do the task at zero-shot. Run capability verification on 10 examples first.'},
+  {name:'AP18 — Benchmark Contamination',desc:'Pretraining data includes benchmark test questions. Build private held-out eval from real production data.'}
+];
+
+const WIZARD = {
+  steps: ['Task Type','Data Volume','GPU Budget','Result'],
+  qs: [
+    {q:'What is your primary task?', opts:[
+      {t:'Format / Structure Output',d:'Extract entities, fill templates, generate structured JSON/YAML'},
+      {t:'Style / Tone Alignment',d:'Match a writing style, persona, or communication tone'},
+      {t:'Reasoning / Math / Code',d:'Multi-step problem solving, tool use, code generation'},
+      {t:'Domain Knowledge Injection',d:'Medical, legal, financial vocabulary and conventions'}
+    ]},
+    {q:'How much labeled training data do you have?', opts:[
+      {t:'&lt;500 examples',d:'Limited data — need data-efficient techniques'},
+      {t:'500–5,000 examples',d:'Standard SFT territory'},
+      {t:'5,000–50,000 examples',d:'Ample data for strong fine-tuning'},
+      {t:'50,000+ examples',d:'Large dataset — can consider full fine-tuning'}
+    ]},
+    {q:'What is your GPU budget?', opts:[
+      {t:'Single consumer GPU (≤24 GB)',d:'RTX 4090, A10G, L4'},
+      {t:'Single datacenter GPU (40–80 GB)',d:'A100, H100 single node'},
+      {t:'Multi-GPU (2–8 GPUs)',d:'DGX node or cloud multi-GPU'},
+      {t:'Multi-node cluster',d:'Full distributed training infrastructure'}
+    ]}
+  ],
+  results: function(ans) {
+    const [task, data, gpu] = ans;
+    const recs = {
+      technique: '', model: '', notes: ''
+    };
+    if (gpu === 0) {
+      recs.technique = 'QLoRA (4-bit NF4 + LoRA adapters)';
+      recs.model = data === 3 ? 'Llama-3.1-13B' : 'Llama-3.1-8B or Phi-4-14B';
+    } else if (gpu === 1) {
+      recs.technique = data >= 2 ? 'LoRA (bf16, r=16)' : 'QLoRA';
+      recs.model = 'Llama-3.1-8B or 13B; Qwen-2.5-14B';
+    } else {
+      recs.technique = data === 3 ? 'Full SFT with FSDP' : 'LoRA (r=32, more modules)';
+      recs.model = 'Llama-3.1-70B or Qwen-2.5-72B';
+    }
+    if (task === 1) recs.notes = 'After SFT, add DPO with (chosen, rejected) preference pairs for style alignment.';
+    if (task === 2) recs.notes = 'After SFT, use GRPO with a verifiable reward function for reasoning improvement.';
+    if (task === 3) recs.notes = 'Consider DAPT on domain text (base model) before SFT if model perplexity on domain text is high.';
+    if (data === 0) recs.notes += ' WARNING: &lt;500 examples is below the safe threshold. Collect more data or use data augmentation before training.';
+    return recs;
+  }
+};
+
+// State
+const S = {
+  cur: null,
+  tool: null,
+  done: new Set(),
+  quizAnswered: {},
+  apChecked: new Set(),
+  wizStep: 0,
+  wizAns: []
+};
+
+function init() {
+  try { S.done = new Set(JSON.parse(localStorage.getItem('ft_done')||'[]')); } catch(e){}
+  try { S.apChecked = new Set(JSON.parse(localStorage.getItem('ft_ap')||'[]')); } catch(e){}
+  renderNav();
+  showModule('00');
+}
+
+function renderNav(filter='') {
+  const nav = document.getElementById('nav');
+  nav.innerHTML = MODULES.filter(m =>
+    !filter || m.title.toLowerCase().includes(filter.toLowerCase()) ||
+    m.summary.toLowerCase().includes(filter.toLowerCase())
+  ).map(m => `
+    <div class="ni ${S.cur===m.id?'active':''} ${S.done.has(m.id)?'done':''}"
+         onclick="showModule('${m.id}')">
+      <span class="ni-num">${m.id}</span>
+      <div class="ni-txt">
+        <div class="ni-title">${m.title}</div>
+        <div class="ni-lvl">${m.level}</div>
+      </div>
+      <div class="ni-chk">✓</div>
+    </div>`).join('');
+}
+
+function doSearch(v) { renderNav(v); }
+
+function levelClass(lc) {
+  return {b:'lb-b',i:'lb-i',a:'lb-a',e:'lb-e'}[lc]||'lb-b';
+}
+
+function showModule(id) {
+  S.cur = id; S.tool = null;
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  const m = MODULES.find(x=>x.id===id);
+  if (!m) return;
+  document.getElementById('mv').style.display='block';
+  document.getElementById('tv').style.display='none';
+  const done = S.done.has(id);
+  document.getElementById('mv').innerHTML = `
+    <div class="mh">
+      <div class="mh-num">Module ${m.id}</div>
+      <div class="mh-title">${m.title}</div>
+      <div class="mh-meta">
+        <span class="lbadge ${levelClass(m.lc)}">${m.level}</span>
+      </div>
+    </div>
+    <div class="cb">${m.content}</div>
+    <button class="mr-btn ${done?'done':''}" id="mr-btn" onclick="markRead('${id}')">
+      ${done ? '✓ Completed' : 'Mark as Complete'}
+    </button>
+    <div class="qz">
+      <div class="qz-hd">⚡ Knowledge Check</div>
+      ${m.quiz.map((q,qi)=>`
+        <div class="qq" id="qq-${id}-${qi}">
+          <div class="qq-txt">${qi+1}. ${q.q}</div>
+          <div class="q-opts">
+            ${q.opts.map((o,oi)=>`
+              <button class="q-opt" onclick="answerQuiz('${id}',${qi},${oi})">${o}</button>
+            `).join('')}
+          </div>
+          <div class="q-exp" id="qexp-${id}-${qi}">${q.exp}</div>
+        </div>
+      `).join('')}
+    </div>`;
+
+  // Restore answered state
+  if (S.quizAnswered[id]) {
+    S.quizAnswered[id].forEach((chosen, qi) => {
+      restoreQuizState(id, qi, chosen, m.quiz[qi].ans);
+    });
+  }
+
+  Prism.highlightAll();
+  renderNav();
+  updateProgress();
+}
+
+function answerQuiz(modId, qi, chosen) {
+  const m = MODULES.find(x=>x.id===modId);
+  const correct = m.quiz[qi].ans;
+  if (!S.quizAnswered[modId]) S.quizAnswered[modId] = {};
+  if (S.quizAnswered[modId][qi] !== undefined) return;
+  S.quizAnswered[modId][qi] = chosen;
+  restoreQuizState(modId, qi, chosen, correct);
+}
+
+function restoreQuizState(modId, qi, chosen, correct) {
+  const opts = document.querySelectorAll(`#qq-${modId}-${qi} .q-opt`);
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === correct) btn.classList.add(chosen === correct ? 'correct' : 'reveal');
+    else if (i === chosen && chosen !== correct) btn.classList.add('wrong');
+  });
+  const exp = document.getElementById(`qexp-${modId}-${qi}`);
+  if (exp) exp.style.display = 'block';
+}
+
+function markRead(id) {
+  if (S.done.has(id)) { S.done.delete(id); }
+  else { S.done.add(id); }
+  localStorage.setItem('ft_done', JSON.stringify([...S.done]));
+  const btn = document.getElementById('mr-btn');
+  if (btn) { btn.textContent = S.done.has(id)?'✓ Completed':'Mark as Complete'; btn.className='mr-btn'+(S.done.has(id)?' done':''); }
+  renderNav();
+  updateProgress();
+}
+
+function updateProgress() {
+  const n = S.done.size, total = MODULES.length;
+  document.getElementById('pb-txt').textContent = `${n} / ${total}`;
+  document.getElementById('pb-fill').style.width = `${(n/total)*100}%`;
+}
+
+function resetProgress() {
+  if (!confirm('Reset all progress?')) return;
+  S.done.clear(); S.apChecked.clear(); S.quizAnswered = {};
+  localStorage.removeItem('ft_done'); localStorage.removeItem('ft_ap');
+  renderNav(); updateProgress();
+  if (S.cur) showModule(S.cur);
+}
+
+function toggleTheme() {
+  const h = document.documentElement;
+  h.setAttribute('data-theme', h.getAttribute('data-theme')==='dark'?'light':'dark');
+}
+
+function showTool(name) {
+  S.tool = name; S.cur = null;
+  document.getElementById('mv').style.display='none';
+  document.getElementById('tv').style.display='block';
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tb-'+name)?.classList.add('active');
+  renderNav();
+  if (name==='calc') renderCalc();
+  if (name==='wiz') renderWiz();
+  if (name==='ap') renderAP();
+}
+
+// GPU Calculator
+function renderCalc() {
+  document.getElementById('tv').innerHTML = `
+    <div class="th"><h2>⚡ GPU Memory Calculator</h2>
+    <p>Estimate VRAM requirements before committing to hardware.</p></div>
+    <div class="calc-g">
+      <div class="cf">
+        <label>Model Size: <span id="ms-val">7</span>B parameters</label>
+        <input type="range" id="ms" min="1" max="70" value="7" oninput="document.getElementById('ms-val').textContent=this.value;calcVRAM()">
+      </div>
+      <div class="cf">
+        <label>Training Precision</label>
+        <select id="prec" onchange="calcVRAM()">
+          <option value="bf16">bf16 / fp16</option>
+          <option value="fp32">fp32</option>
+          <option value="4bit">4-bit (QLoRA)</option>
+        </select>
+      </div>
+      <div class="cf">
+        <label>Training Type</label>
+        <select id="ttype" onchange="calcVRAM()">
+          <option value="qlora">QLoRA (4-bit base + bf16 adapters)</option>
+          <option value="lora">LoRA (bf16 base, frozen)</option>
+          <option value="full">Full Fine-Tuning (fp32 Adam)</option>
+          <option value="infer">Inference Only (bf16)</option>
+        </select>
+      </div>
+      <div class="cf">
+        <label>Calculated VRAM Requirement</label>
+        <div class="cf-val" id="vram-raw">—</div>
+      </div>
+    </div>
+    <div class="cr">
+      <h3>Memory Breakdown</h3>
+      <div class="vd" id="vd">—</div>
+      <div class="vb" id="vb">—</div>
+      <div class="gpu-recs" id="gpu-recs"></div>
+    </div>`;
+  calcVRAM();
+}
+
+function calcVRAM() {
+  const B = parseFloat(document.getElementById('ms').value);
+  const ttype = document.getElementById('ttype').value;
+  let total, breakdown, bpb;
+  if (ttype==='infer') { bpb=2; total=B*2; breakdown=`${B}B × 2 bytes (bf16 weights) = ${total.toFixed(1)} GB`; }
+  else if (ttype==='qlora') { bpb=0.5+2*0.02; total=B*0.5+B*0.04; breakdown=`${B}B × 0.5 bytes (4-bit base) + adapter params (bf16) ≈ ${total.toFixed(1)} GB`; }
+  else if (ttype==='lora') { bpb=2; total=B*2+B*0.04; breakdown=`${B}B × 2 bytes (bf16 base, frozen) + optimizer on adapters ≈ ${total.toFixed(1)} GB`; }
+  else { bpb=16; total=B*16; breakdown=`${B}B × 16 bytes/param (2 weights + 2 grad + 4 grad_fp32 + 4 Adam_m + 4 Adam_v) = ${total.toFixed(1)} GB TOTAL`; }
+
+  document.getElementById('vd').textContent = total.toFixed(1)+' GB';
+  document.getElementById('vram-raw').textContent = total.toFixed(1)+' GB';
+  document.getElementById('vb').innerHTML = breakdown;
+
+  const gpus = [
+    {name:'RTX 4090 (24 GB)', mem:24},
+    {name:'A10G / L4 (24 GB)', mem:24},
+    {name:'A100 40GB', mem:40},
+    {name:'A100 80GB', mem:80},
+    {name:'H100 80GB', mem:80},
+    {name:'2× A100 80GB', mem:160},
+    {name:'4× A100 80GB', mem:320},
+    {name:'8× A100 80GB', mem:640},
+  ];
+  document.getElementById('gpu-recs').innerHTML = gpus.map(g => {
+    const fits = g.mem >= total;
+    const tight = g.mem >= total*0.85 && !fits;
+    const cls = fits?'gr-ok':(tight?'gr-w':'gr-no');
+    const icon = fits?'✓':(tight?'~':'✗');
+    return `<div class="gr ${cls}">${icon} ${g.name} (${g.mem} GB)${fits?' — fits':tight?' — tight fit':' — insufficient'}</div>`;
+  }).join('');
+}
+
+// Decision Wizard
+let wizAns = [];
+function renderWiz() {
+  wizAns = [];
+  document.getElementById('tv').innerHTML = `
+    <div class="th"><h2>🧭 Fine-Tuning Decision Wizard</h2>
+    <p>Answer 3 questions to get a technique recommendation.</p></div>
+    <div class="wz-steps">
+      ${WIZARD.steps.map((s,i)=>`<div class="wz-s ${i===0?'active':''}" id="ws-${i}">${s}</div>`).join('')}
+    </div>
+    ${WIZARD.qs.map((step,si)=>`
+      <div class="wp ${si===0?'active':''}" id="wp-${si}">
+        <div class="wq">${step.q}</div>
+        <div class="wopts">
+          ${step.opts.map((o,oi)=>`
+            <div class="wo" onclick="selectWiz(${si},${oi},this)">
+              <div class="wo-t">${o.t}</div>
+              <div class="wo-d">${o.d}</div>
+            </div>`).join('')}
+        </div>
+        <div class="wz-nav">
+          ${si>0?`<button class="btn-s" onclick="wizBack(${si})">← Back</button>`:''}
+          <button class="btn-p" id="wz-next-${si}" onclick="wizNext(${si})" disabled>Next →</button>
+        </div>
+      </div>`).join('')}
+    <div class="wp" id="wp-3">
+      <div id="wres-content"></div>
+      <div class="wz-nav"><button class="btn-s" onclick="wizBack(3)">← Back</button>
+      <button class="btn-p" onclick="renderWiz()">Start Over</button></div>
+    </div>`;
+}
+
+function selectWiz(step, opt, el) {
+  el.closest('.wopts').querySelectorAll('.wo').forEach(w=>w.classList.remove('sel'));
+  el.classList.add('sel');
+  wizAns[step] = opt;
+  document.getElementById(`wz-next-${step}`).disabled = false;
+}
+
+function wizNext(step) {
+  if (wizAns[step] === undefined) return;
+  document.getElementById(`wp-${step}`).classList.remove('active');
+  document.getElementById(`ws-${step}`).classList.add('done');
+  const next = step+1;
+  document.getElementById(`wp-${next}`).classList.add('active');
+  document.getElementById(`ws-${next}`)?.classList.add('active');
+  if (next === 3) showWizResult();
+}
+
+function wizBack(step) {
+  document.getElementById(`wp-${step}`).classList.remove('active');
+  document.getElementById(`ws-${step}`).classList.remove('active','done');
+  const prev = step-1;
+  document.getElementById(`wp-${prev}`).classList.add('active');
+  document.getElementById(`ws-${prev}`).classList.remove('done');
+}
+
+function showWizResult() {
+  const r = WIZARD.results(wizAns);
+  const taskLabels = ['Format/Structure','Style/Tone','Reasoning/Math/Code','Domain Knowledge'];
+  const dataLabels = ['&lt;500 examples','500–5K','5K–50K','50K+'];
+  const gpuLabels = ['Consumer GPU (≤24 GB)','Single Datacenter GPU','Multi-GPU','Multi-Node'];
+  document.getElementById('wres-content').innerHTML = `
+    <div class="wres">
+      <h3>Recommendation</h3>
+      <p><strong>Task:</strong> ${taskLabels[wizAns[0]]} | <strong>Data:</strong> ${dataLabels[wizAns[1]]} | <strong>GPU:</strong> ${gpuLabels[wizAns[2]]}</p>
+      <p><strong>Recommended technique:</strong></p>
+      <div style="margin:8px 0"><span class="rtag">${r.technique}</span></div>
+      <p><strong>Suggested base model:</strong> ${r.model}</p>
+      ${r.notes?`<p style="margin-top:10px">${r.notes}</p>`:''}
+      <p style="margin-top:14px;font-size:.8rem;color:var(--dim)">These are starting points. Run capability verification (10 examples) before committing. See Module 08 for base model selection and Module 02 for technique configuration.</p>
+    </div>`;
+}
+
+// Anti-Pattern Checklist
+function renderAP() {
+  updateAPHealth();
+  document.getElementById('tv').innerHTML = `
+    <div class="th"><h2>✓ Anti-Pattern Checklist</h2>
+    <p>Check off patterns you've explicitly guarded against. 18 = project is likely safe.</p></div>
+    <div class="hs">
+      <div class="hs-n" id="hs-n" style="color:var(--red)">0</div>
+      <div class="hs-l">of 18 anti-patterns addressed</div>
+    </div>
+    <div class="apl">
+      ${ANTI_PATTERNS.map((ap,i)=>`
+        <div class="api ${S.apChecked.has(i)?'chk':''}" onclick="toggleAP(${i})">
+          <div class="ap-cb">✓</div>
+          <div><div class="ap-n">${ap.name}</div><div class="ap-d">${ap.desc}</div></div>
+        </div>`).join('')}
+    </div>`;
+  renderAPHealth();
+}
+
+function toggleAP(i) {
+  if (S.apChecked.has(i)) S.apChecked.delete(i);
+  else S.apChecked.add(i);
+  localStorage.setItem('ft_ap', JSON.stringify([...S.apChecked]));
+  document.querySelectorAll('.api')[i]?.classList.toggle('chk', S.apChecked.has(i));
+  renderAPHealth();
+}
+
+function renderAPHealth() {
+  const n = S.apChecked.size;
+  const el = document.getElementById('hs-n');
+  if (!el) return;
+  el.textContent = n;
+  el.style.color = n < 9 ? 'var(--red)' : n < 15 ? 'var(--yellow)' : 'var(--green)';
+}
+
+function updateAPHealth() {}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
